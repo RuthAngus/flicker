@@ -1,0 +1,11 @@
+model {
+    for (i in 1:N) {
+          mu[i] <- alpha + beta*(xtrue[i]);
+	  xtrue[i] ~ dnorm(xobs[i], 1.0/(xerr[i]*xerr[i]));
+	  Yobs[i] ~ dnorm(Ytrue[i], 1.0/(Yerr[i]*Yerr[i]));
+	  Ytrue[i] ~ dnorm(mu[i], 1/tau);
+    }
+    alpha ~ dnorm(0.0,1.0E-4);
+    beta ~ dnorm(0.0,1.0E-4);
+    tau ~ dgamma(1.0E-3,1.0E-3);
+}
