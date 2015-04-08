@@ -7,4 +7,4 @@ simpleMCMC.py runs a simple version.
 flicker.py creates plots.
 
 Probabilistic Graphical Model:
-![alt tag](https://raw.github.com/RuthAngus/flicker/blob/master/pgm.png)
+![pgm](https://github.com/RuthAngus/flicker/blob/master/pgm.png)
