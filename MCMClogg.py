@@ -27,13 +27,13 @@ def lnprob(theta, x, y, yerr):
     return lp + lnlike(theta, x, y, yerr)
 
 # Set initial parameter values
-m_init = -0.526023
-b_init = 2.89219
+m_init = -1.
+b_init = 7.
 f_init = 0.0043328
 
 # load data
-f8, f8_err, rho, rho_err = np.genfromtxt("data/flickers.dat").T
-x, xerr = rho, rho_err
+f8, f8_err, lg, lg_err, T, T_err = np.genfromtxt("log.dat").T
+x, xerr = lg, lg_err
 y, yerr = f8, f8_err
 
 # Calculate least-square values
@@ -58,7 +58,7 @@ samples = sampler.chain[:, 50:, :].reshape((-1, ndim))
 samples[:, 2] = np.exp(samples[:, 2])
 fig = triangle.corner(samples, labels=["$m$", "$b$", "$f$"],
                       truths=[m_init, b_init, np.log(f_init)])
-fig.savefig("emcee_triangle.png")
+fig.savefig("logg_triangle.png")
 
 # plot result
 plt.clf()
@@ -67,7 +67,7 @@ for m, b, lnf in samples[np.random.randint(len(samples), size=100)]:
     plt.plot(xl, m*xl+b, color="k", alpha=0.1)
 plt.plot(xl, m_init*xl+b_init, color="r", lw=2, alpha=0.8)
 plt.errorbar(x, y, yerr=yerr, fmt=".k")
-plt.savefig("emcee_result")
+plt.savefig("logg_result")
 
 # print results
 m_mcmc, b_mcmc, f_mcmc = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
@@ -76,7 +76,7 @@ m_mcmc, b_mcmc, f_mcmc = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
 print m_mcmc, b_mcmc, f_mcmc
 
 # save samples
-f = h5py.File("emcee_samples.h5", "w")
+f = h5py.File("logg_samples.h5", "w")
 data = f.create_dataset("samples", (np.shape(samples)))
 data[:, 0] = samples[:, 1]
 data[:, 1] = samples[:, 0]
