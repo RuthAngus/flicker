@@ -32,7 +32,7 @@ b_init = 7.
 f_init = 0.0043328
 
 # load data
-f8, f8_err, lg, lg_err, T, T_err = np.genfromtxt("log.dat").T
+f8, f8_err, lg, lg_err, T, T_err = np.genfromtxt("data/log.dat").T
 x, xerr = lg, lg_err
 y, yerr = f8, f8_err
 
