@@ -7,6 +7,7 @@ from colours import plot_colours
 cols = plot_colours()
 import scipy.interpolate as spi
 import h5py
+import sys
 
 def interp(xold, yold, xnew, s):
     tck = spi.splrep(xold, yold, s=s)
@@ -24,18 +25,36 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     ys = np.linspace(min(y)-5, max(y)+5, 1000)
     xs = np.linspace(min(x), max(x), 1000)
     plt.clf()
-    # intrinsic scatter
+
+    if fname == "rho":
+        plt.ylim(.5, 4.)
+        plt.ylabel("$\log_{10}(\\rho_{star}[\mathrm{kgm}^{-3}])$")
+        col = cols.blue
+        plt.text(1.7, 3.5, "$\log_{10}(\\rho_{star}) = %.3f \\times F8 + %.3f$"
+                 % (alpha, beta))
+        plt.text(1.2, 1.5, "$\\tau = %.3f,~\sigma = %.3f$"
+                 % (tau, np.sqrt(tau)))
+
+    elif fname == "logg":
+        plt.ylim(3, 5)
+        col = cols.pink
+        plt.ylabel("$\log(g)$")
+        plt.text(1.7, 4.5, "$\log(g) = %.3f \\times F8 + %.3f$"
+                 % (alpha, beta))
+        plt.text(1.2, 3.5, "$\\tau = %.3f,~\sigma = %.3f$" %
+                 (tau, np.sqrt(tau)))
+
     plt.fill_between(ys, ((ys-alpha)/beta)-sigma, ((ys-alpha)/beta)+sigma,
-                     color=cols.blue, alpha=.3, edgecolor="w")
+                     color=col, alpha=.3, edgecolor="w")
     plt.fill_between(ys, ((ys-alpha)/beta)-2*sigma, ((ys-alpha)/beta)+2*sigma,
-                     color=cols.blue, alpha=.2, edgecolor="w")
+                     color=col, alpha=.2, edgecolor="w")
     plt.errorbar(y, x, xerr=yerr, yerr=xerr, fmt="k.", capsize=0, alpha=.5,
                  ecolor=".5", mec=".2")
     plt.plot(ys, (ys-alpha)/beta, ".2", linewidth=1)
-    plt.ylim(.5, 4.)
+
     plt.xlim(1, 2.4)
-    plt.ylabel("$\log_{10}(\\rho_{star}[\mathrm{kgm}^{-3}])$")
     plt.xlabel("$\log_{10}\mathrm{(8-hour~flicker~[ppm])}$")
+    plt.savefig("/Users/angusr/Dropbox/Flickerhackday/figs/%s_vs_flicker.eps" % fname)
     plt.savefig("flicker_inv_%s" % fname)
 
 def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
@@ -88,27 +107,25 @@ def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     plt.clf()
     plt.hist(normed_resids, 20, histtype="stepfilled", color="w")
     plt.xlabel("Normalised residuals")
-    print np.std(normed_resids)
     plt.savefig("residual_hist_%s" % fname)
 
 if __name__ == "__main__":
 
-    # load and sort data
-    f8, f8_err, rho, rho_err = np.genfromtxt("data/flickers.dat").T
-    x, xerr = rho, rho_err
-    y, yerr = f8, f8_err
+    fname = str(sys.argv[1]) # should be either "rho" or "logg"
+
+    if fname == "rho":
+        y, yerr, x, xerr = np.genfromtxt("data/flickers.dat").T
+    elif fname == "logg":
+        y, yerr, x, xerr, _, _ = np.genfromtxt("data/log.dat").T
     inds = np.argsort(x)
     x = x[inds]
     y = y[inds]
     yerr = yerr[inds]
 
     # load chains
-    with h5py.File("samples.h5", "r") as f:
+    with h5py.File("%s_samples.h5" % fname, "r") as f:
         samples = f["samples"][...]
-#     alpha_chain = data[:, 0]
-#     beta_chain = data[:, 1]
-#     tau_chain = data[:, 2]
+    samples = samples.T
 
-    fname = "rho"
     make_flicker_plot(x, xerr, y, yerr, samples, fname)
     make_inverse_flicker_plot(x, xerr, y, yerr, samples, fname)

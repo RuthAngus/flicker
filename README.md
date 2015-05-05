@@ -10,6 +10,10 @@ Flicker.bug contains the model shown below.
 `main.py` - uncertainties in 2d, non-HBM with logg
 `rho2d.py` - uncertainties in 2d, non-HBM with rho
 
+`plots.py` - creates main flicker plot using mcmc samples
+
 To do:
 make rho2d: Uncertainties in 2d, HBM with density
 make logg2d: Uncertainties in 2d, HBM with logg
+
+rho2 and main currently running
