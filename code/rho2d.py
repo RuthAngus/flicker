@@ -8,21 +8,27 @@ import triangle
 def lnprior(pars):
     return 0.
 
-def lnprob(pars, samples, obs, u):
-    return lnlikeH(pars, samples, obs, u) + lnprior(pars)
+def lnprob(pars, samples, obs, u, is2d=False):
+    if is2d:
+        return lnlikeH(pars, samples, obs, u) + lnprior(pars)
+    return lnlike(pars, samples, obs, u) + lnprior(pars)
 
 if __name__ == "__main__":
 
-    # load data
-    # x = f, y = rho, z = teff
-    x, xerr, y, yerr, z, zerr = np.genfromtxt("data/log.dat").T
+    # load data. x = f, y = rho, z = teff
+    x, xerr, y, yerr = np.genfromtxt("data/flickers.dat").T
 
+    # generate nsamp importance samples unless 2d is False
+    is2d = False
     obs = np.vstack((x, y))
     u = np.vstack((xerr, yerr))
-    nsamp = 3
+    nsamp = 1
+    if is2d:
+        nsamp = 3
     s = generate_samples(obs, u, nsamp)
 
-    pars_init = [-1.850, 5.413, .065]
+    # rough values from Kipping paper
+    pars_init = [-.5, 3.6, .065]
 
     ndim, nwalkers = len(pars_init), 32
     pos = [pars_init + 1e-4*np.random.randn(ndim) for i in range(nwalkers)]
@@ -30,7 +36,7 @@ if __name__ == "__main__":
                                     args=(s, obs, u))
 
     print "burning in..."
-    pos, _, _, = sampler.run_mcmc(pos, 500)
+    pos, _, _, = sampler.run_mcmc(pos, 200)
     sampler.reset()
     print "production run..."
     sampler.run_mcmc(pos, 1000)
