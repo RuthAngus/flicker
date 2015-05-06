@@ -1,0 +1,164 @@
+
+%\documentclass[12pt,preprint]{aastex}
+\documentclass[apjl]{emulateapj}
+\usepackage{comment}
+\usepackage{ifthen}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{wasysym}
+\usepackage{subfigure}
+\usepackage{epsfig}
+\usepackage[%
+	colorlinks=true,	% false: boxed links; true: colored links
+	urlcolor=blue,		% color of external links
+	pdfpagelabels=true,
+	hypertexnames=true,
+	plainpages=false,
+	naturalnames=true,
+%	bookmarks=true,         % show bookmarks bar?
+%	unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+%	pdftoolbar=true,        % show Acrobat’s toolbar?
+%	pdfmenubar=true,        % show Acrobat’s menu?
+%	pdffitwindow=false,     % window fit to page when opened
+%	pdfstartview={FitH},    % fits the width of the page to the window
+	pdftitle={Priors for Orbital Eccentricity},    % title
+	pdfauthor={David M. Kipping},     % author
+%	pdfsubject={Subject},   % subject of the document
+%	pdfcreator={Creator},   % creator of the document
+%	pdfproducer={Producer}, % producer of the document
+%	pdfkeywords={keyword1} {key2} {key3}, % list of keywords
+%	pdfnewwindow=true,      % links in new window
+	linkcolor=red,          % color of internal links (change box color with linkbordercolor)
+	citecolor=green,        % color of links to bibliography
+%	filecolor=magenta,      % color of file links
+        ]{hyperref}
+%
+
+% #############################################################################
+% Specific latex definitions for this paper
+
+\input{shortcuts.tex}
+
+%% #############################################################################
+
+%% VARIABLE DEFINITIONS
+%% 
+\newboolean{emulateapj}
+\setboolean{emulateapj}{true}
+
+\newboolean{astroph}
+\setboolean{astroph}{true}
+
+\newboolean{png}
+\setboolean{png}{false}
+
+\newboolean{color}
+\setboolean{color}{true}
+
+%% ############################################################################
+
+\shortauthors{Angus \& Kipping}
+\shorttitle{Discovery of a Transiting Planet Near the Snow-Line}
+\ifthenelse{\boolean{emulateapj}}{
+    \newcommand{\titledag}{$\dagger$}
+}{
+    \newcommand{\titledag}{\dagger}
+}
+\def\mathbi#1{\textbf{\em #1}}
+
+\begin{document}
+
+%% Titlepage
+\title {Hierarchical Bayesian Inference of Fundamental Stellar Parameters:\\
+Calibration of Flicker to Surface Gravity and Mean Density
+\altaffilmark{\titledag}}
+
+%% Authors
+\author{
+	{\bf	R.~Angus\altaffilmark{1,2},
+		D.~M.~Kipping\altaffilmark{2,3},
+	}
+}
+
+\altaffiltext{1}{Dept. of Physics, University of Oxford, UK}
+
+\altaffiltext{2}{Harvard-Smithsonian Center for Astrophysics,
+		Cambridge, MA 02138, USA; email: dkipping@cfa.harvard.edu}
+
+\altaffiltext{3}{Department of Astronomy, Columbia University, 550 W 120th St., 
+                 New York, NY 10027, US}
+
+\altaffiltext{$\dagger$}{
+%%
+Based on archival data of the \emph{Kepler} telescope. 
+}
+
+
+%% EOF authors
+
+% #####################################################################
+%% abstract
+\begin{abstract}
+
+TBD
+
+\end{abstract}
+
+% #####################################################################
+%% keywords
+\keywords{
+%%
+	stars: fundamental parameters --- techniques: photometric --- 
+        methods: statistical
+%%
+}
+
+%% EOF keywords
+%% EOF titlepage
+
+% #####################################################################
+%% Introduction
+\section{INTRODUCTION}
+\label{sec:intro}
+
+\input{introduction.tex}
+
+\section{HIERARCHICAL BAYESIAN MODEL}
+\label{sec:HBM}
+
+\input{HBM.tex}
+
+\section{APPLICATION}
+\label{sec:appication}
+
+\input{application.tex}
+
+\section{DISCUSSION}
+\label{sec:discussion}
+
+\input{discussion.tex}
+
+% #####################################################################
+%% Acknowledgements
+\acknowledgements
+\section*{Acknowledgements}
+
+RA thanks...
+DMK thanks...
+
+%% EOF Acknowledgements
+
+% #####################################################################
+%% Bibliography
+\begin{thebibliography}{99}
+\bibitem[\protect\citeauthoryear{Abe et al.}{2000}]{abe:2000} 
+Abe, Y., Ohtani, E., Okuchi, T., Righter, K. \& Drake, M., 2000, Origin of the
+Earth and Moon, ed. R. M. Canup \& K. Righter (Tucson: Univ. Arizona
+Press), 1, 413
+\end{thebibliography}
+
+\end{document}
+
+%% EOF document
