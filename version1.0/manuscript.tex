@@ -1,6 +1,8 @@
-
 %\documentclass[12pt,preprint]{aastex}
 \documentclass[apjl]{emulateapj}
+
+\pdfoutput=1
+
 \usepackage{comment}
 \usepackage{ifthen}
 \usepackage{amsmath}
@@ -71,8 +73,8 @@
 \begin{document}
 
 %% Titlepage
-\title {Hierarchical Bayesian Inference of Fundamental Stellar Parameters:\\
-Calibration of Flicker to Surface Gravity and Mean Density
+\title {Probabilistic Inference of Stellar Parameters:\\
+Application to Flickering Stars %to Surface Gravity and Mean Density
 \altaffilmark{\titledag}}
 
 %% Authors
@@ -125,6 +127,38 @@ TBD
 
 \input{introduction.tex}
 
+One of the more recent tools developed to characterize stars is known as 
+``flicker'' \citep{bastien:2013}. Flicker is a proxy for the scatter on an 
+8-hour timescale (dubbed $F_8$) in a broad visible bandpass time series 
+photometric light curve, such as that from \textit{Kepler} or the upcoming TESS 
+mission. A more detailed account of the proceedure to calculate flicker is 
+described in \citet{bastien:2013}. As shown in \citet{bastien:2013}, flicker 
+displays a remarkable correlation to the asteroseismically determined parent 
+star surface gravities (\logg). Turning this round, the observation implies 
+that flicker can be used to blindly infer surface gravities at the level of 
+$\sim0.1$\,dex, an attractive proposition given the wealth of photometric light 
+curves available through the array of exoplanet transit missions flying and 
+scheduled to launch.
+
+\citet{cranmer:2014} demonstrated that stellar surface granulation is expected
+to reproduce a flicker effect in close agreement with that observed by 
+\citet{bastien:2013}, providing a physically-plausible explanation. Since
+surface gravity is highly correlated to mean stellar density (\rhostar) on 
+evolutionary tracks, \citet{kipping:2014} showed that flicker can be also 
+be used to infer \rhostar, which is more useful for exoplanet transit 
+analysis.
+
+Whether one calibrates flicker to \logg\ or \rhostar, there are several aspects
+of the problem which are attractive for our purposes of a simple demonstration
+of probabilistic inference of stellar parameters. Firstly, in log-log space the
+relationship is very simple, appearing to be linear. Secondly, there is a
+sufficiently number of points in the sample (439 stars) to constrain a 
+population-based model. Thirdly, there is significant excess scatter around the
+best-fitting relation implying that a deterministic model is inadequate. For
+these reasons, we identify the calibration of flicker to \logg\ and \rhostar\
+as a well-posed problem to first demonstrate probabilistic inference in the 
+arena of stellar characterization.
+
 \section{HIERARCHICAL BAYESIAN MODEL}
 \label{sec:HBM}
 
@@ -153,10 +187,17 @@ DMK thanks...
 % #####################################################################
 %% Bibliography
 \begin{thebibliography}{99}
-\bibitem[\protect\citeauthoryear{Abe et al.}{2000}]{abe:2000} 
-Abe, Y., Ohtani, E., Okuchi, T., Righter, K. \& Drake, M., 2000, Origin of the
-Earth and Moon, ed. R. M. Canup \& K. Righter (Tucson: Univ. Arizona
-Press), 1, 413
+\bibitem[\protect\citeauthoryear{Bastien et al.}{2013}]{bastien:2013} Bastien, 
+F. A., Stassun, K. G., Basri, G. \& Pepper, J., 2013, Nature, 500, 427
+\bibitem[\protect\citeauthoryear{Cranmer et al.}{2014}]{cranmer:2014} 
+Cranmer, S. R., Bastien, F. A., Stassun, K. G. \& Saar, S. H., 2014, ApJ, 781, 
+124
+\bibitem[\protect\citeauthoryear{Kipping et al.}{2014}]{kipping:2014} 
+Kipping, D.~M., Bastien, F.~A., Stassun, K.~G., Chaplin, W.~J., Huber, D. \&
+Buchhave, L.~A., 2014, ApJ, 785, 32
+\bibitem[\protect\citeauthoryear{Wolfgang et al.}{2015}]{wolfgang:2015} 
+Wolfgang, A., Rogers, L.~A., Ford, E.~B., 2015, ApJ, submitted 
+(astro-ph:1504.07557)
 \end{thebibliography}
 
 \end{document}

@@ -1,9 +1,51 @@
 %% INTRODUCTION
 %%
 
-Stellar characterization techniaues overview, traditionally frequentist
+% Stellar characterization techniaues overview, traditionally frequentist
 
-use of HBMs, particularly for exoplanets lately
+% who cares about characterization?
 
-Here we introduce an application of HBMs to fundamental stellar chaarcetrization
-specifically for flicker
+Accurate and precise stellar characterization forms the bedrock of a number
+fields within astronomy.
+For example, stellar populations, galactic archaeology, binary stars,
+asteroseismology and exoplanet studies all rely on inferences of fundamental
+stellar parameters.
+These stellar parameters are inferred from a variety of observable properties
+measured using spectroscopy, photometry, interferometry, etc.
+Many stellar parameters are inferred via theoretical stellar models, e.g.
+fitting model isochrones to spectroscopic measurements, and
+some are inferred using empirically calibrated relations.
+Regardless of the approach, be it theoretical or empirical, the methods used
+for the inference of stellar parameters are traditionally frequentist.
+However, a shift towards probabilistic methods in other areas of astronomy,
+and particularly within the exoplanet community, prompts the need to treat
+stars in the same probabilistic framework.
+
+The demand for probilistic stellar parameters not only motivated by the fact
+that probability distributions are far more representative of our `beliefs'
+about astrophysical parameters, but also
+
+%A number of recent exoplanet studies have used Hierarchical Bayesian Modeling
+%(HBM) to model the dispersion, or intrinsic scatter in relations between
+%astrophysical properties.
+%For example, \citep{wolfgang:2015} use HBM to recalibrate the mass-radius
+%relation for sub-Neptunes and infer the level of astrophysical dispersion
+
+% We use the example of flicker; the brightness fluctuations of stars on
+% timescales less than 8 hours, which has been shown to correlate both with
+% surface gravity and stellar density, to demonstrate our probilistic approach.
+
+% Previous studies calibrating the relations between flicker, surface
+% gravity and stellar density have assumed that the relations between these
+% properties are deterministic, i.e. if you know the flicker of a star with
+% infinite precision, then you can exactly predict the dependant property.
+% We here provide a probabilistic recalibration of the relations between surface
+% gravity, stellar density and flicker, allowing for the astrophysical
+% dispersion in the relation.
+% This probabilitic recalibration will produce predictive {\it distributions}
+% for stellar density and surface gravity, given a measurement of flicker.
+
+% use of HBMs, particularly for exoplanets lately
+
+% Here we introduce an application of HBMs to fundamental stellar
+% characterization specifically for flicker.
