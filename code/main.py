@@ -25,10 +25,42 @@ def MCMC(whichx, nsamp):
     if whichx == "rho":
         pars_init = rho_pars
 
-    # load data
-    fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
-    fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
-    nd = 20
+#     # load data
+#     fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
+#     fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
+#     nd = 20
+
+    data = np.genfromtxt("../data/BIGDATA.filtered.dat").T
+    r, rerrp, rerrm = data[7:10]
+    f, ferr = data[20:22]
+    logg, loggerrp, loggerrm = data[10:13]
+
+    plt.clf()
+    plt.subplot(2, 1, 1)
+    plt.errorbar(r, f, xerr=(rerrm, rerrp), yerr=ferr, fmt="k.", capsize=0)
+
+    rerrp, rerrm = rerrp/r/np.log(10), rerrm/r/np.log(10)
+    r = np.log10(1000*r)
+    ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
+    f = np.log10(1000*f)
+
+    plt.subplot(2, 1, 2)
+    plt.errorbar(r, f, xerr=(rerrm, rerrp), yerr=(ferrm, ferrp), fmt="k.",
+                 capsize=0)
+    plt.savefig("test")
+    raw_input('enter')
+
+    plt.clf()
+    plt.subplot(2, 1, 1)
+    plt.errorbar(logg, f, xerr=(loggerrm, loggerrp), yerr=ferr, fmt="k.", capsize=0)
+
+    ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
+    f = np.log10(1000*f)
+    plt.subplot(2, 1, 2)
+    plt.errorbar(logg, f, xerr=(loggerrm, loggerrp), yerr=(ferrm, ferrp), fmt="k.", capsize=0)
+    plt.savefig("test2")
+    raw_input('enter')
+
     x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
     if whichx == "rho":
         x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
@@ -96,5 +128,5 @@ def make_plots(whichx):
 
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
-#     MCMC(whichx, 50)
+    MCMC(whichx, 50)
     make_plots(whichx)
