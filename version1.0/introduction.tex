@@ -5,23 +5,47 @@
 
 % who cares about characterization?
 
-Accurate and precise stellar characterization forms the bedrock of a number
-fields within astronomy.
-For example, stellar populations, galactic archaeology, binary stars,
-asteroseismology and exoplanet studies all rely on inferences of fundamental
-stellar parameters.
-These stellar parameters are inferred from a variety of observable properties
-measured using spectroscopy, photometry, interferometry, etc.
-Many stellar parameters are inferred via theoretical stellar models, e.g.
-fitting model isochrones to spectroscopic measurements, and
-some are inferred using empirically calibrated relations.
-Regardless of the approach, be it theoretical or empirical, the methods used
-for the inference of stellar parameters are traditionally frequentist.
-However, a shift towards probabilistic methods in other areas of astronomy,
-and particularly within the exoplanet community, prompts the need to treat
-stars in the same probabilistic framework.
+Accurate stellar characterization plays a vital role for many active research 
+fields within astronomy. For example, stellar populations, galactic archaeology, 
+the study of binary stars, asteroseismology and exoplanet studies all rely on 
+inferences of basic stellar parameters to varying degrees. Empirically-derived
+and reliable estimates are of particular value, increasing our confidence in the
+end-product results built upon these inputs. 
 
-The demand for probilistic stellar parameters not only motivated by the fact
+Basic stellar parameters, such as effective temperature and surface gravity, 
+can be inferred using one (or more) of several types of observations, e.g. 
+spectroscopy, photometry, interferometry, etc. This inference can be done by
+invoking theoretical models or by building an empirical calibration library.
+As an example, an observed stellar spectrum could be matched against a library of 
+theoretical spectra generated using stellar atmosphere models, or, against a 
+library of observed spectra of ``standard stars'', serving as calibrators.
+%Fundamental stellar parameters, such as mass and radius, which cannot be 
+%directly inferred from the available observations can often be inferred by 
+%invoking theoretical stellar models, e.g. fitting model isochrones to 
+%spectroscopic measurements.
+Regardless of the approach, be it theoretical or empirical, the methods used
+for the inference of stellar parameters are traditionally ``deterministic''.
+In this context, a deterministic model can be loosely described as one where
+a particular observational input always returns a single-valued output for a 
+parameter of interest. In this framework, nature itself has no variance and
+our underlying model is considered to be a perfect description of reality.
+
+An alternative approach for inferring model parameters is the 
+``probabilistic'' one. Unlike the deterministic case, a single observational 
+input is intepretted to be caused by a range of possible model parameters
+described by a probability distribution. This statement is true even in the case
+of a perfect observation of infinite signal-to-noise, since our underlying 
+model itself comes with uncertainty. In recent years, there has been a shift 
+towards such methods in several areas of astronomy, particularly within the 
+exoplanet community. For example, \citet{wolfgang:2015} considered that
+the mass-radius relationship of exoplanets is probabilistic, since a particular
+sized planet could be due to a range of planet masses, thanks to variances in
+compositions, environment and other circumstances. These recent demonstrations
+in exoplanetary science have prompted us to consider the need for treating the 
+parent stars in the same probabilistic framework, with potential applications 
+spanning many fields of astronomy.
+
+The demand for probilistic stellar parameters is not only motivated by the fact
 that probability distributions are far more representative of our `beliefs'
 about astrophysical parameters, but also... (ruth will continue this sentence)
 
