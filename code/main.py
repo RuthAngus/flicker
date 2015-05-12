@@ -5,6 +5,7 @@ from model import model1, model
 import emcee
 import triangle
 import sys
+import h5py
 
 def lnprior(pars):
     return 0.
@@ -24,14 +25,23 @@ def MCMC(whichx, nsamp):
     # load data
     fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
     fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
-    x, xerr, y, yerr = fl, flerr, l, lerr
+    nd = 20
+    x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
     if whichx == "rho":
-        x, xerr, y, yerr = fr, frerr, r, rerr
+        x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
 
     # format data and generate samples
     obs = np.vstack((x, y))
     u = np.vstack((xerr, yerr))
     s = generate_samples(obs, u, nsamp)
+
+#     plt.clf()
+#     x, y = obs[0, :], obs[1, :]
+#     xerr, yerr = u[0, :], u[1, :]
+#     plt.plot(s[0, :, :], s[1, :, :], "r.", markersize=2, alpha=.3, zorder=0)
+#     plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="ko", capsize=0, zorder=1)
+#     plt.show()
+#     assert 0
 
     # set up and run emcee
     ndim, nwalkers = len(pars_init), 32
@@ -48,18 +58,46 @@ def MCMC(whichx, nsamp):
                zip(*np.percentile(samp, [16, 50, 84], axis=0)))
     pars = [m[0], c[0], sig[0]]
 
-    # make plots
+    # save samples
+    print np.shape(samp)
+    f = h5py.File("%s_samples.h5" % whichx, "w")
+    data = f.create_dataset("samples", np.shape(samp))
+    data[:, 0] = samp[:, 0]
+    data[:, 1] = samp[:, 1]
+    data[:, 2] = samp[:, 2]
+    f.close()
+    return s
+
+def make_plots(whichx, s):
+
+    # load data
+    fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
+    fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
+    nd = 20
+    x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
+    if whichx == "rho":
+        x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
+
+    with h5py.File("%s_samples.h5" % whichx) as f:
+        samp = f["samples"][...]
+    m, c, sig = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
+               zip(*np.percentile(samp, [16, 50, 84], axis=0)))
+    pars = [m[0], c[0], sig[0]]
+
     plt.clf()
+    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0, ecolor=".7")
     plt.plot(s[0, :, :], s[1, :, :], "r.", markersize=2)
-    print np.shape(s[0, :, :])
-    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0)
-    print pars_init, pars
-    plt.plot(x, model1(pars_init, x))
-    plt.plot(x, model1(pars, x))
+    plt.plot(x, model1(pars, x), "k")
+    ndraws = 100
+    p1s = np.random.choice(samp[:, 0], ndraws)
+    p2s = np.random.choice(samp[:, 1], ndraws)
+    for i in range(ndraws):
+        plt.plot(x, model1([p1s[i], p2s[i]], x), "k", alpha=.1)
     plt.savefig("mcmc_%s" % whichx)
-    fig = triangle.corner(samp, truths=pars_init)
+    fig = triangle.corner(samp, truths=pars)
     fig.savefig("triangle_%s" % whichx)
 
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
-    MCMC(whichx, 2)
+    s = MCMC(whichx, 50)
+    make_plots(whichx, s)
