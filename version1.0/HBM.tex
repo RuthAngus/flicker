@@ -1,6 +1,37 @@
 %% HBM
 %%
 
+\subsection{Calibration Data}
+
+For our calibration of \rhostar-$F_8$, we used a sample of Kepler stars with
+both asteroseismic and flicker measurements available. \citet{chaplin:2014}
+report asteroseismic \rhostar\ estimates (and the associated uncertainties) for 
+518 Kepler stars. The authors report three different sets of results, depending 
+on the choice of \Teff\ and \FeH, and in this work we elected to use values 
+reported in their Table 6 over Table 5, and Table 5 over Table 4. We 
+additionally used the 71 additional planet hosting stars with asteroseismology 
+reported in \citet{huber:2013} but not reported in \citet{chaplin:2014}. Values 
+for flicker and range were taken from \citet{kipping:2014}, based upon the 
+methods described in \citet{bastien:2013}. Following \citet{kipping:2014} and 
+for reasons described there-in, we only include targets in our calibration for 
+which:
+
+\begin{itemize}
+\item[{\tiny$\blacksquare$}] Range (defined in \citealt{bastien:2013}) 
+$<1$\,ppt
+\item[{\tiny$\blacksquare$}] $4500<T_{\mathrm{eff}}<6500$\,K
+\item[{\tiny$\blacksquare$}] $K_P<14$
+\item[{\tiny$\blacksquare$}] $1.2 < \log_{10}$($F_8$\,[ppm])$< 2.2$
+\end{itemize}
+
+We use the same sample for our calibration of \logg, except that we exclude the
+\citet{huber:2013} data, since these authors do not provide estimates of
+\logg\footnote{Whilst we could compute \logg\ ourselves from the reported
+masses and radii, this could only be done under the incorrect assumption of
+zero covariance between $M_{\star}$ and $R_{\star}$.}
+
+\subsection{Hierarchical Bayesian Model}
+
 TBD
 
 %%% rhostar plot

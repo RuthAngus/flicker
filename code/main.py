@@ -57,11 +57,10 @@ def MCMC(whichx, nsamp):
     # format data and generate samples
     obs = np.vstack((x, y))
     u = np.vstack((xerr, yerr))
-#     up = np.vstack((xerrp, yerrm))
-#     um = np.vstack((xerrp, yerrm))
-#     u = .5*(up + um)
-#     s = generate_samples_log(obs, up, um, nsamp)
-    s = generate_samples(obs, u, nsamp)
+    up = np.vstack((xerr, yerr))
+    um = np.vstack((xerr*.5, yerr*.5))
+    s = generate_samples_log(obs, up, um, nsamp)
+#     s = generate_samples(obs, u, nsamp)
 
     # set up and run emcee
     ndim, nwalkers = len(pars_init), 32
@@ -140,5 +139,5 @@ def make_plots(whichx):
 
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
-    MCMC(whichx, 10)
+    MCMC(whichx, 1000)
     make_plots(whichx)
