@@ -1,8 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import triangle
-from params import plot_params
-reb = plot_params()
 from colours import plot_colours
 cols = plot_colours()
 import scipy.interpolate as spi
@@ -27,30 +25,42 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     plt.clf()
 
     if fname == "rho":
-        plt.ylim(.5, 4.)
-        plt.ylabel("$\log_{10}(\\rho_{star}[\mathrm{kg~m}^{-3}])$")
+        plt.ylabel("$\log_{10}(\\rho_{\star}[\mathrm{g~cm}^{-3}])$")
         col = cols.blue
-        plt.text(1.7, 3.5, "$\log_{10}(\\rho_{\star}) = %.3f \\times F8 + %.3f$"
-                 % (alpha, beta))
-        plt.text(1.2, 1.5, "$\\tau = %.3f,~\sigma = %.3f$"
-                 % (tau, np.sqrt(tau)))
+        plt.text(1.7, .5, "$\log_{10} (\\rho_{\star}) \sim \mathcal{N} (\\alpha + \\beta F_8, \sigma)$")
+        plt.text(1.7, .2, "$\\alpha = %.3f$" % (alpha-2))
+        plt.text(1.7, .05, "$\\beta = %.3f$" % beta)
+        plt.text(1.7, -.1, "$\sigma = %.3f$" % tau**.5)
+        plt.fill_between(ys, ((ys-alpha)/beta)-sigma-3,
+                         ((ys-alpha)/beta)+sigma-3,
+                         color=col, alpha=.3, edgecolor="w")
+        plt.fill_between(ys, ((ys-alpha)/beta)-2*sigma-3,
+                         ((ys-alpha)/beta)+2*sigma-3,
+                         color=col, alpha=.2, edgecolor="w")
+        dx = x/xerr
+        plt.errorbar(y, x-3, xerr=yerr, yerr=xerr, fmt="k.", capsize=0,
+                     alpha=.5, ecolor=".5", mec=".2")
+        plt.plot(ys, (ys-alpha)/beta-3, ".2", linewidth=1)
+        plt.ylim(-2, 1)
+        plt.subplots_adjust(bottom=.1)
 
     elif fname == "logg":
         plt.ylim(3, 5)
         col = cols.pink
-        plt.ylabel("$\log(g)$")
-        plt.text(1.7, 4.5, "$\log(g) = %.3f \\times F8 + %.3f$"
-                 % (alpha, beta))
-        plt.text(1.2, 3.5, "\sigma = %.3f$" %
-                 (tau, np.sqrt(tau)))
+        plt.ylabel("$\log_{10}(g) [\mathrm{cm~s}^{-2}]$")
+        plt.text(1.7, 4.7, "$\log(g) \sim \mathcal{N} (\\alpha + \\beta F_8, \sigma)$")
+        plt.text(1.7, 4.5, "$\\alpha = %.3f$" % alpha)
+        plt.text(1.7, 4.4, "$\\beta = %.3f$" % beta)
+        plt.text(1.7, 4.3, "$\sigma = %.3f$" % tau**.5)
 
-    plt.fill_between(ys, ((ys-alpha)/beta)-sigma, ((ys-alpha)/beta)+sigma,
-                     color=col, alpha=.3, edgecolor="w")
-    plt.fill_between(ys, ((ys-alpha)/beta)-2*sigma, ((ys-alpha)/beta)+2*sigma,
-                     color=col, alpha=.2, edgecolor="w")
-    plt.errorbar(y, x, xerr=yerr, yerr=xerr, fmt="k.", capsize=0, alpha=.5,
-                 ecolor=".5", mec=".2")
-    plt.plot(ys, (ys-alpha)/beta, ".2", linewidth=1)
+        plt.fill_between(ys, ((ys-alpha)/beta)-sigma, ((ys-alpha)/beta)+sigma,
+                         color=col, alpha=.3, edgecolor="w")
+        plt.fill_between(ys, ((ys-alpha)/beta)-2*sigma, ((ys-alpha)/beta)+2*sigma,
+                         color=col, alpha=.2, edgecolor="w")
+        plt.errorbar(y, x, xerr=yerr, yerr=xerr, fmt="k.", capsize=0, alpha=.5,
+                     ecolor=".5", mec=".2")
+        plt.plot(ys, (ys-alpha)/beta, ".2", linewidth=1)
+        plt.subplots_adjust(bottom=.1)
 
     plt.xlim(1, 2.4)
     plt.xlabel("$\log_{10}\mathrm{(F}_8~\mathrm{[ppm]})$")
@@ -111,11 +121,11 @@ def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
 if __name__ == "__main__":
 
-    plotpar = {'axes.labelsize': 20,
-               'text.fontsize': 20,
-               'legend.fontsize': 20,
-               'xtick.labelsize': 20,
-               'ytick.labelsize': 20,
+    plotpar = {'axes.labelsize': 18,
+               'text.fontsize': 18,
+               'legend.fontsize': 18,
+               'xtick.labelsize': 18,
+               'ytick.labelsize': 18,
                'text.usetex': True}
     plt.rcParams.update(plotpar)
 

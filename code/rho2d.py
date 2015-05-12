@@ -16,10 +16,10 @@ def lnprob(pars, samples, obs, u, is2d=False):
 if __name__ == "__main__":
 
     # load data. x = f, y = rho, z = teff
-    x, xerr, y, yerr = np.genfromtxt("data/flickers.dat").T
+    x, xerr, y, yerr = np.genfromtxt("../data/flickers.dat").T
 
     # generate nsamp importance samples unless 2d is False
-    is2d = False
+    is2d = True
     obs = np.vstack((x, y))
     u = np.vstack((xerr, yerr))
     nsamp = 1

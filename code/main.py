@@ -15,8 +15,8 @@ def lnprob(pars, samples, obs, u):
 def MCMC(whichx, nsamp):
 
     # set initial params
-    rho_pars = [-.5, 3.6, .065]
-    logg_pars = [-1.850, 5.413, .065]
+    rho_pars = [-2., 6., .0065]
+    logg_pars = [-1.850, 7., .0065]
     pars_init = logg_pars
     if whichx == "rho":
         pars_init = rho_pars
@@ -24,9 +24,9 @@ def MCMC(whichx, nsamp):
     # load data
     fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
     fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
-    x, xerr, y, yerr = fl[:10], flerr[:10], l[:10], lerr[:10]
+    x, xerr, y, yerr = fl, flerr, l, lerr
     if whichx == "rho":
-        x, xerr, y, yerr = fr[:10], frerr[:10], r[:10], rerr[:10]
+        x, xerr, y, yerr = fr, frerr, r, rerr
 
     # format data and generate samples
     obs = np.vstack((x, y))
@@ -51,6 +51,7 @@ def MCMC(whichx, nsamp):
     # make plots
     plt.clf()
     plt.plot(s[0, :, :], s[1, :, :], "r.", markersize=2)
+    print np.shape(s[0, :, :])
     plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0)
     print pars_init, pars
     plt.plot(x, model1(pars_init, x))
@@ -61,4 +62,4 @@ def MCMC(whichx, nsamp):
 
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
-    MCMC(whichx, 10)
+    MCMC(whichx, 2)
