@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from noisy_plane import generate_samples, lnlike, lnlikeH, lnlikeHM
+from noisy_plane import generate_samples, generate_samples_log, \
+        lnlike, lnlikeH, lnlikeHM
 from model import model1, model
 import emcee
 import triangle
@@ -25,42 +26,30 @@ def MCMC(whichx, nsamp):
     if whichx == "rho":
         pars_init = rho_pars
 
-#     # load data
-#     fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
-#     fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
-#     nd = 20
+#     data = np.genfromtxt("../data/BIGDATA.filtered.dat").T
+#     r, rerrp, rerrm = data[7:10]
+#     f, ferr = data[20:22]
+#     logg, loggerrp, loggerrm = data[10:13]
+#     rerrp, rerrm = rerrp/r/np.log(10), rerrm/r/np.log(10)
+#     r = np.log10(1000*r)
+#     ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
+#     f = np.log10(1000*f)
+#
+#     nd = len(f)
+#     x, xerrp, xerrm = f[:nd], ferrp[:nd], ferrm[:nd]
+#     y, yerrp, yerrm = logg[:nd], loggerrp[:nd], loggerrm[:nd]
+#     xerr = .5*(xerrp + xerrm)
+#     yerr = .5*(yerrp + yerrm)
+#     if whichx == "rho":
+#         x, xerrp, xerrm = f[:nd], ferrp[:nd], ferrm[:nd]
+#         y, yerrp, yerrm = r[:nd], rerrp[:nd], rerrm[:nd]
+#         xerr = .5*(xerrp + xerrm)
+#         yerr = .5*(yerrp + yerrm)
 
-    data = np.genfromtxt("../data/BIGDATA.filtered.dat").T
-    r, rerrp, rerrm = data[7:10]
-    f, ferr = data[20:22]
-    logg, loggerrp, loggerrm = data[10:13]
-
-    plt.clf()
-    plt.subplot(2, 1, 1)
-    plt.errorbar(r, f, xerr=(rerrm, rerrp), yerr=ferr, fmt="k.", capsize=0)
-
-    rerrp, rerrm = rerrp/r/np.log(10), rerrm/r/np.log(10)
-    r = np.log10(1000*r)
-    ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
-    f = np.log10(1000*f)
-
-    plt.subplot(2, 1, 2)
-    plt.errorbar(r, f, xerr=(rerrm, rerrp), yerr=(ferrm, ferrp), fmt="k.",
-                 capsize=0)
-    plt.savefig("test")
-    raw_input('enter')
-
-    plt.clf()
-    plt.subplot(2, 1, 1)
-    plt.errorbar(logg, f, xerr=(loggerrm, loggerrp), yerr=ferr, fmt="k.", capsize=0)
-
-    ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
-    f = np.log10(1000*f)
-    plt.subplot(2, 1, 2)
-    plt.errorbar(logg, f, xerr=(loggerrm, loggerrp), yerr=(ferrm, ferrp), fmt="k.", capsize=0)
-    plt.savefig("test2")
-    raw_input('enter')
-
+    # load data
+    fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
+    fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
+    nd = 20
     x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
     if whichx == "rho":
         x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
@@ -68,6 +57,10 @@ def MCMC(whichx, nsamp):
     # format data and generate samples
     obs = np.vstack((x, y))
     u = np.vstack((xerr, yerr))
+#     up = np.vstack((xerrp, yerrm))
+#     um = np.vstack((xerrp, yerrm))
+#     u = .5*(up + um)
+#     s = generate_samples_log(obs, up, um, nsamp)
     s = generate_samples(obs, u, nsamp)
 
     # set up and run emcee
@@ -86,7 +79,6 @@ def MCMC(whichx, nsamp):
     pars = [m[0], c[0], sig[0]]
 
     # save samples
-    print np.shape(samp)
     f = h5py.File("%s_samples.h5" % whichx, "w")
     data = f.create_dataset("samples", np.shape(samp))
     data[:, 0] = samp[:, 0]
@@ -99,6 +91,26 @@ def MCMC(whichx, nsamp):
 
 def make_plots(whichx):
 
+#     data = np.genfromtxt("../data/BIGDATA.filtered.dat").T
+#     r, rerrp, rerrm = data[7:10]
+#     f, ferr = data[20:22]
+#     logg, loggerrp, loggerrm = data[10:13]
+#     rerrp, rerrm = rerrp/r/np.log(10), rerrm/r/np.log(10)
+#     r = np.log10(1000*r)
+#     ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
+#     f = np.log10(1000*f)
+#
+#     nd = len(f)
+#     x, xerrp, xerrm = f[:nd], ferrp[:nd], ferrm[:nd]
+#     y, yerrp, yerrm = logg[:nd], loggerrp[:nd], loggerrm[:nd]
+#     xerr = .5*(xerrp + xerrm)
+#     yerr = .5*(yerrp + yerrm)
+#     if whichx == "rho":
+#         x, xerrp, xerrm = f[:nd], ferrp[:nd], ferrm[:nd]
+#         y, yerrp, yerrm = r[:nd], rerrp[:nd], rerrm[:nd]
+#         xerr = .5*(xerrp + xerrm)
+#         yerr = .5*(yerrp + yerrm)
+#
     # load data
     fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
     fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
@@ -128,5 +140,5 @@ def make_plots(whichx):
 
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
-    MCMC(whichx, 50)
+    MCMC(whichx, 10)
     make_plots(whichx)
