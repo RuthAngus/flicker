@@ -47,7 +47,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     elif fname == "logg":
         plt.ylim(3, 5)
         col = cols.pink
-        plt.ylabel("$\log_{10}(g) [\mathrm{cm~s}^{-2}]$")
+        plt.ylabel("$\log_{10}(g [\mathrm{cm~s}^{-2}])$")
         plt.text(1.7, 4.7, "$\log(g) \sim \mathcal{N} (\\alpha + \\beta F_8, \sigma)$")
         plt.text(1.7, 4.5, "$\\alpha = %.3f$" % alpha)
         plt.text(1.7, 4.4, "$\\beta = %.3f$" % beta)
@@ -114,6 +114,7 @@ def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
     resids = y - (alpha+beta*x)
     normed_resids = resids / np.sqrt(yerr**2 + sigma**2)
+    np.savetxt("normed_resids_%s.txt", np.transpose(normed_resids))
     plt.clf()
     plt.hist(normed_resids, 20, histtype="stepfilled", color="w")
     plt.xlabel("Normalised residuals")
