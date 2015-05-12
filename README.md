@@ -8,6 +8,8 @@ Flicker.bug contains the model shown below.
 
 `main.py` - runs MCMC on data with hierarchical model and 2d uncertainties
 
+continue by fixing the `generate_samples_log` function in `noisy_plane.py`
+
 `simpleMCMC.py` - uncertainties on 1d, HBM with density
 `MCMClogg.py` - uncertainties on 1d, HBM with logg
 `logg2d.py` - uncertainties in 2d, non-HBM with logg

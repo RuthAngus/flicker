@@ -49,7 +49,7 @@ def MCMC(whichx, nsamp):
     # load data
     fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
     fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
-    nd = 20
+    nd = 5
     x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
     if whichx == "rho":
         x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
@@ -139,5 +139,5 @@ def make_plots(whichx):
 
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
-    MCMC(whichx, 1000)
+    MCMC(whichx, 500)
     make_plots(whichx)
