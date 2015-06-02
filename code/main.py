@@ -22,33 +22,36 @@ def MCMC(whichx, nsamp):
     if whichx == "rho":
         pars_init = rho_pars
 
-#     data = np.genfromtxt("../data/BIGDATA.filtered.dat").T
-#     r, rerrp, rerrm = data[7:10]
-#     f, ferr = data[20:22]
-#     logg, loggerrp, loggerrm = data[10:13]
-#     rerrp, rerrm = rerrp/r/np.log(10), rerrm/r/np.log(10)
-#     r = np.log10(1000*r)
-#     ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
-#     f = np.log10(1000*f)
-
-#     nd = len(f)
-#     x, xerrp, xerrm = f[:nd], ferrp[:nd], ferrm[:nd]
-#     y, yerrp, yerrm = logg[:nd], loggerrp[:nd], loggerrm[:nd]
-#     xerr = .5*(xerrp + xerrm)
-#     yerr = .5*(yerrp + yerrm)
-#     if whichx == "rho":
-#         x, xerrp, xerrm = f[:nd], ferrp[:nd], ferrm[:nd]
-#         y, yerrp, yerrm = r[:nd], rerrp[:nd], rerrm[:nd]
-#         xerr = .5*(xerrp + xerrm)
-#         yerr = .5*(yerrp + yerrm)
-
     # load data
-    fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
-    fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
+    data = np.genfromtxt("../data/BIGDATA.filtered.dat").T
+    r, rerrp, rerrm = data[7:10]
+    f, ferr = data[20:22]
+    logg, loggerrp, loggerrm = data[10:13]
+    rerrp, rerrm = rerrp/r/np.log(10), rerrm/r/np.log(10)
+    r = np.log10(1000*r)
+    ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
+    f = np.log10(1000*f)
+
+    # format data
+#     nd = len(f)
     nd = 20
-    x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
+    x, xerrp, xerrm = f[:nd], ferrp[:nd], ferrm[:nd]
+    y, yerrp, yerrm = logg[:nd], loggerrp[:nd], loggerrm[:nd]
+    xerr = .5*(xerrp + xerrm)
+    yerr = .5*(yerrp + yerrm)
     if whichx == "rho":
-        x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
+        x, xerrp, xerrm = f[:nd], ferrp[:nd], ferrm[:nd]
+        y, yerrp, yerrm = r[:nd], rerrp[:nd], rerrm[:nd]
+        xerr = .5*(xerrp + xerrm)
+        yerr = .5*(yerrp + yerrm)
+
+#     # load data
+#     fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
+#     fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
+#     nd = 20
+#     x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
+#     if whichx == "rho":
+#         x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
 
     # format data and generate samples
     obs = np.vstack((x, y))
@@ -56,8 +59,6 @@ def MCMC(whichx, nsamp):
     up = np.vstack((xerr, yerr))
     um = np.vstack((xerr*.5, yerr*.5))
     s = generate_samples_log(obs, up, um, nsamp)
-#     s = generate_samples(obs, u, nsamp)
-#     print np.shape(s)
 
     # set up and run emcee
     ndim, nwalkers = len(pars_init), 32
@@ -84,33 +85,35 @@ def MCMC(whichx, nsamp):
 
 def make_plots(whichx):
 
-#     data = np.genfromtxt("../data/BIGDATA.filtered.dat").T
-#     r, rerrp, rerrm = data[7:10]
-#     f, ferr = data[20:22]
-#     logg, loggerrp, loggerrm = data[10:13]
-#     rerrp, rerrm = rerrp/r/np.log(10), rerrm/r/np.log(10)
-#     r = np.log10(1000*r)
-#     ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
-#     f = np.log10(1000*f)
-#
-#     nd = len(f)
-#     x, xerrp, xerrm = f[:nd], ferrp[:nd], ferrm[:nd]
-#     y, yerrp, yerrm = logg[:nd], loggerrp[:nd], loggerrm[:nd]
-#     xerr = .5*(xerrp + xerrm)
-#     yerr = .5*(yerrp + yerrm)
-#     if whichx == "rho":
-#         x, xerrp, xerrm = f[:nd], ferrp[:nd], ferrm[:nd]
-#         y, yerrp, yerrm = r[:nd], rerrp[:nd], rerrm[:nd]
-#         xerr = .5*(xerrp + xerrm)
-#         yerr = .5*(yerrp + yerrm)
-#
     # load data
-    fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
-    fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
-    nd = 20
-    x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
+    data = np.genfromtxt("../data/BIGDATA.filtered.dat").T
+    r, rerrp, rerrm = data[7:10]
+    f, ferr = data[20:22]
+    logg, loggerrp, loggerrm = data[10:13]
+    rerrp, rerrm = rerrp/r/np.log(10), rerrm/r/np.log(10)
+    r = np.log10(1000*r)
+    ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
+    f = np.log10(1000*f)
+
+    # format data
+    nd = len(f)
+    x, xerrp, xerrm = f[:nd], ferrp[:nd], ferrm[:nd]
+    y, yerrp, yerrm = logg[:nd], loggerrp[:nd], loggerrm[:nd]
+    xerr = .5*(xerrp + xerrm)
+    yerr = .5*(yerrp + yerrm)
     if whichx == "rho":
-        x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
+        x, xerrp, xerrm = f[:nd], ferrp[:nd], ferrm[:nd]
+        y, yerrp, yerrm = r[:nd], rerrp[:nd], rerrm[:nd]
+        xerr = .5*(xerrp + xerrm)
+        yerr = .5*(yerrp + yerrm)
+
+#     # load data
+#     fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
+#     fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
+#     nd = 20
+#     x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
+#     if whichx == "rho":
+#         x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
 
     with h5py.File("%s_samples.h5" % whichx) as f:
         samp = f["samples"][...]
