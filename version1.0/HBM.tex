@@ -5,19 +5,19 @@
 
 For our calibration of \rhostar-$F_8$, we used a sample of Kepler stars with
 both asteroseismic and flicker measurements available. \citet{chaplin:2014}
-report asteroseismic \rhostar\ estimates (and the associated uncertainties) for 
-518 Kepler stars. The authors report three different sets of results, depending 
-on the choice of \Teff\ and \FeH, and in this work we elected to use values 
-reported in their Table 6 over Table 5, and Table 5 over Table 4. We 
-additionally used the 71 additional planet hosting stars with asteroseismology 
-reported in \citet{huber:2013} but not reported in \citet{chaplin:2014}. Values 
-for flicker and range were taken from \citet{kipping:2014}, based upon the 
-methods described in \citet{bastien:2013}. Following \citet{kipping:2014} and 
-for reasons described there-in, we only include targets in our calibration for 
+report asteroseismic \rhostar\ estimates (and the associated uncertainties) for
+518 Kepler stars. The authors report three different sets of results, depending
+on the choice of \Teff\ and \FeH, and in this work we elected to use values
+reported in their Table 6 over Table 5, and Table 5 over Table 4. We
+additionally used the 71 additional planet hosting stars with asteroseismology
+reported in \citet{huber:2013} but not reported in \citet{chaplin:2014}. Values
+for flicker and range were taken from \citet{kipping:2014}, based upon the
+methods described in \citet{bastien:2013}. Following \citet{kipping:2014} and
+for reasons described there-in, we only include targets in our calibration for
 which:
 
 \begin{itemize}
-\item[{\tiny$\blacksquare$}] Range (defined in \citealt{bastien:2013}) 
+\item[{\tiny$\blacksquare$}] Range (defined in \citealt{bastien:2013})
 $<1$\,ppt
 \item[{\tiny$\blacksquare$}] $4500<T_{\mathrm{eff}}<6500$\,K
 \item[{\tiny$\blacksquare$}] $K_P<14$
@@ -32,7 +32,49 @@ zero covariance between $M_{\star}$ and $R_{\star}$.}
 
 \subsection{Hierarchical Bayesian Model}
 
-TBD
+We model the stochastic relationship between flicker, log($g$) and stellar
+density, accounting for the fact that there exists some intrinsic scatter in
+the dependent variable, and including the heteroskedastic uncertainties on both
+the dependent and independent variables.
+There are two excellent reasons for modelling the relation stochastically;
+firstly, if the intrinsic scatter is ignored and the relation between
+variables is assumed to be deterministic, those data points with smaller
+measurement uncertainties may have an unrepresentative greater weighting
+during the fitting process.
+Secondly, we are interested in producing probability distributions over stellar
+densities and surface gravities, as opposed to point estimates, and propagating
+these probability distributions through to subsequent analyses.
+Several recent studies have required posterior Probability Distribution
+Function (PDF) samples, in order to conduct their (hierarchical)
+analyses \citep[e.g.][]{Rogers2014, Foreman-Mackey2014, Angus2015}.
+Including observational uncertainties on the independent variable within our
+analysis is also important, because ordinary least squares regression methods
+performed on data with two-dimensional uncertainties will result in a slope
+that is biased towards zero
+(e.g., Fuller 1987; Akritas \& Bershady 1996; Fox 1997).
+or a demonstration of the effects of neglecting intrinsic scatter and
+two-dimensional uncertainties, see Kelly (2007).
+
+The two models describing the relationship between flicker, logg and stellar
+density can be written as
+\begin{equation}
+	\log(g) \sim \mathcal{N}(\mu = \alpha + \beta F_8, \sigma^2 = \
+	\sigma^2 + \gamma F_8)
+\end{equation}
+\label{eq:logg}
+and
+\begin{equation}
+	\rho_* \sim \mathcal{N}(\mu = \delta + \epsilon F_8, \sigma^2 = \
+	\sigma^2 + \zeta F_8),
+\end{equation}
+\label{eq:rho}
+where $F_8$ is flicker and $\rho_*$ is stellar density.
+The free parameters of the two models are $\alpha$, $\beta$, $\sigma_G$,
+$\gamma$, $\delta$, $\epsilon$ and $\zeta$.
+The two relationships can be described as Gaussian distributions with means
+given by the equation of a straight line, and standard deviations given by
+observational uncertainties, plus some dispersion which is a function of the
+dependent variable.
 
 %%% rhostar plot
 \begin{figure}
@@ -40,7 +82,7 @@ TBD
 \includegraphics[width=8.4cm,angle=0,clip=true]{../figs/rho_vs_flicker.pdf}
 \caption{
 TBD
-} 
+}
 \label{fig:rhostar}
 \end{center}
 \end{figure}
@@ -51,7 +93,7 @@ TBD
 \includegraphics[width=8.4cm,angle=0,clip=true]{../figs/logg_vs_flicker.pdf}
 \caption{
 TBD
-} 
+}
 \label{fig:logg}
 \end{center}
 \end{figure}
