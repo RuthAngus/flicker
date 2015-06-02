@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from noisy_plane import generate_samples, generate_samples_log, \
-        lnlike, lnlikeH
+        lnlike, lnlikeH, lnlikeHF
 from model import model1, model
 import emcee
 import triangle
@@ -9,15 +9,18 @@ import sys
 import h5py
 
 def lnprior(pars, mm=False):
-    return 0.
+    if np.exp(pars[2]) > 0:
+        return 0.
+    return -np.inf
 
 def lnprob(pars, samples, obs, u, mm=False):
-    return lnlikeH(pars, samples, obs, u) + lnprior(pars)
+    return lnlikeHF(pars, samples, obs, u) + lnprior(pars)
 
 def MCMC(whichx, nsamp):
 
     rho_pars = [-2., 6., .0065]
-    logg_pars = [-1.850, 7., .0065]
+#     logg_pars = [-1.850, 7., .0065]
+    logg_pars = [-1.850, 7., np.log(.0065)]  # multiplicative
     pars_init = logg_pars
     if whichx == "rho":
         pars_init = rho_pars
@@ -50,7 +53,8 @@ def MCMC(whichx, nsamp):
     # load data
     fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
     fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
-    nd = len(fr)
+#     nd = len(fr)
+    nd = 20
     x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
     if whichx == "rho":
         x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
