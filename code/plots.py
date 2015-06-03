@@ -27,10 +27,11 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     if fname == "rho":
         plt.ylabel("$\log_{10}(\\rho_{\star}[\mathrm{g~cm}^{-3}])$")
         col = cols.blue
-        plt.text(1.7, .5, "$\log_{10} (\\rho_{\star}) \sim \mathcal{N} (\\alpha + \\beta F_8, \sigma)$")
+        plt.text(1.7, .5, "$\log_{10} (\\rho_{\star}) \sim \mathcal{N} \
+                 (\\alpha + \\beta F_8, \sigma)$")
         plt.text(1.7, .2, "$\\alpha = %.3f$" % (alpha-2))
         plt.text(1.7, .05, "$\\beta = %.3f$" % beta)
-        plt.text(1.7, -.1, "$\sigma = %.3f$" % tau**.5)
+        plt.text(1.7, -.1, "$\\gamma = %.3f$" % tau**.5)
         plt.fill_between(ys, ((ys-alpha)/beta)-sigma-3,
                          ((ys-alpha)/beta)+sigma-3,
                          color=col, alpha=.3, edgecolor="w")
@@ -48,15 +49,17 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
         plt.ylim(3, 5)
         col = cols.pink
         plt.ylabel("$\log_{10}(g [\mathrm{cm~s}^{-2}])$")
-        plt.text(1.7, 4.7, "$\log(g) \sim \mathcal{N} (\\alpha + \\beta F_8, \sigma)$")
-        plt.text(1.7, 4.5, "$\\alpha = %.3f$" % alpha)
-        plt.text(1.7, 4.4, "$\\beta = %.3f$" % beta)
-        plt.text(1.7, 4.3, "$\sigma = %.3f$" % tau**.5)
+        plt.text(1.7, 4.7, "$\log(g) \sim \mathcal{N} \
+                 (\\delta + \\epsilon F_8, \zeta)$")
+        plt.text(1.7, 4.5, "$\\delta = %.3f$" % alpha)
+        plt.text(1.7, 4.4, "$\\epsilon = %.3f$" % beta)
+        plt.text(1.7, 4.3, "$\\zeta = %.3f$" % tau**.5)
 
         plt.fill_between(ys, ((ys-alpha)/beta)-sigma, ((ys-alpha)/beta)+sigma,
                          color=col, alpha=.3, edgecolor="w")
-        plt.fill_between(ys, ((ys-alpha)/beta)-2*sigma, ((ys-alpha)/beta)+2*sigma,
-                         color=col, alpha=.2, edgecolor="w")
+        plt.fill_between(ys, ((ys-alpha)/beta)-2*sigma,
+                         ((ys-alpha)/beta)+2*sigma, color=col, alpha=.2,
+                         edgecolor="w")
         plt.errorbar(y, x, xerr=yerr, yerr=xerr, fmt="k.", capsize=0, alpha=.5,
                      ecolor=".5", mec=".2")
         plt.plot(ys, (ys-alpha)/beta, ".2", linewidth=1)
@@ -64,7 +67,9 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
     plt.xlim(1, 2.4)
     plt.xlabel("$\log_{10}\mathrm{(F}_8~\mathrm{[ppm]})$")
-    plt.savefig("/Users/angusr/Dropbox/Flickerhackday/figs/%s_vs_flicker.pdf" % fname)
+    print "/Users/angusr/Dropbox/Flickerhackday/figs/%s_vs_flicker.pdf" % fname
+    plt.savefig("/Users/angusr/Dropbox/Flickerhackday/figs/%s_vs_flicker.pdf"
+                % fname)
     plt.savefig("flicker_inv_%s" % fname)
 
 def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
