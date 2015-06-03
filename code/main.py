@@ -9,12 +9,14 @@ import sys
 import h5py
 
 def lnprior(pars, mm=False):
-    if np.exp(pars[2]) > 0:
-        return 0.
-    return -np.inf
+    return 0.
+
+def lnpriorHF(pars):
+    return 0
 
 def lnprob(pars, samples, obs, u, mm=False):
-    return lnlikeHF(pars, samples, obs, u) + lnprior(pars)
+    pars[2] = np.exp(pars[2])
+    return lnlikeHF(pars, samples, obs, u) + lnpriorHF(pars)
 
 def MCMC(whichx, nsamp):
 
@@ -128,6 +130,7 @@ def make_plots(whichx):
     m, c, sig = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
                zip(*np.percentile(samp, [16, 50, 84], axis=0)))
     pars = [m[0], c[0], sig[0]]
+    print pars
 
     plt.clf()
     plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0, ecolor=".7")
