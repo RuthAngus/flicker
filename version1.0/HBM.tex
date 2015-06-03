@@ -46,7 +46,7 @@ densities and surface gravities, as opposed to point estimates, and propagating
 these probability distributions through to subsequent analyses.
 Several recent studies have required posterior Probability Distribution
 Function (PDF) samples, in order to conduct their (hierarchical)
-analyses \citep[e.g.][]{Rogers2014, Foreman-Mackey2014, Angus2015}.
+analyses \citep[e.g.][]{rogers:2014, foreman-Mackey:2014, angus:2015}.
 Including observational uncertainties on the independent variable within our
 analysis is also important, because ordinary least squares regression methods
 performed on data with two-dimensional uncertainties will result in a slope
@@ -58,16 +58,16 @@ two-dimensional uncertainties, see Kelly (2007).
 The two models describing the relationship between flicker, logg and stellar
 density can be written as
 \begin{equation}
-	\log(g) \sim \mathcal{N}(\mu = \alpha + \beta F_8, \sigma^2 = \
-	\sigma^2 + \gamma F_8)
-\end{equation}
-\label{eq:logg}
-and
-\begin{equation}
-	\rho_* \sim \mathcal{N}(\mu = \delta + \epsilon F_8, \sigma^2 = \
-	\sigma^2 + \zeta F_8),
+	\rho_* \sim \mathcal{N}(\mu = \alpha + \beta F_8, \sigma^2 = \
+	\sigma^2 + \gamma F_8),
 \end{equation}
 \label{eq:rho}
+and
+\begin{equation}
+	\log_{10}(g) \sim \mathcal{N}(\mu = \delta + \epsilon F_8, \sigma^2 = \
+	\sigma^2 + \zeta F_8)
+\end{equation}
+\label{eq:logg}
 where $F_8$ is flicker and $\rho_*$ is stellar density.
 The free parameters of the two models are $\alpha$, $\beta$, $\sigma_G$,
 $\gamma$, $\delta$, $\epsilon$ and $\zeta$.
@@ -75,6 +75,34 @@ The two relationships can be described as Gaussian distributions with means
 given by the equation of a straight line, and standard deviations given by
 observational uncertainties, plus some dispersion which is a function of the
 dependent variable.
+
+In order to account for the two-dimensional observational uncertainties in
+this data set, we marginalize over the latent, `true' values of flicker,
+stellar density and $\log(g)$
+\citep[see, e.g.][]{hogg:2010, foreman-mackey:2014, rogers:2015, angus:2015}.
+The observed values of the variables, flicker, stellar density and $\log(g)$
+can be thought of as a single `draw' from an underlying (assumed Gaussian)
+probability distribution, with mean equal to the `true' value and standard
+deviation equal to the quoted uncertainty.
+We compute the likelihood of the data given the model, marginalized over the
+`true' values of the variables, using importance sampling.
+We sample from the PDF of the `truth', given the observed value and compute
+the likelihood of each of those samples.
+This PDF is actually a {\it posterior} PDF, produced by the astronomers who
+provide the catalog.
+For example, the $log(g)$ values used here are point estimates of the
+posterior PDFs of $log(g)$, produced by \citet{chaplin:2014} using
+{\it Kepler} light curves and stellar models.
+We would use the posterior samples generated in previous model fitting process
+if they were available, however generating new samples is an acceptable
+approximation provided the posteriors are Gaussian (or log-Normal) and the
+priors used by the previous fitters were uninformative.
+Such an approximation {\it will not be necessary} for those studies using
+the stellar densities or $\log(g)$s calculated using newly-calibrated relations
+presented here, as long as the posterior PDF samples are published!
+After producing new posterior PDF samples we then add up the individual log-likelihoods of each sample to compute the total marginalized likelihood for a star.
+The marginalized likelihood of the whole dataset is then computed as the sum
+of the log-likelihoods of each star.
 
 %%% rhostar plot
 \begin{figure}
