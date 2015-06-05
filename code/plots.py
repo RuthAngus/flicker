@@ -24,39 +24,32 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     ys = alpha + beta * x
     sig_tot = sigma + yerr
     ys = np.linspace(min(y)-5, max(y)+5, 1000)
-    xs = np.linspace(min(x), max(x), 1000)
+    xs = np.linspace(1., 2.4, 100)
     plt.clf()
 
     if fname == "rho":
         plt.ylabel("$\log_{10}(\\rho_{\star}[\mathrm{g~cm}^{-3}])$")
         col = cols.pink
         plt.text(1.7, .5, "$\log_{10} (\\rho_{\star}) \sim \mathcal{N} \
-                 (\\alpha + \\beta F_8, \sigma)$")
+                 (\\alpha + \\beta F_8, \sigma_{\rho})$")
         plt.text(1.7, .2, "$\\alpha = %.3f$" % (alpha-2))
         plt.text(1.7, .05, "$\\beta = %.3f$" % beta)
-        plt.text(1.7, -.1, "$\\gamma = %.3f$" % tau**.5)
+        plt.text(1.7, -.1, "$\\sigma_{\rho} = %.3f$" % tau**.5)
 #         plt.ylim(-2, 1)
-
-#         plt.fill_between(xs, ((xs-alpha)/beta)-sigma-3,
-#                          ((xs-alpha)/beta)+sigma-3,
-#                          color=col, alpha=.3, edgecolor="w")
-#         plt.fill_between(xs, ((xs-alpha)/beta)-2*sigma-3,
-#                          ((xs-alpha)/beta)+2*sigma-3,
-#                          color=col, alpha=.2, edgecolor="w")
-#         plt.errorbar(x, y-3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
-#                      alpha=.5, ecolor=".5", mec=".2")
-#         plt.plot(ys, (ys-alpha)/beta-3, ".2", linewidth=1)
-#         plt.subplots_adjust(bottom=.1)
+        plt.errorbar(y, x-3, xerr=yerr, yerr=xerr, fmt="k.", capsize=0,
+                             alpha=.5, ecolor=".5", mec=".2")
 
     elif fname == "logg":
         plt.ylim(3, 5)
         col = cols.blue
         plt.ylabel("$\log_{10}(g [\mathrm{cm~s}^{-2}])$")
         plt.text(1.7, 4.7, "$\log(g) \sim \mathcal{N} \
-                 (\\delta + \\epsilon F_8, \zeta)$")
-        plt.text(1.7, 4.5, "$\\delta = %.3f$" % alpha)
-        plt.text(1.7, 4.4, "$\\epsilon = %.3f$" % beta)
-        plt.text(1.7, 4.3, "$\\zeta = %.3f$" % tau**.5)
+                 (\\gamma + \\delta F_8, \sigma_g)$")
+        plt.text(1.7, 4.5, "$\\gamma = %.3f$" % alpha)
+        plt.text(1.7, 4.4, "$\\delta = %.3f$" % beta)
+        plt.text(1.7, 4.3, "$\\sigma_g = %.3f$" % tau**.5)
+        plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
+                     alpha=.5, ecolor=".5", mec=".2")
 
     ndraws = 3000
     b_samp = np.random.choice(samples[0, :], ndraws)
@@ -71,14 +64,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 #         plt.fill_between(xs, model1(pars, xs)-2*sigma,
 #                          model1(pars, xs)+2*sigma, color=col, alpha=.2,
 #                          edgecolor="w")
-#         plt.fill_between(xs, model1(pars, xs)+sigma*xs,
-#                          model1(pars, xs)+sigma*xs, color=col, alpha=.3,
-#                          edgecolor="w")
-#         plt.fill_between(xs, model1(pars, xs)-2*sigma*xs,
-#                          model1(pars, xs)+2*sigma*xs, color=col, alpha=.2,
-#                          edgecolor="w")
-    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
-                 alpha=.5, ecolor=".5", mec=".2")
+
     plt.plot(xs, model1(pars, xs), ".2", linewidth=1)
     plt.subplots_adjust(bottom=.1)
 
@@ -100,7 +86,7 @@ def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
     ys = alpha + beta * x
     sig_tot = sigma + yerr
-    xs = np.linspace(min(x), max(x), 1000)
+    xs = np.linspace(1., 2.4, 1000)
 
     plt.clf()
     # plot posterior samples
