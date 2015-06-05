@@ -24,7 +24,8 @@ def lnprob(pars, samples, obs, u, mm=False):
 def MCMC(whichx, nsamp):
 
     rho_pars = [-2., 6., .0065]
-    logg_pars = [-1.850, 7., .0065, .01]
+#     logg_pars = [-1.850, 7., .0065, .01]
+    logg_pars = [-1.850, 7., .0065]
 #     logg_pars = [-1.850, 7., np.log(.0065)]  # multiplicative
     pars_init = logg_pars
     if whichx == "rho":
@@ -58,8 +59,8 @@ def MCMC(whichx, nsamp):
     # load data
     fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
     fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
-#     nd = len(fr)
-    nd = 50
+    nd = len(fr)
+#     nd = 50
     x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
     if whichx == "rho":
         x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
@@ -155,11 +156,12 @@ def make_plots(whichx):
 #         plt.plot(x, (y + p2s[i] + p3s[i] * y), "k", alpha=.1)
         plt.plot(x, (y + p2s[i]), "k", alpha=.1)
     plt.savefig("mcmc_%s" % whichx)
-    labels = ["$m$", "$c$", "$\sigma$", "$b$"]
+#     labels = ["$m$", "$c$", "$\sigma$", "$b$"]
+    labels = ["$m$", "$c$", "$\sigma$"]
     fig = triangle.corner(samp, labels=labels)
     fig.savefig("triangle_%s" % whichx)
 
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
-    MCMC(whichx, 5)
+    MCMC(whichx, 500)
     make_plots(whichx)
