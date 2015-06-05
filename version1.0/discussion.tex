@@ -1,4 +1,48 @@
 %% DISCUSSION
 %%
 
-TBD
+We have recalibrated the relation between short timescale brightness
+fluctuations in the {\it Kepler} light curves of stars (flicker) with both
+stellar density and surface gravity.
+This is a simple `fitting a line to data' exercise, however it continues the
+discussion of probabilistic modelling that is an active topic within the
+fields of exoplanet and stellar astronomy.
+We use Hierarchical Bayesian Modelling (HBM) to constrain the intrinsic
+scatter in the relationship between flicker, surface gravity and density.
+We also include the effects of the non-negligable two-dimensional observational
+uncertainties by marginalizing over latent variables using importance sampling.
+Although none of these methods, nor the data used here are new taken alone,
+we use the example of flicker to demonstrate the ideas and the importance of
+probabilistic, hierarchical inference.
+Relationships between astronomical parameters are almost always
+non-deterministic; an element of stochasticity effects the physical parameters
+of stars so one can never perfectly predict $y$ given an observation of $x$.
+We advocate a probabilistic approach in both the `fitting the model to data'
+step, {\it and} when using an empirically calibrated model to predict
+parameter values.
+The fitting stage benefits because if the relationships between parameters are
+falsely assumed to be deterministic, they will be skewed by data points with
+unrepresentative uncertainties.
+The prediction stage benefits from the stochastic treatment both because a
+probability distribution is in many ways more representative of an observation
+than a point estimate, and because posterior PDF samples can be used in
+subsequent studies (provided the prior used during the fitting process is
+described).
+
+We provide posterior PDF samples and the code used in this project at
+\url{https://github.com/RuthAngus/flicker}.
+Whenever a prediction for the surface gravity or density of a star is required,
+for a given estimate of flicker, we recommend using these posterior samples
+within the calculation of $\rho_{*}$ or $\log(g)$ and its (Monte Carlo)
+uncertainty.
+These posterior samples will naturally fold-in the covariances between
+parameters.
+Simple analytical uncertainty propagation is only valid when uncertainties are
+Gaussian and uncorrelated which is rarely true and certainly not the case when
+the model is a straight line (the slope and intercept are correlated by
+definition).
+A flicker value with uncertainties (or even better: posterior PDF
+samples), input into our model will result in a probability distribution over
+stellar densities or surface gravities which reflects both the uncertainties
+on the flicker measurement, the uncertainties on the model parameters {\it and}
+the intrinsic scatter in the flicker-$\rho_{*}$-$\log(g)$ relations.

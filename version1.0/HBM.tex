@@ -80,19 +80,23 @@ In order to account for the two-dimensional observational uncertainties in
 this data set, we marginalize over the latent, `true' values of flicker,
 stellar density and $\log(g)$
 \citep[see, e.g.][]{hogg:2010, foreman-mackey:2014, rogers:2015, angus:2015}.
-The observed values of the variables, flicker, stellar density and $\log(g)$
+The observed values of the variables; flicker, stellar density and $\log(g)$
 can be thought of as a single `draw' from an underlying (assumed Gaussian)
 probability distribution, with mean equal to the `true' value and standard
-deviation equal to the quoted uncertainty.
+deviation equal to the observational uncertainty.
 We compute the likelihood of the data given the model, marginalized over the
 `true' values of the variables, using importance sampling.
-We sample from the PDF of the `truth', given the observed value and compute
-the likelihood of each of those samples.
-This PDF is actually a {\it posterior} PDF, produced by the astronomers who
-provide the catalog.
-For example, the $log(g)$ values used here are point estimates of the
-posterior PDFs of $log(g)$, produced by \citet{chaplin:2014} using
-{\it Kepler} light curves and stellar models.
+We sample from the posterior PDFs of the `true', latent variable values,
+conditioned on the observed values and compute the likelihood of each of those
+samples.
+% These posterior PDFs could be produced by the astronomers who provide the
+% catalog.
+% If posterior samples are made available, they can be used in this stage of
+% the inference.
+% In the event that they are not provided however, they can be generated.
+% For example, the $log(g)$ values used here are point estimates of the
+% posterior PDFs of $log(g)$, produced by \citet{chaplin:2014} using
+% {\it Kepler} light curves and stellar models.
 We would use the posterior samples generated in previous model fitting process
 if they were available, however generating new samples is an acceptable
 approximation provided the posteriors are Gaussian (or log-Normal) and the
@@ -109,7 +113,10 @@ of the log-likelihoods of each star.
 \begin{center}
 \includegraphics[width=8.4cm,angle=0,clip=true]{../figs/rho_vs_flicker.pdf}
 \caption{
-TBD
+Stellar density vs. flicker. This figure shows the model, conditioned on the
+data. The solid black line shows the median model values, the dark blue
+region shows the width of the intrinsic scatter in the relation; the $\sigma$
+paramete. The faint blue region shows twice the width (the 2$\sigma$ region).
 }
 \label{fig:rhostar}
 \end{center}
@@ -120,7 +127,11 @@ TBD
 \begin{center}
 \includegraphics[width=8.4cm,angle=0,clip=true]{../figs/logg_vs_flicker.pdf}
 \caption{
-TBD
+$\log(g)$ vs. flicker. As in \ref{fig:rhostar} this figure shows
+the model, conditioned on the data. The solid black line shows the median model
+values, the dark pink region shows the width of the intrinsic scatter in the
+relation; the $\sigma$ parameter. The faint pink region shows twice the width
+(the 2$\sigma$ region).
 }
 \label{fig:logg}
 \end{center}
