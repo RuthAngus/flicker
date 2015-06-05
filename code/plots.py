@@ -6,6 +6,7 @@ cols = plot_colours()
 import scipy.interpolate as spi
 import h5py
 import sys
+from noisy_plane import model1
 
 def interp(xold, yold, xnew, s):
     tck = spi.splrep(xold, yold, s=s)
@@ -15,8 +16,10 @@ def interp(xold, yold, xnew, s):
 def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     assert np.shape(samples)[0] < np.shape(samples)[1], \
             "samples is wrong shape"
-    alpha, beta, tau = np.median(samples, axis=1)
-    sigma = np.sqrt(tau)
+    beta, alpha, tau = np.median(samples, axis=1)
+    sigma = abs(tau)
+    pars = [beta, alpha, sigma]
+
     print alpha, beta, tau, sigma
     ys = alpha + beta * x
     sig_tot = sigma + yerr
@@ -26,28 +29,28 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
     if fname == "rho":
         plt.ylabel("$\log_{10}(\\rho_{\star}[\mathrm{g~cm}^{-3}])$")
-        col = cols.blue
+        col = cols.pink
         plt.text(1.7, .5, "$\log_{10} (\\rho_{\star}) \sim \mathcal{N} \
                  (\\alpha + \\beta F_8, \sigma)$")
         plt.text(1.7, .2, "$\\alpha = %.3f$" % (alpha-2))
         plt.text(1.7, .05, "$\\beta = %.3f$" % beta)
         plt.text(1.7, -.1, "$\\gamma = %.3f$" % tau**.5)
-        plt.fill_between(ys, ((ys-alpha)/beta)-sigma-3,
-                         ((ys-alpha)/beta)+sigma-3,
-                         color=col, alpha=.3, edgecolor="w")
-        plt.fill_between(ys, ((ys-alpha)/beta)-2*sigma-3,
-                         ((ys-alpha)/beta)+2*sigma-3,
-                         color=col, alpha=.2, edgecolor="w")
-        dx = x/xerr
-        plt.errorbar(y, x-3, xerr=yerr, yerr=xerr, fmt="k.", capsize=0,
-                     alpha=.5, ecolor=".5", mec=".2")
-        plt.plot(ys, (ys-alpha)/beta-3, ".2", linewidth=1)
-        plt.ylim(-2, 1)
-        plt.subplots_adjust(bottom=.1)
+#         plt.ylim(-2, 1)
+
+#         plt.fill_between(xs, ((xs-alpha)/beta)-sigma-3,
+#                          ((xs-alpha)/beta)+sigma-3,
+#                          color=col, alpha=.3, edgecolor="w")
+#         plt.fill_between(xs, ((xs-alpha)/beta)-2*sigma-3,
+#                          ((xs-alpha)/beta)+2*sigma-3,
+#                          color=col, alpha=.2, edgecolor="w")
+#         plt.errorbar(x, y-3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
+#                      alpha=.5, ecolor=".5", mec=".2")
+#         plt.plot(ys, (ys-alpha)/beta-3, ".2", linewidth=1)
+#         plt.subplots_adjust(bottom=.1)
 
     elif fname == "logg":
         plt.ylim(3, 5)
-        col = cols.pink
+        col = cols.blue
         plt.ylabel("$\log_{10}(g [\mathrm{cm~s}^{-2}])$")
         plt.text(1.7, 4.7, "$\log(g) \sim \mathcal{N} \
                  (\\delta + \\epsilon F_8, \zeta)$")
@@ -55,15 +58,29 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
         plt.text(1.7, 4.4, "$\\epsilon = %.3f$" % beta)
         plt.text(1.7, 4.3, "$\\zeta = %.3f$" % tau**.5)
 
-        plt.fill_between(ys, ((ys-alpha)/beta)-sigma, ((ys-alpha)/beta)+sigma,
-                         color=col, alpha=.3, edgecolor="w")
-        plt.fill_between(ys, ((ys-alpha)/beta)-2*sigma,
-                         ((ys-alpha)/beta)+2*sigma, color=col, alpha=.2,
-                         edgecolor="w")
-        plt.errorbar(y, x, xerr=yerr, yerr=xerr, fmt="k.", capsize=0, alpha=.5,
-                     ecolor=".5", mec=".2")
-        plt.plot(ys, (ys-alpha)/beta, ".2", linewidth=1)
-        plt.subplots_adjust(bottom=.1)
+    ndraws = 3000
+    b_samp = np.random.choice(samples[0, :], ndraws)
+    a_samp = np.random.choice(samples[1, :], ndraws)
+    s_samp = np.random.choice(samples[2, :], ndraws) * np.random.randn(ndraws)
+    for i in range(ndraws):
+        plt.plot(xs, model1([b_samp[i], a_samp[i]], xs), col, alpha=.01)
+
+#     plt.fill_between(xs, model1(pars, xs)+sigma,
+#                      model1(pars, xs)+sigma, color=col, alpha=.3,
+#                      edgecolor="w")
+#         plt.fill_between(xs, model1(pars, xs)-2*sigma,
+#                          model1(pars, xs)+2*sigma, color=col, alpha=.2,
+#                          edgecolor="w")
+#         plt.fill_between(xs, model1(pars, xs)+sigma*xs,
+#                          model1(pars, xs)+sigma*xs, color=col, alpha=.3,
+#                          edgecolor="w")
+#         plt.fill_between(xs, model1(pars, xs)-2*sigma*xs,
+#                          model1(pars, xs)+2*sigma*xs, color=col, alpha=.2,
+#                          edgecolor="w")
+    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
+                 alpha=.5, ecolor=".5", mec=".2")
+    plt.plot(xs, model1(pars, xs), ".2", linewidth=1)
+    plt.subplots_adjust(bottom=.1)
 
     plt.xlim(1, 2.4)
     plt.xlabel("$\log_{10}\mathrm{(F}_8~\mathrm{[ppm]})$")
@@ -137,14 +154,13 @@ if __name__ == "__main__":
 
     fname = str(sys.argv[1]) # should be either "rho" or "logg"
 
+    # load data
+    fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
+    fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
+    nd = len(fr)
+    x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
     if fname == "rho":
-        y, yerr, x, xerr = np.genfromtxt("../data/flickers.dat").T
-    elif fname == "logg":
-        y, yerr, x, xerr, _, _ = np.genfromtxt("../data/log.dat").T
-    inds = np.argsort(x)
-    x = x[inds]
-    y = y[inds]
-    yerr = yerr[inds]
+        x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
 
     # load chains
     with h5py.File("%s_samples.h5" % fname, "r") as f:
