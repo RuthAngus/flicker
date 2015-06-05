@@ -36,4 +36,4 @@ pgm.add_edge("tau", "f")
 
 # Render and save.
 pgm.render()
-pgm.figure.savefig("../figs/pgm.pdf", dpi=150)
+pgm.figure.savefig("../figs/pgm", dpi=150)
