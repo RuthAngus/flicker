@@ -107,7 +107,8 @@ Based on archival data of the \emph{Kepler} telescope.
 
 % aims
 The relations between observable stellar parameters are usually assumed to be
-deterministic, that is, given an infinitely precise measurement of independant
+deterministic.
+That is, given an infinitely precise measurement of independant
 variable, `$x$', and some model, the value of dependant variable, `y' can be
 known exactly.
 In practise this assumption is rarely valid and intrinsic stochasticity means
@@ -115,8 +116,9 @@ that two stars with exactly the same `$x$', will have slightly different
 `$y$`s.
 % methods
 The relation between short-timescale brightness fluctuations (flicker) of stars
-and both stellar density and surface gravity \citep{bastien:2013} are two such
-stochastic relations.
+and both surface gravity \citep{bastien:2013} and stellar density
+\citep{kipping:2014} are two such stochastic relations that have, until now,
+been treated as deterministic ones.
 We recalibrate these relations in a probabilistic framework, using
 Hierarchical Bayesian Modelling (HBM) and constrain the instrinsic scatter in
 the relations.
@@ -124,10 +126,9 @@ Our treatment also fully accounts for the observational uncertainties on all
 variables.
 % results
 These new relations provide probability distributions over values of $\log(g)$
-or $\rho_*$ for given measurements of flicker.
-Such probability distributions are both more representative of what we know
-about stars and will be useful for subsequent studies using probabilistic
-inference.
+or \rhostar for given measurements of flicker.
+Such probability distributions will be useful for subsequent studies using
+probabilistic inference.
 
 \end{abstract}
 
@@ -157,7 +158,7 @@ photometric light curve, such as that from \textit{Kepler} or the upcoming TESS
 mission. A more detailed account of the proceedure to calculate flicker is
 described in \citet{bastien:2013}. As shown in \citet{bastien:2013}, flicker
 displays a remarkable correlation to the asteroseismically determined parent
-star surface gravities (\logg). Turning this round, the observation implies
+star surface gravities (\logg). Turning this around, the observation implies
 that flicker can be used to blindly infer surface gravities at the level of
 $\sim0.1$\,dex, an attractive proposition given the wealth of photometric light
 curves available through the array of exoplanet transit missions flying and
@@ -212,6 +213,8 @@ DMK thanks...
 % #####################################################################
 %% Bibliography
 \begin{thebibliography}{99}
+\bibitem[\protect\citeauthoryear{Andrieu \& Roberts}{2009}]{andrieu:2009}
+Andrieu, C., \& Roberts, G.~O., Ann. Statist., 2, 695
 \bibitem[\protect\citeauthoryear{Angus et al.}{2015}]{angus:2015}
 Angusr, R., Aigrain, S., Foreman-Mackey, D. \& McQuillan, A., 2015, MNRAS,
 450, 1787
