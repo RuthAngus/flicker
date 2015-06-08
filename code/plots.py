@@ -57,7 +57,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
         plt.text(1.95, 4.42, "$\\delta = %.3f$" % beta)
         plt.text(1.95, 4.32, "$\\sigma_g = %.3f$" % tau**.5)
         for i in range(ndraws):
-            plt.plot(xs, model1([b_samp[i], a_samp[i]], xs), col, alpha=.01)
+            plt.plot(xs, model1([b_samp[i], a_samp[i]], xs)+s_samp, col, alpha=.01)
         plt.plot(xs, model1(pars, xs), ".2", linewidth=1)
         plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
                      alpha=.5, ecolor=".5", mec=".2")
