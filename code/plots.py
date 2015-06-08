@@ -1,8 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import triangle
-from colours import plot_colours
-cols = plot_colours()
 import scipy.interpolate as spi
 import h5py
 import sys
@@ -34,7 +32,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
     if fname == "rho":
         plt.ylabel("$\log_{10}(\\rho_{\star}[\mathrm{g~cm}^{-3}])$")
-        col = cols.pink
+        col = "#FF33CC"
         plt.text(1.55, .5, "$\log_{10} (\\rho_{\star}) \sim \mathcal{N} \
                  (\\alpha + \\beta \log_{10}(F_8), \sigma_{\\rho})$")
         plt.text(1.95, .22, "$\\alpha = %.3f$" % (alpha-3))
@@ -48,12 +46,10 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
                              alpha=.5, ecolor=".5", mec=".2")
         plt.plot(xs, model1(pars, xs)+sigma-3, "k--")
         plt.plot(xs, model1(pars, xs)-sigma-3, "k--")
-        plt.axhline(sigma, color="k")
-        plt.axhline(-sigma, color="k")
 
     elif fname == "logg":
         plt.ylim(3, 5)
-        col = cols.blue
+        col = "#0066CC"
         plt.ylabel("$\log_{10}(g [\mathrm{cm~s}^{-2}])$")
         plt.text(1.6, 4.7, "$\log(g) \sim \mathcal{N} \
                  (\\gamma + \\delta \log_{10}(F_8), \\sigma_g)$")
@@ -79,8 +75,8 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
     plt.xlim(1, 2.4)
     plt.xlabel("$\log_{10}\mathrm{(F}_8~\mathrm{[ppm]})$")
-    print "/Users/angusr/Dropbox/Flickerhackday/figs/%s_vs_flicker.pdf" % fname
-    plt.savefig("/Users/angusr/Dropbox/Flickerhackday/figs/%s_vs_flicker.pdf"
+    print "..figs/%s_vs_flicker.pdf" % fname
+    plt.savefig("../figs/%s_vs_flicker.pdf"
                 % fname)
     plt.savefig("flicker_inv_%s" % fname)
 
