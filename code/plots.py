@@ -17,7 +17,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     assert np.shape(samples)[0] < np.shape(samples)[1], \
             "samples is wrong shape"
     beta, alpha, tau = np.median(samples, axis=1)
-    sigma = (np.sqrt(abs(tau))
+    sigma = (np.sqrt(abs(tau)))
     pars = [beta, alpha, sigma]
 
     print alpha, beta, tau, sigma
