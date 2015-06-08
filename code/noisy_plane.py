@@ -15,6 +15,17 @@ def generate_samples(obs, u, N):
                 zip(obs[i, :], u[i, :])])
     return samples
 
+def vanilla_lnlike(pars, obs, u):
+    '''
+    Generic likelihood function
+    '''
+    yobs, xobs = obs[0, :], obs[1, :]
+    yerr, xerr = u[0, :], u[1, :]
+    ypred = model1(pars, xobs)
+    inv_sigma2 = 1./(yerr**2 + pars[2]**2)
+    chi2 = -.5*(((yobs - ypred)**2 * inv_sigma2) - np.log(inv_sigma2))
+    return np.sum(chi2)
+
 def lnlike(pars, samples, obs, u):
     '''
     Generic likelihood function for importance sampling with any number of
@@ -30,7 +41,6 @@ def lnlike(pars, samples, obs, u):
         ll[i, :] = -.5*((zobs[i] - zpred)/zerr[i])**2
     loglike = np.sum(np.logaddexp.reduce(ll, axis=1))
     return loglike
-#     return np.logaddexp.reduce(loglike, axis=0)
 
 # n-D, hierarchical log-likelihood
 def lnlikeH(pars, samples, obs, u):

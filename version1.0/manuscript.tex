@@ -79,8 +79,8 @@ Application to Flickering Stars %to Surface Gravity and Mean Density
 
 %% Authors
 \author{
-	{\bf	R.~Angus\altaffilmark{1,2},
-		D.~M.~Kipping\altaffilmark{2,3},
+	{\bf	Ruth~Angus\altaffilmark{1,2},
+		David.~M.~Kipping\altaffilmark{2,3},
 	}
 }
 
@@ -125,8 +125,8 @@ the relations.
 Our treatment also fully accounts for the observational uncertainties on all
 variables.
 % results
-These new relations provide probability distributions over values of \logg
-or \rhostar for given measurements of flicker.
+These new relations provide probability distributions over values of \logg\
+or \rhostar\ for given measurements of flicker.
 Such probability distributions will be useful for subsequent studies using
 probabilistic inference.
 
@@ -151,49 +151,10 @@ probabilistic inference.
 
 \input{introduction.tex}
 
-One of the more recent tools developed to characterize stars is known as
-``flicker'' \citep{bastien:2013}. Flicker is a proxy for the scatter on an
-8-hour timescale (dubbed $F_8$) in a broad visible bandpass time series
-photometric light curve, such as that from \textit{Kepler} or the upcoming TESS
-mission. A more detailed account of the proceedure to calculate flicker is
-described in \citet{bastien:2013}. As shown in \citet{bastien:2013}, flicker
-displays a remarkable correlation to the asteroseismically determined parent
-star surface gravities (\logg). Turning this around, the observation implies
-that flicker can be used to blindly infer surface gravities at the level of
-$\sim0.1$\,dex, an attractive proposition given the wealth of photometric light
-curves available through the array of exoplanet transit missions flying and
-scheduled to launch.
-
-\citet{cranmer:2014} demonstrated that stellar surface granulation is expected
-to reproduce a flicker effect in close agreement with that observed by
-\citet{bastien:2013}, providing a physically-plausible explanation. Since
-surface gravity is highly correlated to mean stellar density (\rhostar) on
-evolutionary tracks, \citet{kipping:2014} showed that flicker can be also
-be used to infer \rhostar, which is more useful for exoplanet transit
-analysis.
-
-Whether one calibrates flicker to \logg\ or \rhostar, there are several aspects
-of the problem which are attractive for our purposes of a simple demonstration
-of probabilistic inference of stellar parameters. Firstly, in log-log space the
-relationship is very simple, appearing to be linear. Secondly, there is a
-sufficiently number of points in the sample (439 stars) to constrain a
-population-based model. Thirdly, there is significant excess scatter around the
-best-fitting relation implying that a deterministic model is inadequate. This is
-not surprising given that granulation is a complex and messy process for which
-one should not expect any parametric model to provide a perfect description. For
-these reasons, we identify the calibration of flicker to \logg\ and \rhostar\
-as a well-posed problem to first demonstrate probabilistic inference in the
-arena of stellar characterization.
-
 \section{PROBABILISTIC CALIBRATION}
 \label{sec:HBM}
 
 \input{HBM.tex}
-
-\section{APPLICATION}
-\label{sec:appication}
-
-\input{application.tex}
 
 \section{DISCUSSION}
 \label{sec:discussion}
@@ -239,6 +200,8 @@ Kipping, D.~M., Bastien, F.~A., Stassun, K.~G., Chaplin, W.~J., Huber, D. \&
 Buchhave, L.~A., 2014, ApJ, 785, 32
 \bibitem[\protect\citeauthoryear{Rogers}{2015}]{rogers:2015}
 Rogers, L.~A., 2015, ApJ, 801, 41
+\bibitem[\protect\citeauthoryear{Seager \& Mall\'{e}n-Ornelas}{2003}]{seager:2003} 
+Seager, S., \& Mall\'{e}n-Ornelas, G., 2003, ApJ, 585, 1038
 \bibitem[\protect\citeauthoryear{Wolfgang et al.}{2015}]{wolfgang:2015}
 Wolfgang, A., Rogers, L.~A., Ford, E.~B., 2015, ApJ, submitted
 (astro-ph:1504.07557)
@@ -247,3 +210,4 @@ Wolfgang, A., Rogers, L.~A., Ford, E.~B., 2015, ApJ, submitted
 \end{document}
 
 %% EOF document
+

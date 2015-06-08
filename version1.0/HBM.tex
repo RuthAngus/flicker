@@ -3,15 +3,15 @@
 
 \subsection{Calibration Data}
 
-For our calibration of \rhostar-$F_8$, we used a sample of Kepler stars with
+For our calibration data, we used a sample of \Kepler\ stars with
 both asteroseismic and flicker measurements available. \citet{chaplin:2014}
 report asteroseismic \rhostar\ estimates (and the associated uncertainties) for
-518 Kepler stars. The authors report three different sets of results, depending
-on the choice of \Teff\ and \FeH, and in this work we elected to use values
-reported in their Table 6 over Table 5, and Table 5 over Table 4. We
+518 \Kepler\ stars. The authors report three different sets of results, 
+depending on the choice of \Teff\ and \FeH, and in this work we elected to use 
+values reported in their Table 6 over Table 5, and Table 5 over Table 4. We
 additionally used the 71 additional planet hosting stars with asteroseismology
 reported in \citet{huber:2013} but not reported in \citet{chaplin:2014}. Values
-for flicker and range were taken from \citet{kipping:2014}, based upon the
+for flicker and ``range'' were taken from \citet{kipping:2014}, based upon the
 methods described in \citet{bastien:2013}. Following \citet{kipping:2014} and
 for reasons described there-in, we only include targets in our calibration for
 which:
@@ -28,11 +28,11 @@ We use the same sample for our calibration of \logg, except that we exclude the
 \citet{huber:2013} data, since these authors do not provide estimates of
 \logg\footnote{Whilst we could compute \logg\ ourselves from the reported
 masses and radii, this could only be done under the incorrect assumption of
-zero covariance between $M_{\star}$ and $R_{\star}$.}
+zero covariance between $M_{\star}$ and $R_{\star}$.}.
 
 \subsection{Hierarchical Bayesian Model}
 
-We model the stochastic relationship between $F_8$, \logg\ and \rhostar,
+We model the stochastic relationship between $F_8$ and \logg\ or \rhostar,
 accounting for the fact that there exists some intrinsic scatter in
 the dependent variable, and including the heteroskedastic uncertainties on both
 the dependent and independent variables.
@@ -56,7 +56,7 @@ that is biased towards zero
 For a demonstration of the effects of neglecting intrinsic scatter and
 two-dimensional uncertainties, see Kelly (2007).
 
-The two models describing the relationship between $F_8$, \logg and \rhostar
+The two models describing the relationship between $F_8$, \logg\ and \rhostar\
 density can be written as
 \begin{equation}
 	\log_{10}(\rho_\star) \sim \mathcal{N}(\mu = \alpha + \beta
@@ -77,7 +77,7 @@ describe the intrinsic scatter about the mean.
 
 In order to account for the two-dimensional observational uncertainties in
 this data set, we marginalize over the latent, `true' values of $F_8$,
-\rhostar and \logg using the importance sampling method of
+\rhostar\ and \logg\ using the importance sampling method of
 \citep{hogg:2010}\footnote{Note that while the pseudo-marginal MCMC method of
 \citep{andrieu:2009} provides a truly unbiased estimate of the marginalized
 likelhood, we expect any bias introduced by the importance sampling method to
@@ -85,7 +85,7 @@ be negligable.}.
 In what follows we give an overview of this procedure, but encourage the reader
 to refer back  to this original reference for a more detailed description of
 the mathematics.
-The observed values of the variables; $F_8$, \rhostar and \logg can be thought
+The observed values of the variables; $F_8$, \rhostar\ and \logg\ can be thought
 of as a single `draw' from an underlying (assumed Gaussian) probability
 distribution, with mean equal to the `true' value\footnote{We use `true' to
 mean the value that would have been observed, given infinitely high
@@ -109,7 +109,7 @@ if they were available, however generating new samples is an acceptable
 approximation provided the posteriors are Gaussian (or log-Normal) and the
 priors used by the previous fitters were uninformative.
 Such an approximation {\it will not be necessary} for those studies using
-\rhostar or \logg calculated using the newly-calibrated relations
+\rhostar\ or \logg\ calculated using the newly-calibrated relations
 presented here, as long as the posterior samples are published.
 After producing new posterior PDF samples we then add up the individual
 log-likelihoods of each sample to compute the total marginalized likelihood
@@ -168,3 +168,4 @@ model parameters; $\gamma$, $\delta$ and $\sigma_g$.
     \hline
 \end{tabular}
 \end{table}
+
