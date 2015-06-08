@@ -17,7 +17,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     assert np.shape(samples)[0] < np.shape(samples)[1], \
             "samples is wrong shape"
     beta, alpha, tau = np.median(samples, axis=1)
-    sigma = abs(tau)
+    sigma = (np.sqrt(abs(tau))
     pars = [beta, alpha, sigma]
 
     print alpha, beta, tau, sigma
@@ -46,6 +46,10 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
         plt.plot(xs, model1(pars, xs)-3, ".2", linewidth=1)
         plt.errorbar(x, y-3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
                              alpha=.5, ecolor=".5", mec=".2")
+        plt.plot(xs, model1(pars, xs)+sigma-3, "k--")
+        plt.plot(xs, model1(pars, xs)-sigma-3, "k--")
+        plt.axhline(sigma, color="k")
+        plt.axhline(-sigma, color="k")
 
     elif fname == "logg":
         plt.ylim(3, 5)
@@ -61,6 +65,8 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
         plt.plot(xs, model1(pars, xs), ".2", linewidth=1)
         plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
                      alpha=.5, ecolor=".5", mec=".2")
+        plt.plot(xs, model1(pars, xs)+sigma, "k--")
+        plt.plot(xs, model1(pars, xs)-sigma, "k--")
 
 #     plt.fill_between(xs, model1(pars, xs)+sigma,
 #                      model1(pars, xs)+sigma, color=col, alpha=.3,
