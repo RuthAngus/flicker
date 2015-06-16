@@ -1,0 +1,30 @@
+--------------------------------------------------------------------------------
+Col# Format Units     Label   Explanations
+--------------------------------------------------------------------------------
+  1  I8     ---       KIC     Kelper identifer
+  2  F4.2   solMass   Mass    Mass  
+  3  F4.2   solMass E_Mass    Upper uncertainty in Mass
+  4  F4.2   solMass e_Mass    Lower uncertainty in Mass 
+  5  F4.2   solRad    Radius  Radius
+  6  F4.2   solRad  E_Radius  Upper uncertainty in Radius
+  7  F4.2   solRad  e_Radius  Lower uncertainty in Radius
+  8  F6.4   solrho    rho     Density
+  9  F6.4   solrho  E_rho     Upper uncertainty in rho
+  10 F6.4   solrho  e_rho     Lower uncertainty in rho
+  11 F5.3   [cm/s2]   log(g)  Log of surface gravity
+  12 F5.3   [cm/s2] E_log(g)  Upper uncertainty in log(g)
+  13 F5.3   [cm/s2] e_log(g)  Lower uncertainty in log(g)
+  14 F4.1   Gyr       Age     Age
+  15 F3.1   Gyr     E_Age     Upper uncertainty in Age
+  16 F3.1   Gyr     e_Age     Lower uncertainty in Age
+  17        K       Teff      Best derived effective temperature
+  18        K       e_Teff    Uncertainty in best Teff
+  19        [-]     [Fe/H]    Best metallicity
+  20        [-]     e_[Fe/H]  Uncertainty in best [Fe/H]
+  21        ppm     F8        Flicker
+  22        ppm     e_F8      Uncertainty on flicker
+  23        -       F8        log10(Flicker)
+  24        -       e_F8      log10(Uncertainty on flicker)
+  25        -       Range     Range
+  26        -       Kp        Kepler magnitude
+--------------------------------------------------------------------------------
