@@ -12,8 +12,6 @@ def lnprior(pars, mm=False):
     return 0.
 
 def lnpriorHF(pars):
-#     m = np.exp(pars[2])
-#     m = pars[2]
     if pars[2] < 0:
         return -np.inf
     return 0
@@ -21,49 +19,54 @@ def lnpriorHF(pars):
 def lnprob(pars, samples, obs, u, mm=False):
     return lnlikeH(pars, samples, obs, u) + lnpriorHF(pars)
 
-def MCMC(whichx, nsamp):
+def MCMC(whichx, nsamp, fname):
 
     rho_pars = [-2., 6., .0065]
-#     logg_pars = [-1.850, 7., .0065, .01]
     logg_pars = [-1.850, 7., .0065]
-#     logg_pars = [-1.850, 7., np.log(.0065)]  # multiplicative
     pars_init = logg_pars
     if whichx == "rho":
         pars_init = rho_pars
 
-#     # load data
-#     data = np.genfromtxt("../data/BIGDATA.filtered.dat").T
-#     r, rerrp, rerrm = data[7:10]
-#     f, ferr = data[20:22]
-#     logg, loggerrp, loggerrm = data[10:13]
-#     rerrp, rerrm = rerrp/r/np.log(10), rerrm/r/np.log(10)
-#     r = np.log10(1000*r)
-#     ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
-#     f = np.log10(1000*f)
+    # load data
+    data = np.genfromtxt("../data/BIGDATA.filtered.dat").T
+    r, rerrp, rerrm = data[7:10]
+    f, ferr = data[20:22]
+    logg, loggerrp, loggerrm = data[10:13]
+    rerrp, rerrm = rerrp/r/np.log(10), rerrm/r/np.log(10)
+    r = np.log10(1000*r)
+    ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
+    f = np.log10(1000*f)
 
-#     # format data
-# #     nd = len(f)
+    # format data
+    nd = len(f)
 #     nd = 20
-#     m = np.isfinite(logg[:nd])
-#     x, xerrp, xerrm = f[:nd][m]-3, ferrp[:nd][m], ferrm[:nd][m]
-#     y, yerrp, yerrm = logg[:nd][m], loggerrp[:nd][m], loggerrm[:nd][m]
-#     xerr = .5*(xerrp + xerrm)
-#     yerr = .5*(yerrp + yerrm)
-#     if whichx == "rho":
-#         m = np.isfinite(r[:nd])
-#         x, xerrp, xerrm = f[:nd][m], ferrp[:nd][m], ferrm[:nd][m]
-#         y, yerrp, yerrm = r[:nd][m], rerrp[:nd][m], rerrm[:nd][m]
-#         xerr = .5*(xerrp + xerrm)
-#         yerr = .5*(yerrp + yerrm)
+    m = np.isfinite(logg[:nd])
+    x, xerrp, xerrm = f[:nd][m]-3, ferrp[:nd][m], ferrm[:nd][m]
+    y, yerrp, yerrm = logg[:nd][m], loggerrp[:nd][m], loggerrm[:nd][m]
+    xerr = .5*(xerrp + xerrm)
+    yerr = .5*(yerrp + yerrm)
+    if whichx == "rho":
+        m = np.isfinite(r[:nd])
+        x, xerrp, xerrm = f[:nd][m], ferrp[:nd][m], ferrm[:nd][m]
+        y, yerrp, yerrm = r[:nd][m], rerrp[:nd][m], rerrm[:nd][m]
+        xerr = .5*(xerrp + xerrm)
+        yerr = .5*(yerrp + yerrm)
+
+    plt.clf()
+    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.")
 
     # load data
     fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
     fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
-#     nd = len(fr)
-    nd = 100
+    nd = len(fr)
+#     nd = 50
     x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
     if whichx == "rho":
         x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
+
+    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="r.", alpha=.5)
+    plt.savefig("test")
+    assert 0
 
     # format data and generate samples
     obs = np.vstack((x, y))
@@ -83,23 +86,19 @@ def MCMC(whichx, nsamp):
     print "production run..."
     sampler.run_mcmc(pos, 1000)
     samp = sampler.chain[:, 50:, :].reshape((-1, ndim))
-#     m, c, sig, b = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
-#                zip(*np.percentile(samp, [16, 50, 84], axis=0)))
-#     pars = [m[0], c[0], sig[0], b[0]]
     m, c, sig = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
                zip(*np.percentile(samp, [16, 50, 84], axis=0)))
     pars = [m[0], c[0], sig[0]]
 
     # save samples
-    f = h5py.File("%s_samples.h5" % whichx, "w")
+    f = h5py.File("%s_samples_%s.h5" % (whichx, fname), "w")
     data = f.create_dataset("samples", np.shape(samp))
     data[:, 0] = samp[:, 0]
     data[:, 1] = samp[:, 1]
     data[:, 2] = samp[:, 2]
-#     data[:, 3] = samp[:, 3]
     f.close()
 
-def make_plots(whichx):
+def make_plots(whichx, fname):
 
 #     # load data
 #     data = np.genfromtxt("../data/BIGDATA.filtered.dat").T
@@ -135,9 +134,6 @@ def make_plots(whichx):
 
     with h5py.File("%s_samples.h5" % whichx) as f:
         samp = f["samples"][...]
-#     m, c, sig, b = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
-#                zip(*np.percentile(samp, [16, 50, 84], axis=0)))
-#     pars = [m[0], c[0], sig[0], b[0]]
     m, c, sig = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
                zip(*np.percentile(samp, [16, 50, 84], axis=0)))
     pars = [m[0], c[0], sig[0]]
@@ -150,18 +146,15 @@ def make_plots(whichx):
     p0s = np.random.choice(samp[:, 0], ndraws)
     p1s = np.random.choice(samp[:, 1], ndraws)
     p2s = np.random.choice(samp[:, 2], ndraws)
-#     p3s = np.random.choice(samp[:, 3], ndraws)
     for i in range(ndraws):
         y = p0s[i] * x + p1s[i]
-#         plt.plot(x, (y + p2s[i] + p3s[i] * y), "k", alpha=.1)
         plt.plot(x, (y + p2s[i]), "k", alpha=.1)
-    plt.savefig("mcmc_%s" % whichx)
-#     labels = ["$m$", "$c$", "$\sigma$", "$b$"]
+    plt.savefig("mcmc_%s_%s" % (whichx, fname))
     labels = ["$m$", "$c$", "$\sigma$"]
     fig = triangle.corner(samp, labels=labels)
-    fig.savefig("triangle_%s" % whichx)
+    fig.savefig("triangle_%s_%s" % (whichx, fname))
 
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
-    MCMC(whichx, 10)
-    make_plots(whichx)
+    MCMC(whichx, 10, "newdata")
+    make_plots(whichx, "newdata")
