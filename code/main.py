@@ -67,7 +67,6 @@ def MCMC(whichx, nsamp, fname, nd, bigdata):
     if whichx == "rho":
         pars_init = rho_pars
 
-
     plt.clf()
     x, y, xerr, yerr = load_data(whichx, nd=nd, bigdata=False)
     plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="r.", capsize=0)

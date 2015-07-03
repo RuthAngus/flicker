@@ -15,9 +15,11 @@ def interp(xold, yold, xnew, s):
 def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
     # fit straight line
-    AT = np.vstack((np.ones_like(x), x))
-    ATA = np.dot(AT, AT.T)
-    a = np.linalg.solve(ATA, np.dot(AT, y))
+    AT = np.vstack((np.ones_like(y), y))
+    C = np.eye(len(x)) * xerr**2
+    ATCA = np.dot(np.dot(AT, C), AT.T)
+    ATCy = np.dot(np.dot(AT, C), x)
+    a = np.linalg.solve(ATCA, ATCy)
 
     assert np.shape(samples)[0] < np.shape(samples)[1], \
             "samples is wrong shape"
@@ -37,7 +39,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     a_samp = np.random.choice(samples[1, :], ndraws)
     s_samp = np.random.choice(samples[2, :], ndraws) * np.random.randn(ndraws)
 
-    if fname == "rho":
+    if whichx == "rho":
         plt.ylabel("$\log_{10}(\\rho_{\star}[\mathrm{g~cm}^{-3}])$")
         col = "#FF33CC"
         plt.text(1.55, .5, "$\log_{10} (\\rho_{\star}) \sim \mathcal{N} \
@@ -54,7 +56,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
         plt.plot(xs, model1(pars, xs)+sigma-3, "k--")
         plt.plot(xs, model1(pars, xs)-sigma-3, "k--")
 
-    elif fname == "logg":
+    elif whichx == "logg":
         plt.ylim(3, 5)
         col = "#0066CC"
         plt.ylabel("$\log_{10}(g [\mathrm{cm~s}^{-2}])$")
@@ -66,7 +68,8 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
         for i in range(ndraws):
             plt.plot(xs, model1([b_samp[i], a_samp[i]], xs)+s_samp[i], col, alpha=.01)
         plt.plot(xs, model1(pars, xs), ".2", linewidth=1)
-        plt.plot(xs, a[0]+a[1]*xs, "r", linewidth=1)
+        ys = np.linspace(3, 5, 10)
+        plt.plot(a[0]+a[1]*ys, ys, "r", linewidth=1)
         plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
                      alpha=.5, ecolor="k", mec=".2")
         plt.plot(xs, model1(pars, xs)+sigma, "k--")
@@ -76,10 +79,9 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
     plt.xlim(1, 2.4)
     plt.xlabel("$\log_{10}\mathrm{(F}_8~\mathrm{[ppm]})$")
-    print "..figs/%s_vs_flicker.pdf" % fname
-    plt.savefig("../figs/%s_vs_flicker.pdf"
-                % fname)
-    plt.savefig("flicker_inv_%s" % fname)
+    print "..figs/%s_vs_flicker.pdf" % whichx
+    plt.savefig("../figs/%s_vs_flicker.pdf" % whichx)
+    plt.savefig("flicker_inv_%s" % whichx)
 
 
 def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
@@ -135,7 +137,7 @@ def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     plt.clf()
     plt.hist(normed_resids, 20, histtype="stepfilled", color="w")
     plt.xlabel("Normalised residuals")
-    plt.savefig("residual_hist_%s" % fname)
+    plt.savefig("residual_hist_%s" % whichx)
 
 if __name__ == "__main__":
 
