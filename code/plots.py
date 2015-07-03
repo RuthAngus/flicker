@@ -5,6 +5,7 @@ import scipy.interpolate as spi
 import h5py
 import sys
 from noisy_plane import model1
+from main import load_data
 
 def interp(xold, yold, xnew, s):
     tck = spi.splrep(xold, yold, s=s)
@@ -12,6 +13,12 @@ def interp(xold, yold, xnew, s):
     return ynew
 
 def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
+
+    # fit straight line
+    AT = np.vstack((np.ones_like(x), x))
+    ATA = np.dot(AT, AT.T)
+    a = np.linalg.solve(ATA, np.dot(AT, y))
+
     assert np.shape(samples)[0] < np.shape(samples)[1], \
             "samples is wrong shape"
     beta, alpha, tau = np.median(samples, axis=1)
@@ -59,17 +66,11 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
         for i in range(ndraws):
             plt.plot(xs, model1([b_samp[i], a_samp[i]], xs)+s_samp[i], col, alpha=.01)
         plt.plot(xs, model1(pars, xs), ".2", linewidth=1)
+        plt.plot(xs, a[0]+a[1]*xs, "r", linewidth=1)
         plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
-                     alpha=.5, ecolor=".5", mec=".2")
+                     alpha=.5, ecolor="k", mec=".2")
         plt.plot(xs, model1(pars, xs)+sigma, "k--")
         plt.plot(xs, model1(pars, xs)-sigma, "k--")
-
-#     plt.fill_between(xs, model1(pars, xs)+sigma,
-#                      model1(pars, xs)+sigma, color=col, alpha=.3,
-#                      edgecolor="w")
-#         plt.fill_between(xs, model1(pars, xs)-2*sigma,
-#                          model1(pars, xs)+2*sigma, color=col, alpha=.2,
-#                          edgecolor="w")
 
     plt.subplots_adjust(bottom=.1)
 
@@ -79,6 +80,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     plt.savefig("../figs/%s_vs_flicker.pdf"
                 % fname)
     plt.savefig("flicker_inv_%s" % fname)
+
 
 def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
@@ -114,6 +116,8 @@ def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
     plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0, alpha=.5,
                  ecolor=".5", mec=".2")
+#     plt.errorbar(xx, yy, xerr=xxerr, yerr=yyerr, fmt="r.", capsize=0, alpha=.5,
+#                  ecolor="r")
     plt.plot(xs, alpha+beta*xs, ".2", linewidth=1)
 
     plt.xlim(min(xs), max(xs))
@@ -136,27 +140,29 @@ def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 if __name__ == "__main__":
 
     plotpar = {'axes.labelsize': 18,
-               'text.fontsize': 18,
+               'text.fontsize': 26,
                'legend.fontsize': 18,
                'xtick.labelsize': 18,
                'ytick.labelsize': 18,
                'text.usetex': True}
     plt.rcParams.update(plotpar)
 
-    fname = str(sys.argv[1]) # should be either "rho" or "logg"
+    whichx = str(sys.argv[1]) # should be either "rho" or "logg"
 
-    # load data
-    fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
-    fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
-    nd = len(fr)
-    x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
-    if fname == "rho":
-        x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
+    plt.clf()
+    x, y, xerr, yerr = load_data(whichx, bigdata=False)
+    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="r.", capsize=0)
+    x, y, xerr, yerr = load_data(whichx, bigdata=True)
+    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0)
+    plt.ylim(3, 5)
+    plt.xlim(1, 2.4)
+    plt.savefig("compare.pdf")
 
     # load chains
-    with h5py.File("%s_samples.h5" % fname, "r") as f:
+    fname = "test"
+    with h5py.File("%s_samples_%s.h5" % (whichx, fname), "r") as f:
         samples = f["samples"][...]
     samples = samples.T
 
-    make_flicker_plot(x, xerr, y, yerr, samples, fname)
-    make_inverse_flicker_plot(x, xerr, y, yerr, samples, fname)
+    make_flicker_plot(x, xerr, y, yerr, samples, whichx)
+    make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx)
