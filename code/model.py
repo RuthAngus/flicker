@@ -20,17 +20,19 @@ def load_data(whichx, nd=0, bigdata=False, huber=False):
         ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
         f = np.log10(1000*f)
         # format data
-        if nd == 0:
+        if nd == 0:  # parameter for using less data (zero for use all)
             nd = len(f)
         m = np.isfinite(logg[:nd])
-        x, xerrp, xerrm = f[:nd][m]-3, ferrp[:nd][m], ferrm[:nd][m]
-        y, yerrp, yerrm = logg[:nd][m], loggerrp[:nd][m], loggerrm[:nd][m]
+        x = f[:nd][m]-3
+        xerrp, xerrm = ferrp[:nd][m] * x, ferrm[:nd][m] * x
+        y = logg[:nd][m]
+        yerrp, yerrm = loggerrp[:nd][m] * y, loggerrm[:nd][m] * y
         xerr = .5*(xerrp + xerrm)
         yerr = .5*(yerrp + yerrm)
         if whichx == "rho":
             m = np.isfinite(r[:nd])
-            x, xerrp, xerrm = f[:nd][m]-3, ferrp[:nd][m], ferrm[:nd][m]
-            y, yerrp, yerrm = r[:nd][m], rerrp[:nd][m], rerrm[:nd][m]
+            y = r[:nd][m]
+            yerrp, yerrm = rerrp[:nd][m] * y, rerrm[:nd][m] * y
             xerr = .5*(xerrp + xerrm)
             yerr = .5*(yerrp + yerrm)
 
@@ -82,19 +84,26 @@ def nll(pars, x, y, yerr, model):
 
 if __name__ == "__main__":
 
-    x, y, xerr, yerr = load_data("logg")
+    x, y, xerr, yerr = load_data("logg", bigdata=True)
 
     pars_init = [1.8, 5.6, -1, 5.95, -1.2]
     res = spo.minimize(nll, pars_init, args=(x, y, yerr, broken_power_law1))
     print res.x
 
     plt.clf()
-    plt.errorbar(x, y, yerr=yerr, fmt="k.")
-    plt.plot(x, broken_power_law1(res.x, x))
+    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0, ecolor=".7")
+    plt.xlim(1.6, 2.2)
+    plt.plot(x, broken_power_law1(res.x, x), "m")
 
-    pars_init = [5, -1, .5, .5]
+    pars_init = [5.6, -1]
+    res = spo.minimize(nll, pars_init, args=(x, y, yerr, model1))
+    print res.x
+
+    plt.plot(x, model1(res.x, x), "y")
+
+    pars_init = [5.6, -1, .5, .5]
     res = spo.minimize(nll, pars_init, args=(x, y, yerr, polynomial))
     print res.x
 
-    plt.plot(x, polynomial(res.x, x), "m")
+    plt.plot(x, polynomial(res.x, x), "b")
     plt.savefig("model")
