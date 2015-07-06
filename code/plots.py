@@ -5,21 +5,27 @@ import scipy.interpolate as spi
 import h5py
 import sys
 from noisy_plane import model1
-from main import load_data
+from model import load_data
 
 def interp(xold, yold, xnew, s):
     tck = spi.splrep(xold, yold, s=s)
     ynew = spi.splev(xnew, tck, der=0)
     return ynew
 
-def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
+def fit_straight_line(x, y, yerr):
+    AT = np.vstack((np.ones_like(x), x))
+    C = np.eye(len(y)) * yerr**2
+    ATCA = np.dot(np.dot(AT, C), AT.T)
+    ATCy = np.dot(np.dot(AT, C), y)
+    return np.linalg.solve(ATCA, ATCy)
+
+def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, ndraws,
+                              plot_samp=False):
 
     # fit straight line
-    AT = np.vstack((np.ones_like(y), y))
-    C = np.eye(len(x)) * xerr**2
-    ATCA = np.dot(np.dot(AT, C), AT.T)
-    ATCy = np.dot(np.dot(AT, C), x)
-    a = np.linalg.solve(ATCA, ATCy)
+    lim = 200
+    a1 = fit_straight_line(x[:lim], y[:lim], yerr[:lim])
+    a2 = fit_straight_line(x[lim:], y[lim:], yerr[lim:])
 
     assert np.shape(samples)[0] < np.shape(samples)[1], \
             "samples is wrong shape"
@@ -34,7 +40,6 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     xs = np.linspace(1., 2.4, 100)
     plt.clf()
 
-    ndraws = 3000
     b_samp = np.random.choice(samples[0, :], ndraws)
     a_samp = np.random.choice(samples[1, :], ndraws)
     s_samp = np.random.choice(samples[2, :], ndraws) * np.random.randn(ndraws)
@@ -68,12 +73,21 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
         for i in range(ndraws):
             plt.plot(xs, model1([b_samp[i], a_samp[i]], xs)+s_samp[i], col, alpha=.01)
         plt.plot(xs, model1(pars, xs), ".2", linewidth=1)
-        ys = np.linspace(3, 5, 10)
-        plt.plot(a[0]+a[1]*ys, ys, "r", linewidth=1)
         plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
                      alpha=.5, ecolor="k", mec=".2")
         plt.plot(xs, model1(pars, xs)+sigma, "k--")
         plt.plot(xs, model1(pars, xs)-sigma, "k--")
+#         ys1 = np.linspace(3, y[l], 10)
+#         ys2 = np.linspace(y[l], 5, 10)
+#         plt.plot(a1[0]+a1[1]*ys1, ys1, "r", linewidth=1)
+#         plt.plot(a2[0]+a2[1]*ys2, ys2, "g", linewidth=1)
+        xs1 = np.linspace(1, x[lim], 10)
+        xs2 = np.linspace(x[lim], 2.4, 10)
+        plt.plot(xs1, a1[0] + a1[1]*xs1, "m", linewidth=1)
+        plt.plot(xs2, a2[0] + a2[1]*xs2, "m", linewidth=1)
+        xs = np.linspace(1, 2.5, 100)-3
+        ys = 1.15136-3.59637*xs-1.40002*xs**2-.22993*xs**3
+        plt.plot(xs+3, ys, "c", linewidth=1)
 
     plt.subplots_adjust(bottom=.1)
 
@@ -83,6 +97,14 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     plt.savefig("../figs/%s_vs_flicker.pdf" % whichx)
     plt.savefig("flicker_inv_%s" % whichx)
 
+    plt.clf()
+    plt.ylim(4.6, 3.2)
+    x -= 3
+    xs = np.linspace(min(x), max(x), 100)
+    plt.plot(10**x, y, "ko")
+    ys = 1.15136-3.59637*xs-1.40002*xs**2-.22993*xs**3
+    plt.plot(10**xs, ys, "m")
+    plt.savefig("bastien_figureS2")
 
 def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
@@ -160,6 +182,8 @@ if __name__ == "__main__":
     plt.xlim(1, 2.4)
     plt.savefig("compare.pdf")
 
+    x, y, xerr, yerr = load_data(whichx, bigdata=False)
+
     # load chains
     fname = "test"
     with h5py.File("%s_samples_%s.h5" % (whichx, fname), "r") as f:
@@ -167,4 +191,4 @@ if __name__ == "__main__":
     samples = samples.T
 
     make_flicker_plot(x, xerr, y, yerr, samples, whichx)
-    make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx)
+    make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, 1000)

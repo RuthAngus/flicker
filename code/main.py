@@ -2,51 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from noisy_plane import generate_samples, generate_samples_log, \
         lnlike, lnlikeH, lnlikeHF
-from model import model1, model
+from model import model1, model, load_data
 import emcee
 import triangle
 import sys
 import h5py
-
-def load_data(whichx, nd=0, bigdata=False):
-
-    if bigdata:
-        data = np.genfromtxt("../data/BIGDATA.nohuber.filtered.dat").T
-        r, rerrp, rerrm = data[7:10]
-        rerrp, rerrm = rerrp/r/np.log(10), rerrm/r/np.log(10)
-        r = np.log10(1000*r)
-        data2 = np.genfromtxt("../data/BIGDATA.nohuber.filtered.dat").T
-        logg, loggerrp, loggerrm = data2[10:13]
-        f, ferr = data2[20:22]
-        if whichx == "rho":
-            f, ferr = data[20:22]
-        ferrp, ferrm = ferr/f/np.log(10), ferr/f/np.log(10)
-        f = np.log10(1000*f)
-        # format data
-        if nd == 0:
-            nd = len(f)
-        m = np.isfinite(logg[:nd])
-        x, xerrp, xerrm = f[:nd][m]-3, ferrp[:nd][m], ferrm[:nd][m]
-        y, yerrp, yerrm = logg[:nd][m], loggerrp[:nd][m], loggerrm[:nd][m]
-        xerr = .5*(xerrp + xerrm)
-        yerr = .5*(yerrp + yerrm)
-        if whichx == "rho":
-            m = np.isfinite(r[:nd])
-            x, xerrp, xerrm = f[:nd][m]-3, ferrp[:nd][m], ferrm[:nd][m]
-            y, yerrp, yerrm = r[:nd][m], rerrp[:nd][m], rerrm[:nd][m]
-            xerr = .5*(xerrp + xerrm)
-            yerr = .5*(yerrp + yerrm)
-
-    else:
-        fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
-        fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
-        if nd==0:
-            nd = len(fr)
-        x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
-        if whichx == "rho":
-            x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
-
-    return x, y, xerr, yerr
 
 def lnprior(pars, mm=False):
     return 0.
@@ -75,7 +35,8 @@ def MCMC(whichx, nsamp, fname, nd, bigdata):
     plt.ylim(3, 5)
     plt.xlim(1, 2.4)
     plt.savefig("Test.pdf")
-    assert 0
+
+    x, y, xerr, yerr = load_data(whichx, nd=nd, bigdata=False)
 
     # format data and generate samples
     obs = np.vstack((x, y))
@@ -137,7 +98,7 @@ def make_plots(whichx, fname):
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
     fname = "test"
-    MCMC(whichx, 5, fname, 0, bigdata=True)
+    MCMC(whichx, 5, fname, 0, bigdata=False)
     make_plots(whichx, fname)
 
 #     # load data
@@ -147,16 +108,16 @@ if __name__ == "__main__":
 #     r, rerrp, rerrm = data[7:10]
 #     rerrp, rerrm = rerrp/r/np.log(10), rerrm/r/np.log(10)
 #     r = np.log10(1000*r)
+#     f, ferr = data[20:22]
 #     data2 = np.genfromtxt("../data/BIGDATA.nohuber.filtered.dat").T
 # #     data2 = np.genfromtxt("../data/BIGDATA.filtered.dat").T
 #     kid_no_huber = data2[0]
 #     logg, loggerrp, loggerrm = data2[10:13]
-#     f, ferr = data2[20:22]
 #
-#     plt.clf()
-#     plt.plot(f, r, "k.")
-#     plt.plot(f, logg, "r.")
-#     plt.savefig("bastien_comparison")
+# #     plt.clf()
+# #     plt.plot(f, r, "k.")
+# #     plt.plot(f, logg, "r.")
+# #     plt.savefig("bastien_comparison")
 #
 #     if whichx == "rho":
 #         f, ferr = data[20:22]
@@ -189,6 +150,7 @@ if __name__ == "__main__":
 #             hteff.append(teff[i])
 #             hmass.append(mass[i])
 #             hub.append(kid[m][0])
+#             print len(x), len(kid)
 #             hf.append(x[m][0])
 #             hferr.append(xerr[m][0])
 #             hr.append(y[m][0])
@@ -220,8 +182,8 @@ if __name__ == "__main__":
 #     plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", zorder=0)
 # #     plt.scatter(x, y, c=all_mass, vmin=.8, vmax=1.6, zorder=0, edgecolor=None)
 # #     plt.scatter(hf, hr, c=hmass, vmin=.8, vmax=1.6, s=80, marker="^", zorder=1)
-# #     plt.scatter(hf, hr, c=hmass, s=80, marker="^", zorder=1)
-#     plt.errorbar(hf, hr, xerr=hferr, yerr=hrerr, fmt="k.", zorder=1)
+#     plt.scatter(hf, hr, c=hteff, s=80, marker="^", zorder=1)
+# #     plt.errorbar(hf, hr, xerr=hferr, yerr=hrerr, fmt="k.", zorder=1)
 # #     print phprot
 # #     print phporb
 # #     plt.scatter(hf, hr, c=np.log10(phporb), s=80, marker="^", zorder=1)
