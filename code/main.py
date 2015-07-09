@@ -19,7 +19,7 @@ def lnpriorHF(pars):
     return 0
 
 def lnprob(pars, samples, obs, u, mm=False):
-    return lnlikeH(pars, samples, obs, u) + lnpriorHF(pars)
+    return lnlikeHF(pars, samples, obs, u) + lnpriorHF(pars)
 
 def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=500):
 
