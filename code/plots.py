@@ -54,7 +54,11 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, ndraws,
         plt.text(1.95, -.08, "$\\sigma_{\\rho} = %.3f$" % tau**.5)
         plt.ylim(-2, 1)
         for i in range(ndraws):
-            plt.plot(xs, model1([b_samp[i], a_samp[i]], xs)-3, col, alpha=.1)
+            ys = model1([b_samp[i], a_samp[i]], xs)
+            if fractional:
+                plt.plot(xs, ys + ys * s_samp[i], col, alpha=.05)
+            else:
+                plt.plot(xs, ys + s_samp[i], col, alpha=.05)
         plt.plot(xs, model1(pars, xs)-3, ".2", linewidth=1)
         plt.errorbar(x, y-3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
                              alpha=.5, ecolor=".5", mec=".2")
