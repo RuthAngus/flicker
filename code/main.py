@@ -19,7 +19,7 @@ def lnpriorHF(pars):
 def lnprob(pars, samples, obs, u, mm=False):
     return lnlikeH(pars, samples, obs, u) + lnpriorHF(pars)
 
-def MCMC(whichx, nsamp, fname, nd, bigdata):
+def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=500):
 
     rho_pars = [-2., 6., .0065]
     logg_pars = [-1.850, 7., .0065]
@@ -27,16 +27,7 @@ def MCMC(whichx, nsamp, fname, nd, bigdata):
     if whichx == "rho":
         pars_init = rho_pars
 
-    plt.clf()
-    x, y, xerr, yerr = load_data(whichx, nd=nd, bigdata=False)
-    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="r.", capsize=0)
-    x, y, xerr, yerr = load_data(whichx, nd=nd, bigdata=bigdata)
-    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0)
-    plt.ylim(3, 5)
-    plt.xlim(1, 2.4)
-    plt.savefig("Test.pdf")
-
-    x, y, xerr, yerr = load_data(whichx, nd=nd, bigdata=False)
+    x, y, xerr, yerr = load_data(whichx, nd=nd, bigdata=True)
 
     # format data and generate samples
     obs = np.vstack((x, y))
@@ -51,10 +42,10 @@ def MCMC(whichx, nsamp, fname, nd, bigdata):
     sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob,
                                     args=(s, obs, u))
     print "burning in..."
-    pos, _, _, = sampler.run_mcmc(pos, 500)
+    pos, _, _, = sampler.run_mcmc(pos, burnin)
     sampler.reset()
     print "production run..."
-    sampler.run_mcmc(pos, 1000)
+    sampler.run_mcmc(pos, run)
     samp = sampler.chain[:, 50:, :].reshape((-1, ndim))
     m, c, sig = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
                zip(*np.percentile(samp, [16, 50, 84], axis=0)))
@@ -98,7 +89,7 @@ def make_plots(whichx, fname):
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
     fname = "test"
-    MCMC(whichx, 5, fname, 0, bigdata=False)
+    MCMC(whichx, 50, fname, 0, bigdata=True)
     make_plots(whichx, fname)
 
 #     # load data
