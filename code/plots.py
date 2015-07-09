@@ -20,7 +20,7 @@ def fit_straight_line(x, y, yerr):
     return np.linalg.solve(ATCA, ATCy)
 
 def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, ndraws,
-                              plot_samp=False):
+                              plot_samp=False, fractional=True):
 
     # fit straight line
     lim = 200
@@ -54,7 +54,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, ndraws,
         plt.text(1.95, -.08, "$\\sigma_{\\rho} = %.3f$" % tau**.5)
         plt.ylim(-2, 1)
         for i in range(ndraws):
-            plt.plot(xs, model1([b_samp[i], a_samp[i]], xs)-3, col, alpha=.01)
+            plt.plot(xs, model1([b_samp[i], a_samp[i]], xs)-3, col, alpha=.1)
         plt.plot(xs, model1(pars, xs)-3, ".2", linewidth=1)
         plt.errorbar(x, y-3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
                              alpha=.5, ecolor=".5", mec=".2")
@@ -71,23 +71,32 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, ndraws,
         plt.text(1.95, 4.42, "$\\delta = %.3f$" % beta)
         plt.text(1.95, 4.32, "$\\sigma_g = %.3f$" % tau**.5)
         for i in range(ndraws):
-            plt.plot(xs, model1([b_samp[i], a_samp[i]], xs)+s_samp[i], col, alpha=.01)
+            ys = model1([b_samp[i], a_samp[i]], xs)
+            if fractional:
+                plt.plot(xs, ys + ys * s_samp[i], col, alpha=.05)
+            else:
+                plt.plot(xs, ys + s_samp[i], col, alpha=.05)
         plt.plot(xs, model1(pars, xs), ".2", linewidth=1)
         plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
-                     alpha=.5, ecolor="k", mec=".2")
-        plt.plot(xs, model1(pars, xs)+sigma, "k--")
-        plt.plot(xs, model1(pars, xs)-sigma, "k--")
+                     alpha=.5, ecolor=".5", mec=".2")
+        ys = model1(pars, xs)
+        if fractional:
+            plt.plot(xs, ys + ys*sigma, "k--")
+            plt.plot(xs, ys - ys*sigma, "k--")
+        else:
+            plt.plot(xs, ys + sigma, "k--")
+            plt.plot(xs, ys - sigma, "k--")
 #         ys1 = np.linspace(3, y[l], 10)
 #         ys2 = np.linspace(y[l], 5, 10)
 #         plt.plot(a1[0]+a1[1]*ys1, ys1, "r", linewidth=1)
 #         plt.plot(a2[0]+a2[1]*ys2, ys2, "g", linewidth=1)
-        xs1 = np.linspace(1, x[lim], 10)
-        xs2 = np.linspace(x[lim], 2.4, 10)
-        plt.plot(xs1, a1[0] + a1[1]*xs1, "m", linewidth=1)
-        plt.plot(xs2, a2[0] + a2[1]*xs2, "m", linewidth=1)
-        xs = np.linspace(1, 2.5, 100)-3
-        ys = 1.15136-3.59637*xs-1.40002*xs**2-.22993*xs**3
-        plt.plot(xs+3, ys, "c", linewidth=1)
+#         xs1 = np.linspace(1, x[lim], 10)
+#         xs2 = np.linspace(x[lim], 2.4, 10)
+#         plt.plot(xs1, a1[0] + a1[1]*xs1, "m", linewidth=1)
+#         plt.plot(xs2, a2[0] + a2[1]*xs2, "m", linewidth=1)
+#         xs = np.linspace(1, 2.5, 100)-3
+#         ys = 1.15136-3.59637*xs-1.40002*xs**2-.22993*xs**3
+#         plt.plot(xs+3, ys, "c", linewidth=1)
 
     plt.subplots_adjust(bottom=.1)
 
@@ -173,16 +182,7 @@ if __name__ == "__main__":
 
     whichx = str(sys.argv[1]) # should be either "rho" or "logg"
 
-    plt.clf()
-    x, y, xerr, yerr = load_data(whichx, bigdata=False)
-    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="r.", capsize=0)
     x, y, xerr, yerr = load_data(whichx, bigdata=True)
-    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0)
-    plt.ylim(3, 5)
-    plt.xlim(1, 2.4)
-    plt.savefig("compare.pdf")
-
-    x, y, xerr, yerr = load_data(whichx, bigdata=False)
 
     # load chains
     fname = "test"
@@ -191,4 +191,4 @@ if __name__ == "__main__":
     samples = samples.T
 
     make_flicker_plot(x, xerr, y, yerr, samples, whichx)
-    make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, 1000)
+    make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, 200)
