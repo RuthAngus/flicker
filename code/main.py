@@ -9,7 +9,9 @@ import sys
 import h5py
 
 def lnprior(pars, mm=False):
-    return 0.
+    if -10 < pars[0] < 10 and -10 < pars[1] < 10 and 0 < pars[2] < 1:
+        return 0.
+    return -np.inf
 
 def lnpriorHF(pars):
     if pars[2] < 0:
@@ -34,7 +36,13 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=500):
     u = np.vstack((xerr, yerr))
     up = np.vstack((xerr, yerr))
     um = np.vstack((xerr*.5, yerr*.5))
-    s = generate_samples_log(obs, up, um, nsamp)
+#     s = generate_samples_log(obs, up, um, nsamp) # FIXME
+    s = generate_samples(obs, u, nsamp) # FIXME
+#     if nsamp == 1:
+#         s[0, :, :] = x
+#         s[1, :, :] = y
+#     print np.shape(s)
+#     assert 0
 
     # set up and run emcee
     ndim, nwalkers = len(pars_init), 32
@@ -88,8 +96,8 @@ def make_plots(whichx, fname):
 
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
-    fname = "test"
-    MCMC(whichx, 50, fname, 0, bigdata=True)
+    fname = "f"
+    MCMC(whichx, 10, fname, 0, bigdata=True)
     make_plots(whichx, fname)
 
 #     # load data
