@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import scipy as sp
 import scipy.optimize as spo
 
-def load_data(whichx, nd=0, bigdata=False, huber=False):
+def load_data(whichx, nd=0, bigdata=True, huber=False):
 
     if bigdata:
         data = np.genfromtxt("../data/BIGDATA.nohuber.filtered.dat").T
@@ -52,10 +52,6 @@ def load_data(whichx, nd=0, bigdata=False, huber=False):
 def model1(pars, x):
     return pars[0]*x + pars[1]
 
-def deming_model(pars, x, y):
-    b, a = pars
-    return (a*b + x + b*y) / (1 + b**2), (a + b*(x + b*y)) / (1 + b**2)
-
 def model(pars, samples):
     xs = samples[0, :, :]
     x = np.reshape(xs, np.shape(xs)[0]* np.shape(xs)[1])
@@ -86,39 +82,29 @@ def nll(pars, x, y, yerr, model):
     chi2 = -.5 * ((y-mod)**2 * inv_sig2)
     return - np.logaddexp.reduce(chi2, axis=0)
 
-def deming_nll(pars, x, y, yerr, model):
-    inv_sig2 = 1./(yerr**2 + xerr**2)
-    xc, yc = deming_model(pars, x, y)
-    chi2 = ((x-xc)**2 + (y-yc)**2) * inv_sig2
-    return - np.logaddexp.reduce(chi2, axis=0)
-
 if __name__ == "__main__":
 
-    x, y, xerr, yerr = load_data("logg", bigdata=True)
+    x, y, xerr, yerr = load_data("logg")
 
     pars_init = [1.8, 5.6, -1, 5.95, -1.2]
     res = spo.minimize(nll, pars_init, args=(x, y, yerr, broken_power_law1))
     print res.x
 
     plt.clf()
-    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0, ecolor=".7")
+    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0, ecolor=".7",
+                 label="bigdata")
 
-#     plt.xlim(1.6, 2.2)
-#     plt.plot(x, broken_power_law1(res.x, x), "m")
+    plt.xlim(1., 2.4)
+    plt.ylim(3., 5.)
+    plt.plot(x, broken_power_law1(res.x, x), "m")
 
     pars_init = [5.6, -1]
     res = spo.minimize(nll, pars_init, args=(x, y, yerr, model1))
     print res.x
     plt.plot(x, model1(res.x, x), "y")
 
-#     pars_init = [5.6, -1, .5, .5]
-#     res = spo.minimize(nll, pars_init, args=(x, y, yerr, polynomial))
-#     print res.x
-#     plt.plot(x, polynomial(res.x, x), "b")
-
-    pars_init = [5.6, -1]
-    res = spo.minimize(deming_nll, pars_init, args=(x, y, yerr, deming_model))
+    pars_init = [5.6, -1, .5, .5]
+    res = spo.minimize(nll, pars_init, args=(x, y, yerr, polynomial))
     print res.x
-    plt.plot(x, deming_model(res.x, x, y)[0], "m")
-
-    plt.savefig("model")
+    plt.plot(x, polynomial(res.x, x), "b")
+    plt.savefig("model.pdf")
