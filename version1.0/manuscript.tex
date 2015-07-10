@@ -12,9 +12,10 @@
 \usepackage{wasysym}
 \usepackage{subfigure}
 \usepackage{epsfig}
+\usepackage{color}
+\definecolor{linkcolor}{rgb}{0,0,0.5}
 \usepackage[%
 	colorlinks=true,	% false: boxed links; true: colored links
-	urlcolor=blue,		% color of external links
 	pdfpagelabels=true,
 	hypertexnames=true,
 	plainpages=false,
@@ -32,9 +33,10 @@
 %	pdfproducer={Producer}, % producer of the document
 %	pdfkeywords={keyword1} {key2} {key3}, % list of keywords
 %	pdfnewwindow=true,      % links in new window
-	linkcolor=red,          % color of internal links (change box color with linkbordercolor)
-	citecolor=green,        % color of links to bibliography
-%	filecolor=magenta,      % color of file links
+	urlcolor=linkcolor,     % color of external links
+	linkcolor=linkcolor,    % color of internal links (change box color with linkbordercolor)
+	citecolor=linkcolor,    % color of links to bibliography
+	filecolor=linkcolor,    % color of file links
         ]{hyperref}
 %
 

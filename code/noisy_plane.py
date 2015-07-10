@@ -64,7 +64,7 @@ def lnlikeH(pars, samples, obs, u):
     return loglike
 
 # n-D, hierarchical log-likelihood with sigma as a function of y
-def lnlikeHF(pars, samples, obs, u):
+def lnlikeHF(pars, samples, obs, u, extra=False):
     '''
     Generic likelihood function for importance sampling with any number of
     dimensions.
@@ -72,6 +72,7 @@ def lnlikeHF(pars, samples, obs, u):
     obs should be a 2d array of observations. shape = (ndims, nobs)
     u should be a 2d array of uncertainties. shape = (ndims, nobs)
     samples is a 3d array of samples. shape = (ndims, nobs, nsamp)
+    if extra == True, the sigma has both a slope and intercept
     '''
     ndims, nobs, nsamp = samples.shape
     ypred = model(pars, samples)
@@ -80,11 +81,49 @@ def lnlikeHF(pars, samples, obs, u):
     yerr = u[1, :]
     ll = np.zeros((nobs, nsamp*nobs))
     for i in range(nobs):
-        inv_sigma2 = 1.0/(yerr[i]**2 + pars[2]**2 + pars[3]*model1(pars, xobs[i]))
-#         inv_sigma2 = 1.0/(yerr[i]**2 + (m*model1(pars, xobs[i]))**2)
-#         inv_sigma2 = 1.0/(yerr[i]**2 + m/model1(pars, xobs[i]))
+        if extra:
+            inv_sigma2 = 1.0/(yerr[i]**2 + \
+                    (pars[2] + pars[3] * model1(pars, xobs[i]))**2)
+        else:
+            inv_sigma2 = 1.0/(yerr[i]**2 + (pars[2]*model1(pars, xobs[i]))**2)
         ll[i, :] = -.5*((yobs[i] - ypred)**2*inv_sigma2) + np.log(inv_sigma2)
     loglike = np.sum(np.logaddexp.reduce(ll, axis=1))
+    if np.isfinite(loglike):
+        return loglike
+    return -np.inf
+
+# n-D, hierarchical log-likelihood with sigma as a function of y
+def lnlikeHFM(pars, samples, obs, u, extra=False):
+    '''
+    Generic likelihood function for importance sampling with any number of
+    dimensions.
+    Now with added jitter parameter (hierarchical)
+    obs should be a 2d array of observations. shape = (ndims, nobs)
+    u should be a 2d array of uncertainties. shape = (ndims, nobs)
+    samples is a 3d array of samples. shape = (ndims, nobs, nsamp)
+    if extra == True, the sigma has both a slope and intercept
+    Now with a mixture model!
+    '''
+    ndims, nobs, nsamp = samples.shape
+    ypred = model(pars, samples)
+    yobs = obs[1, :]
+    xobs = obs[0, :]
+    yerr = u[1, :]
+    ll1 = np.zeros((nobs, nsamp*nobs))
+    ll2 = np.zeros((nobs, nsamp*nobs))
+    Y, V, P = pars[4], pars[5], pars[6]
+    for i in range(nobs):
+        if extra:
+            inv_sigma2 = 1.0/(yerr[i]**2 + \
+                    (pars[2] + pars[3] * model1(pars, xobs[i]))**2 + V)
+        else:
+            inv_sigma2 = 1.0/(yerr[i]**2 + \
+                    (pars[2]*model1(pars, xobs[i]))**2 + V)
+        ll1[i, :] = -.5*((yobs[i] - ypred)**2*inv_sigma2) + np.log(inv_sigma2)
+        ll2[i, :] = -.5*((yobs[i] - Y)**2*inv_sigma2) + np.log(inv_sigma2)
+    loglike1 = np.logaddexp.reduce(ll, axis=1)
+    loglike2 = np.logaddexp.reduce(ll, axis=1)
+    loglike = np.sum(np.logaddexp(np.log(1-P) + lnlike1, np.log(P) + lnlike2))
     if np.isfinite(loglike):
         return loglike
     return -np.inf

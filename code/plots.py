@@ -5,13 +5,28 @@ import scipy.interpolate as spi
 import h5py
 import sys
 from noisy_plane import model1
+from model import load_data
 
 def interp(xold, yold, xnew, s):
     tck = spi.splrep(xold, yold, s=s)
     ynew = spi.splev(xnew, tck, der=0)
     return ynew
 
-def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
+def fit_straight_line(x, y, yerr):
+    AT = np.vstack((np.ones_like(x), x))
+    C = np.eye(len(y)) * yerr**2
+    ATCA = np.dot(np.dot(AT, C), AT.T)
+    ATCy = np.dot(np.dot(AT, C), y)
+    return np.linalg.solve(ATCA, ATCy)
+
+def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, ndraws,
+                              plot_samp=False, fractional=True):
+
+    # fit straight line
+    lim = 200
+    a1 = fit_straight_line(x[:lim], y[:lim], yerr[:lim])
+    a2 = fit_straight_line(x[lim:], y[lim:], yerr[lim:])
+
     assert np.shape(samples)[0] < np.shape(samples)[1], \
             "samples is wrong shape"
     beta, alpha, tau = np.median(samples, axis=1)
@@ -25,12 +40,11 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     xs = np.linspace(1., 2.4, 100)
     plt.clf()
 
-    ndraws = 3000
     b_samp = np.random.choice(samples[0, :], ndraws)
     a_samp = np.random.choice(samples[1, :], ndraws)
     s_samp = np.random.choice(samples[2, :], ndraws) * np.random.randn(ndraws)
 
-    if fname == "rho":
+    if whichx == "rho":
         plt.ylabel("$\log_{10}(\\rho_{\star}[\mathrm{g~cm}^{-3}])$")
         col = "#FF33CC"
         plt.text(1.55, .5, "$\log_{10} (\\rho_{\star}) \sim \mathcal{N} \
@@ -40,14 +54,18 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
         plt.text(1.95, -.08, "$\\sigma_{\\rho} = %.3f$" % tau**.5)
         plt.ylim(-2, 1)
         for i in range(ndraws):
-            plt.plot(xs, model1([b_samp[i], a_samp[i]], xs)-3, col, alpha=.01)
+            ys = model1([b_samp[i], a_samp[i]], xs)
+            if fractional:
+                plt.plot(xs, ys + ys * s_samp[i], col, alpha=.05)
+            else:
+                plt.plot(xs, ys + s_samp[i], col, alpha=.05)
         plt.plot(xs, model1(pars, xs)-3, ".2", linewidth=1)
         plt.errorbar(x, y-3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
                              alpha=.5, ecolor=".5", mec=".2")
         plt.plot(xs, model1(pars, xs)+sigma-3, "k--")
         plt.plot(xs, model1(pars, xs)-sigma-3, "k--")
 
-    elif fname == "logg":
+    elif whichx == "logg":
         plt.ylim(3, 5)
         col = "#0066CC"
         plt.ylabel("$\log_{10}(g [\mathrm{cm~s}^{-2}])$")
@@ -57,28 +75,49 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
         plt.text(1.95, 4.42, "$\\delta = %.3f$" % beta)
         plt.text(1.95, 4.32, "$\\sigma_g = %.3f$" % tau**.5)
         for i in range(ndraws):
-            plt.plot(xs, model1([b_samp[i], a_samp[i]], xs)+s_samp[i], col, alpha=.01)
+            ys = model1([b_samp[i], a_samp[i]], xs)
+            if fractional:
+                plt.plot(xs, ys + ys * s_samp[i], col, alpha=.05)
+            else:
+                plt.plot(xs, ys + s_samp[i], col, alpha=.05)
         plt.plot(xs, model1(pars, xs), ".2", linewidth=1)
         plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
                      alpha=.5, ecolor=".5", mec=".2")
-        plt.plot(xs, model1(pars, xs)+sigma, "k--")
-        plt.plot(xs, model1(pars, xs)-sigma, "k--")
-
-#     plt.fill_between(xs, model1(pars, xs)+sigma,
-#                      model1(pars, xs)+sigma, color=col, alpha=.3,
-#                      edgecolor="w")
-#         plt.fill_between(xs, model1(pars, xs)-2*sigma,
-#                          model1(pars, xs)+2*sigma, color=col, alpha=.2,
-#                          edgecolor="w")
+        ys = model1(pars, xs)
+        if fractional:
+            plt.plot(xs, ys + ys*sigma, "k--")
+            plt.plot(xs, ys - ys*sigma, "k--")
+        else:
+            plt.plot(xs, ys + sigma, "k--")
+            plt.plot(xs, ys - sigma, "k--")
+#         ys1 = np.linspace(3, y[l], 10)
+#         ys2 = np.linspace(y[l], 5, 10)
+#         plt.plot(a1[0]+a1[1]*ys1, ys1, "r", linewidth=1)
+#         plt.plot(a2[0]+a2[1]*ys2, ys2, "g", linewidth=1)
+#         xs1 = np.linspace(1, x[lim], 10)
+#         xs2 = np.linspace(x[lim], 2.4, 10)
+#         plt.plot(xs1, a1[0] + a1[1]*xs1, "m", linewidth=1)
+#         plt.plot(xs2, a2[0] + a2[1]*xs2, "m", linewidth=1)
+#         xs = np.linspace(1, 2.5, 100)-3
+#         ys = 1.15136-3.59637*xs-1.40002*xs**2-.22993*xs**3
+#         plt.plot(xs+3, ys, "c", linewidth=1)
 
     plt.subplots_adjust(bottom=.1)
 
     plt.xlim(1, 2.4)
     plt.xlabel("$\log_{10}\mathrm{(F}_8~\mathrm{[ppm]})$")
-    print "..figs/%s_vs_flicker.pdf" % fname
-    plt.savefig("../figs/%s_vs_flicker.pdf"
-                % fname)
-    plt.savefig("flicker_inv_%s" % fname)
+    print "..figs/%s_vs_flicker.pdf" % whichx
+    plt.savefig("../figs/%s_vs_flicker.pdf" % whichx)
+    plt.savefig("flicker_inv_%s" % whichx)
+
+    plt.clf()
+    plt.ylim(4.6, 3.2)
+    x -= 3
+    xs = np.linspace(min(x), max(x), 100)
+    plt.plot(10**x, y, "ko")
+    ys = 1.15136-3.59637*xs-1.40002*xs**2-.22993*xs**3
+    plt.plot(10**xs, ys, "m")
+    plt.savefig("bastien_figureS2")
 
 def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
@@ -114,6 +153,8 @@ def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
 
     plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0, alpha=.5,
                  ecolor=".5", mec=".2")
+#     plt.errorbar(xx, yy, xerr=xxerr, yerr=yyerr, fmt="r.", capsize=0, alpha=.5,
+#                  ecolor="r")
     plt.plot(xs, alpha+beta*xs, ".2", linewidth=1)
 
     plt.xlim(min(xs), max(xs))
@@ -131,32 +172,27 @@ def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
     plt.clf()
     plt.hist(normed_resids, 20, histtype="stepfilled", color="w")
     plt.xlabel("Normalised residuals")
-    plt.savefig("residual_hist_%s" % fname)
+    plt.savefig("residual_hist_%s" % whichx)
 
 if __name__ == "__main__":
 
     plotpar = {'axes.labelsize': 18,
-               'text.fontsize': 18,
+               'text.fontsize': 26,
                'legend.fontsize': 18,
                'xtick.labelsize': 18,
                'ytick.labelsize': 18,
                'text.usetex': True}
     plt.rcParams.update(plotpar)
 
-    fname = str(sys.argv[1]) # should be either "rho" or "logg"
+    whichx = str(sys.argv[1]) # should be either "rho" or "logg"
 
-    # load data
-    fr, frerr, r, rerr = np.genfromtxt("../data/flickers.dat").T
-    fl, flerr, l, lerr, t, terr = np.genfromtxt("../data/log.dat").T
-    nd = len(fr)
-    x, xerr, y, yerr = fl[:nd], flerr[:nd], l[:nd], lerr[:nd]
-    if fname == "rho":
-        x, xerr, y, yerr = fr[:nd], frerr[:nd], r[:nd], rerr[:nd]
+    x, y, xerr, yerr = load_data(whichx, bigdata=True)
 
     # load chains
-    with h5py.File("%s_samples.h5" % fname, "r") as f:
+    fname = "test"
+    with h5py.File("%s_samples_%s.h5" % (whichx, fname), "r") as f:
         samples = f["samples"][...]
     samples = samples.T
 
-    make_flicker_plot(x, xerr, y, yerr, samples, fname)
-    make_inverse_flicker_plot(x, xerr, y, yerr, samples, fname)
+    make_flicker_plot(x, xerr, y, yerr, samples, whichx)
+    make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, 200)
