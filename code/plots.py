@@ -30,20 +30,18 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, ndraws,
     assert np.shape(samples)[0] < np.shape(samples)[1], \
             "samples is wrong shape"
     beta, alpha, tau = np.median(samples, axis=1)
-    sigma = (np.sqrt(abs(tau)))
+    sigma = abs(tau)**.5
     pars = [beta, alpha, sigma]
 
     print alpha, beta, tau, sigma
-    ys = alpha + beta * x
-    sig_tot = sigma + yerr
-    ys = np.linspace(min(y)-5, max(y)+5, 1000)
-    xs = np.linspace(1., 2.4, 100)
-    plt.clf()
 
     b_samp = np.random.choice(samples[0, :], ndraws)
     a_samp = np.random.choice(samples[1, :], ndraws)
-    s_samp = np.random.choice(samples[2, :], ndraws) * np.random.randn(ndraws)
+    t_samp = np.random.choice(samples[2, :], ndraws)
+    s_samp = abs(t_samp)**.5 * np.random.randn(ndraws)
 
+    plt.clf()
+    xs = np.linspace(1., 2.4, 100)
     if whichx == "rho":
         plt.ylabel("$\log_{10}(\\rho_{\star}[\mathrm{g~cm}^{-3}])$")
         col = "#FF33CC"
@@ -56,14 +54,19 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, ndraws,
         for i in range(ndraws):
             ys = model1([b_samp[i], a_samp[i]], xs)
             if fractional:
-                plt.plot(xs, ys + ys * s_samp[i], col, alpha=.05)
+                plt.plot(xs, ys + ys * s_samp[i] - 3, col, alpha=.05)
             else:
-                plt.plot(xs, ys + s_samp[i], col, alpha=.05)
+                plt.plot(xs, ys + s_samp[i] - 3, col, alpha=.05)
         plt.plot(xs, model1(pars, xs)-3, ".2", linewidth=1)
         plt.errorbar(x, y-3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
                              alpha=.5, ecolor=".5", mec=".2")
-        plt.plot(xs, model1(pars, xs)+sigma-3, "k--")
-        plt.plot(xs, model1(pars, xs)-sigma-3, "k--")
+        ys = model1(pars, xs)
+        if fractional:
+            plt.plot(xs, ys + ys * sigma - 3 , "k--")
+            plt.plot(xs, ys - ys * sigma - 3, "k--")
+        else:
+            plt.plot(xs, ys + sigma - 3 , "k--")
+            plt.plot(xs, ys - sigma - 3, "k--")
 
     elif whichx == "logg":
         plt.ylim(3, 5)
@@ -189,10 +192,10 @@ if __name__ == "__main__":
     x, y, xerr, yerr = load_data(whichx, bigdata=True)
 
     # load chains
-    fname = "test"
+    fname = str(sys.argv[2])
     with h5py.File("%s_samples_%s.h5" % (whichx, fname), "r") as f:
         samples = f["samples"][...]
     samples = samples.T
 
     make_flicker_plot(x, xerr, y, yerr, samples, whichx)
-    make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, 200)
+    make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, 500)

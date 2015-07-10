@@ -71,7 +71,7 @@ def make_plots(whichx, fname):
 
     x, y, xerr, yerr = load_data(whichx)
 
-    with h5py.File("%s_samples.h5" % whichx) as f:
+    with h5py.File("%s_samples_%s.h5" % (whichx, fname)) as f:
         samp = f["samples"][...]
     m, c, sig = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
                zip(*np.percentile(samp, [16, 50, 84], axis=0)))

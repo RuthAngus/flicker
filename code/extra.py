@@ -15,7 +15,7 @@ def lnprior(pars, mm=False):
     return -np.inf
 
 def lnprob(pars, samples, obs, u, mm=False):
-    return lnlike(pars, samples, obs, u) + lnprior(pars)
+    return lnlikeHF(pars, samples, obs, u, extra=True) + lnprior(pars)
 
 def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=500):
 

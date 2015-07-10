@@ -111,7 +111,7 @@ def lnlikeHFM(pars, samples, obs, u, extra=False):
     yerr = u[1, :]
     ll1 = np.zeros((nobs, nsamp*nobs))
     ll2 = np.zeros((nobs, nsamp*nobs))
-    Y, V, P = pars[4], pars[5], pars[6]
+    Y, V, P = pars[3], pars[4], pars[5]
     for i in range(nobs):
         if extra:
             inv_sigma2 = 1.0/(yerr[i]**2 + \
@@ -121,8 +121,8 @@ def lnlikeHFM(pars, samples, obs, u, extra=False):
                     (pars[2]*model1(pars, xobs[i]))**2 + V)
         ll1[i, :] = -.5*((yobs[i] - ypred)**2*inv_sigma2) + np.log(inv_sigma2)
         ll2[i, :] = -.5*((yobs[i] - Y)**2*inv_sigma2) + np.log(inv_sigma2)
-    loglike1 = np.logaddexp.reduce(ll, axis=1)
-    loglike2 = np.logaddexp.reduce(ll, axis=1)
+    lnlike1 = np.logaddexp.reduce(ll1, axis=1)
+    lnlike2 = np.logaddexp.reduce(ll2, axis=1)
     loglike = np.sum(np.logaddexp(np.log(1-P) + lnlike1, np.log(P) + lnlike2))
     if np.isfinite(loglike):
         return loglike
