@@ -64,7 +64,7 @@ def lnlikeH(pars, samples, obs, u):
     return loglike
 
 # n-D, hierarchical log-likelihood with sigma as a function of y
-def lnlikeHF(pars, samples, obs, u):
+def lnlikeHF(pars, samples, obs, u, extra=False):
     '''
     Generic likelihood function for importance sampling with any number of
     dimensions.
@@ -72,6 +72,7 @@ def lnlikeHF(pars, samples, obs, u):
     obs should be a 2d array of observations. shape = (ndims, nobs)
     u should be a 2d array of uncertainties. shape = (ndims, nobs)
     samples is a 3d array of samples. shape = (ndims, nobs, nsamp)
+    if extra == True, the sigma has both a slope and intercept
     '''
     ndims, nobs, nsamp = samples.shape
     ypred = model(pars, samples)
@@ -80,7 +81,11 @@ def lnlikeHF(pars, samples, obs, u):
     yerr = u[1, :]
     ll = np.zeros((nobs, nsamp*nobs))
     for i in range(nobs):
-        inv_sigma2 = 1.0/(yerr[i]**2 + (pars[2]*model1(pars, xobs[i]))**2)
+        if extra:
+            inv_sigma2 = 1.0/(yerr[i]**2 + \
+                    (pars[2] + pars[3] * model1(pars, xobs[i]))**2)
+        else:
+            inv_sigma2 = 1.0/(yerr[i]**2 + (pars[2]*model1(pars, xobs[i]))**2)
         ll[i, :] = -.5*((yobs[i] - ypred)**2*inv_sigma2) + np.log(inv_sigma2)
     loglike = np.sum(np.logaddexp.reduce(ll, axis=1))
     if np.isfinite(loglike):
