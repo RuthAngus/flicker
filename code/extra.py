@@ -10,7 +10,7 @@ import h5py
 
 def lnprior(pars, mm=False):
     if -10 < pars[0] < 10 and -10 < pars[1] < 10 and -10 < pars[2] < 10 \
-            and -10 < pars[3] < -10:
+            and -10 < pars[3] < 10:
         return 0.
     return -np.inf
 
