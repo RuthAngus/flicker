@@ -141,61 +141,6 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
     plt.plot(10**xs, ys, "m")
     plt.savefig("bastien_figureS2")
 
-def make_flicker_plot(x, xerr, y, yerr, samples, plot_samp=False):
-
-    assert np.shape(samples)[0] < np.shape(samples)[1], \
-            "samples is wrong shape"
-
-    alpha, beta, tau = np.median(samples, axis=1)
-    sigma = np.sqrt(tau)
-    print alpha, beta, tau, sigma
-
-    ys = alpha + beta * x
-    sig_tot = sigma + yerr
-    xs = np.linspace(1., 2.4, 1000)
-
-    plt.clf()
-    # plot posterior samples
-    if plot_samp:
-        # sample posteriors
-        nsamp = 1000
-        a = np.random.choice(samples[0, :], nsamp)
-        b = np.random.choice(samples[1, :], nsamp)
-        t = np.random.choice(samples[2, :], nsamp)
-        s = np.sqrt(t)
-        for i in range(nsamp):
-            plt.plot(xs, a[i]+b[i]*xs+np.random.randn(1)*s[i], color=".5",
-                     alpha=.03)
-    else:
-        # intrinsic scatter
-        plt.fill_between(xs, alpha+beta*xs-sigma, alpha+beta*xs+sigma,
-                         color=cols.blue, alpha=.4, edgecolor="w")
-        plt.fill_between(xs, alpha+beta*xs-2*sigma, alpha+beta*xs+2*sigma,
-                         color=cols.blue, alpha=.2, edgecolor="w")
-
-    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0, alpha=.5,
-                 ecolor=".5", mec=".2")
-#     plt.errorbar(xx, yy, xerr=xxerr, yerr=yyerr, fmt="r.", capsize=0, alpha=.5,
-#                  ecolor="r")
-    plt.plot(xs, alpha+beta*xs, ".2", linewidth=1)
-
-    plt.xlim(min(xs), max(xs))
-    plt.ylim(.5, 2.5)
-    plt.xlabel("$\log_{10}(\\rho_{star}[\mathrm{kgm}^{-3}])$")
-    plt.ylabel("$\log_{10}\mathrm{(8-hour~flicker~[ppm])}$")
-    if plot_samp:
-        plt.savefig("flicker2")
-    else:
-        plt.savefig("flicker")
-
-    resids = y - (alpha+beta*x)
-    normed_resids = resids / np.sqrt(yerr**2 + sigma**2)
-    np.savetxt("normed_resids_%s.txt", np.transpose(normed_resids))
-    plt.clf()
-    plt.hist(normed_resids, 20, histtype="stepfilled", color="w")
-    plt.xlabel("Normalised residuals")
-    plt.savefig("residual_hist_%s" % whichx)
-
 if __name__ == "__main__":
 
     plotpar = {'axes.labelsize': 18,
@@ -217,6 +162,5 @@ if __name__ == "__main__":
         samples = f["samples"][...]
     samples = samples.T
 
-#     make_flicker_plot(x, xerr, y, yerr, samples, whichx)
     make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, 500,
                               extra=True)
