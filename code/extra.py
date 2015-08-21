@@ -15,7 +15,6 @@ def lnprior(pars, mm=False):
     return -np.inf
 
 def lnprob(pars, samples, obs, u):
-    pars = np.exp(pars)
     return lnlikeHF(pars, samples, obs, u) + lnprior(pars)
 
 def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=500):
@@ -29,8 +28,8 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=500):
     """
 
     # set initial parameters
-    rho_pars = np.log([-2., 6., .0065, .05])
-    logg_pars = np.log([-1.850, 7., .0065, .05])
+    rho_pars = np.log([-2., 6., np.log(.0065), np.log(.05)])
+    logg_pars = np.log([-1.850, 7., np.log(.0065), np.log(.05)])
     pars_init = logg_pars
     if whichx == "rho":
         pars_init = rho_pars
@@ -56,9 +55,9 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=500):
     print "production run..."
     sampler.run_mcmc(pos, run)
     samp = sampler.chain[:, 50:, :].reshape((-1, ndim))
-    m, c, sig, f = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
+    m, c, ln_sig, lnf = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
                zip(*np.percentile(samp, [16, 50, 84], axis=0)))
-    pars = np.exp([m[0], c[0], sig[0], f[0]])
+    pars = np.exp([m[0], c[0], ln_sig[0], lnf[0]])
 
     # save samples
     f = h5py.File("%s_samples_%s.h5" % (whichx, fname), "w")
@@ -75,12 +74,12 @@ def make_plots(whichx, fname):
 
     with h5py.File("%s_samples_%s.h5" % (whichx, fname)) as f:
         samp = f["samples"][...]
-    m, c, sig, f = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
+    m, c, ln_sig, lnf = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
                zip(*np.percentile(samp, [16, 50, 84], axis=0)))
-    pars = [m[0], c[0], sig[0], f[0]]
+    pars = [m[0], c[0], ln_sig[0], lnf[0]]
     print pars
 
-    labels = ["$m$", "$c$", "$\sigma$", "$f$"]
+    labels = ["$m$", "$c$", "$\ln(\sigma)$", "$\ln(f)$"]
     plt.clf()
     fig = triangle.corner(samp, labels=labels)
     fig.savefig("triangle_%s_%s" % (whichx, fname))
