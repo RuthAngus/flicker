@@ -95,7 +95,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
             if fractional:
                 plt.plot(xs, ys + ys * s_samp[i], col, alpha=.05)
             elif extra:
-                plt.plot(xs, f_samp[i] * ys + s_samp[i] - 3, col,
+                plt.plot(xs, ys + f_samp[i] * ys + s_samp[i], col,
                          alpha=.05)
             else:
                 plt.plot(xs, ys + s_samp[i], col, alpha=.05)
@@ -107,22 +107,11 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
             plt.plot(xs, ys + ys*sigma, "k--")
             plt.plot(xs, ys - ys*sigma, "k--")
         elif extra:
-            plt.plot(xs, ys + f * ys + sigma - 3 , "k--")
-            plt.plot(xs, ys - f * ys + sigma - 3, "k--")
+            plt.plot(xs, ys + (f * ys + sigma), "k--")
+            plt.plot(xs, ys - (f * ys + sigma), "k--")
         else:
             plt.plot(xs, ys + sigma, "k--")
             plt.plot(xs, ys - sigma, "k--")
-#         ys1 = np.linspace(3, y[l], 10)
-#         ys2 = np.linspace(y[l], 5, 10)
-#         plt.plot(a1[0]+a1[1]*ys1, ys1, "r", linewidth=1)
-#         plt.plot(a2[0]+a2[1]*ys2, ys2, "g", linewidth=1)
-#         xs1 = np.linspace(1, x[lim], 10)
-#         xs2 = np.linspace(x[lim], 2.4, 10)
-#         plt.plot(xs1, a1[0] + a1[1]*xs1, "m", linewidth=1)
-#         plt.plot(xs2, a2[0] + a2[1]*xs2, "m", linewidth=1)
-#         xs = np.linspace(1, 2.5, 100)-3
-#         ys = 1.15136-3.59637*xs-1.40002*xs**2-.22993*xs**3
-#         plt.plot(xs+3, ys, "c", linewidth=1)
 
     plt.subplots_adjust(bottom=.1)
 
@@ -157,10 +146,15 @@ if __name__ == "__main__":
     x, y, xerr, yerr = load_data(whichx, bigdata=True)
 
     # load chains
-    fname = str(sys.argv[2]) # eg mixture, f_extra
+    fname = str(sys.argv[2]) # eg mixture, f_extra, f
     with h5py.File("%s_samples_%s.h5" % (whichx, fname), "r") as f:
         samples = f["samples"][...]
     samples = samples.T
 
+    fractional, extra = False, False
+    if fname == "f":
+       fractional = True
+    elif fname == "f_extra":
+       extra = True
     make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, 500,
-                              extra=True)
+                              fractional=fractional, extra=extra)

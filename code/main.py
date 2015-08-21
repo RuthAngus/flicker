@@ -97,7 +97,7 @@ def make_plots(whichx, fname):
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
     fname = "f"
-    MCMC(whichx, 10, fname, 0, bigdata=True)
+    MCMC(whichx, 500, fname, 0, bigdata=True)
     make_plots(whichx, fname)
 
 #     # load data
