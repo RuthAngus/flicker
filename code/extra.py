@@ -28,8 +28,8 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=500):
     """
 
     # set initial parameters
-    rho_pars = np.log([-2., 6., np.log(.0065), np.log(.05)])
-    logg_pars = np.log([-1.850, 7., np.log(.0065), np.log(.05)])
+    rho_pars = [-2., 6., np.log(.0065), np.log(.05)]
+    logg_pars = [-1.850, 7., np.log(.0065), np.log(.05)]
     pars_init = logg_pars
     if whichx == "rho":
         pars_init = rho_pars
