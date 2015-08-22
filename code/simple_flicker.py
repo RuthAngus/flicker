@@ -29,29 +29,7 @@ p0, _, _, _ = sampler.run_mcmc(p0, 200)
 sampler.reset()
 sampler.run_mcmc(p0, 500)
 
-triangle.corner(sampler.flatchain, truths=[-1.7, 2.013, np.log(.022)])
-plt.savefig("blah_logg")
-
-plt.clf()
-plt.plot(sampler.chain[:, :, 0].T, "k", alpha=.2)
-plt.savefig("blah0")
-
-plt.clf()
-plt.plot(sampler.chain[:, :, 1].T, "k", alpha=.2)
-plt.savefig("blah1")
-
-plt.clf()
-plt.plot(sampler.chain[:, :, 2].T, "k", alpha=.2)
-plt.savefig("blah2")
-
-lls = sampler.blobs3
-
-plt.clf()
-plt.plot(lls, "k", alpha=.2)
-med = np.median(lls)
-plt.ylim(med - .1*med,  med + .1*med)
-plt.savefig("blobs")
-
+lls = sampler.blobs
 flat_lls = np.reshape(lls, (np.shape(lls)[0]*np.shape(lls)[1]))
 samp = np.vstack((sampler.chain[:, :, :].reshape(-1, ndim).T, flat_lls)).T
 
