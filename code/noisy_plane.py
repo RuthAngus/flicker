@@ -91,8 +91,8 @@ def lnlikeHF(pars, samples, obs, u, extra=False):
         ll[i, :] = -.5*((yobs[i] - ypred)**2*inv_sigma2) + np.log(inv_sigma2)
     loglike = np.sum(np.logaddexp.reduce(ll, axis=1))
     if np.isfinite(loglike):
-        return loglike
-    return -np.inf
+        return loglike, loglike
+    return -np.inf, None
 
 # n-D, hierarchical log-likelihood with sigma as a function of y
 def lnlikeHFM(pars, samples, obs, u, extra=False):
