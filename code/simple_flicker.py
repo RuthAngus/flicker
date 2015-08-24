@@ -25,13 +25,16 @@ sampler = emcee.EnsembleSampler(nwalkers, ndim, lnlike)
 
 p0 = np.array([m_init, b_init, lnsy_init]) \
         + 1e-5 * np.random.randn(nwalkers, ndim)
-p0, _, _, _ = sampler.run_mcmc(p0, 200)
+p0, _, _, _ = sampler.run_mcmc(p0, 5000)
 sampler.reset()
-sampler.run_mcmc(p0, 500)
+sampler.run_mcmc(p0, 5000)
 
 lls = sampler.blobs
 flat_lls = np.reshape(lls, (np.shape(lls)[0]*np.shape(lls)[1]))
 samp = np.vstack((sampler.chain[:, :, :].reshape(-1, ndim).T, flat_lls)).T
+
+triangle.corner(sampler.flatchain, truths=[1.7, 2.013, np.log(.022)])
+plt.savefig("triangle_%s_%s" % (whichx, fname))
 
 f = h5py.File("%s_samples_%s.h5" % (whichx, fname), "w")
 data = f.create_dataset("samples", np.shape(samp))
