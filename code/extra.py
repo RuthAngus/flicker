@@ -10,7 +10,7 @@ import h5py
 
 def lnprior(pars, mm=False):
     if -100 < pars[0] < 100 and -100 < pars[1] < 100 and -10 < pars[2] < 10 \
-            and -10 < pars[3] < 10:
+            and -100 < pars[3] < 100:
         return 0.
     return -np.inf
 
@@ -28,8 +28,8 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=500):
     """
 
     # set initial parameters
-    rho_pars = [-2., 6., np.log(.0065), np.log(.05)]
-    logg_pars = [-1.850, 7., np.log(.0065), np.log(.05)]
+    rho_pars = [-2., 6., np.log(.0065), .05]
+    logg_pars = [-1.850, 7., np.log(.0065), .05]
     pars_init = logg_pars
     if whichx == "rho":
         pars_init = rho_pars
