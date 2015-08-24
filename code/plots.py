@@ -91,19 +91,23 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
                              alpha=.5, ecolor=".5", mec=".2")
 
         quantiles = np.percentile(lines, [16, 84], axis=0)
+        diff1 = model1(pars, xs) - 3 - quantiles[0]
+        diff2 = quantiles[1] - model1(pars, xs) - 3
         plt.fill_between(xs, quantiles[0], quantiles[1], color=col,
+                         alpha=.5)
+        plt.fill_between(xs, quantiles[0]-diff1, quantiles[1]+diff2, color=col,
                          alpha=.5)
 
         ys = model1(pars, xs)
-        if fractional:
-            plt.plot(xs, ys + ys * sigma - 3 , "k--")
-            plt.plot(xs, ys - ys * sigma - 3, "k--")
-        elif extra:
-            plt.plot(xs, ys + f * ys + sigma - 3 , "k--")
-            plt.plot(xs, ys - f * ys + sigma - 3, "k--")
-        else:
-            plt.plot(xs, ys + sigma - 3 , "k--")
-            plt.plot(xs, ys - sigma - 3, "k--")
+#         if fractional:
+#             plt.plot(xs, ys + ys * sigma - 3 , "k--")
+#             plt.plot(xs, ys - ys * sigma - 3, "k--")
+#         elif extra:
+#             plt.plot(xs, ys + f * ys + sigma - 3 , "k--")
+#             plt.plot(xs, ys - f * ys + sigma - 3, "k--")
+#         else:
+#             plt.plot(xs, ys + sigma - 3 , "k--")
+#             plt.plot(xs, ys - sigma - 3, "k--")
 
     elif whichx == "logg":
         plt.ylim(3, 5)
@@ -130,25 +134,28 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
 #                 plt.plot(xs, ys + np.random.randn(1)*s_samp[i], col, alpha=.05)
                 lines.append(ys + np.random.randn(1)*s_samp[i]) #FIXME: opt
 
-
-        quantiles = np.percentile(lines, [16, 84], axis=0)
-        plt.fill_between(xs, quantiles[0], quantiles[1], color=col,
-                         alpha=.5)
-
         plt.plot(xs, model1(pars, xs), ".2", linewidth=1)
         plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
                      alpha=.5, ecolor=".5", mec=".2")
         ys = model1(pars, xs)
 
-        if fractional:
-            plt.plot(xs, ys + ys*sigma, "k--")
-            plt.plot(xs, ys - ys*sigma, "k--")
-        elif extra:
-            plt.plot(xs, ys + (f * ys + sigma), "k--")
-            plt.plot(xs, ys - (f * ys + sigma), "k--")
-        else:
-            plt.plot(xs, ys + sigma, "k--")
-            plt.plot(xs, ys - sigma, "k--")
+        quantiles = np.percentile(lines, [16, 84], axis=0)
+        plt.fill_between(xs, quantiles[0], quantiles[1], color=col,
+                         alpha=.5)
+        diff1 = model1(pars, xs) - 3 - quantiles[0]
+        diff2 = quantiles[1] - model1(pars, xs) - 3
+        plt.fill_between(xs, quantiles[0]-diff1, quantiles[1]+diff2, color=col,
+                         alpha=.5)
+
+#         if fractional:
+#             plt.plot(xs, ys + ys*sigma, "k--")
+#             plt.plot(xs, ys - ys*sigma, "k--")
+#         elif extra:
+#             plt.plot(xs, ys + (f * ys + sigma), "k--")
+#             plt.plot(xs, ys - (f * ys + sigma), "k--")
+#         else:
+#             plt.plot(xs, ys + sigma, "k--")
+#             plt.plot(xs, ys - sigma, "k--")
 
         A = np.vander(xs, 2)
         lines = np.dot(samples[:, :2], A.T)

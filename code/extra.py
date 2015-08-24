@@ -63,11 +63,11 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=1000):
     # save samples
     f = h5py.File("%s_samples_%s.h5" % (whichx, fname), "w")
     data = f.create_dataset("samples", np.shape(samp))
-    data[:, 0] = np.exp(samp[:, 0])
-    data[:, 1] = np.exp(samp[:, 1])
+    data[:, 0] = samp[:, 0]
+    data[:, 1] = samp[:, 1]
     data[:, 2] = np.exp(samp[:, 2])
-    data[:, 3] = np.exp(samp[:, 3])
-    data[:, 4] = np.exp(samp[:, 4])
+    data[:, 3] = samp[:, 3]
+    data[:, 4] = samp[:, 4]
     f.close()
 
 def make_plots(whichx, fname):
@@ -75,7 +75,7 @@ def make_plots(whichx, fname):
     x, y, xerr, yerr = load_data(whichx)
 
     with h5py.File("%s_samples_%s.h5" % (whichx, fname)) as f:
-        samp = f["samples"][:, 3]
+        samp = f["samples"][:, :-1]
     m, c, ln_sig, lnf = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
                zip(*np.percentile(samp, [16, 50, 84], axis=0)))
     pars = [m[0], c[0], ln_sig[0], lnf[0]]
@@ -90,5 +90,5 @@ if __name__ == "__main__":
     whichx = str(sys.argv[1])
     fname = "f_extra"
     nd = 0 # set to zero to use all the data
-    MCMC(whichx, 5, fname, nd, bigdata=True, burnin=100, run=100)
+    MCMC(whichx, 500, fname, nd, bigdata=True)
     make_plots(whichx, fname)
