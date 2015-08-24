@@ -11,13 +11,13 @@ import h5py
 def lnprior(pars, mm=False):
     if -100 < pars[0] < 100 and -100 < pars[1] < 100 and -10 < pars[2] < 10 \
             and -100 < pars[3] < 100:
-        return 0.
-    return -np.inf
+        return 0., 0.
+    return -np.inf, None
 
 def lnprob(pars, samples, obs, u):
     return lnlikeHF(pars, samples, obs, u) + lnprior(pars)
 
-def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=500):
+def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=1000):
     """
     nsamp (int) = number of samples.
     whichx (str) = logg or rho.
@@ -54,10 +54,11 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=500):
     sampler.reset()
     print "production run..."
     sampler.run_mcmc(pos, run)
-    samp = sampler.chain[:, 50:, :].reshape((-1, ndim))
-    m, c, ln_sig, lnf = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
-               zip(*np.percentile(samp, [16, 50, 84], axis=0)))
-    pars = np.exp([m[0], c[0], ln_sig[0], lnf[0]])
+
+    # load likelihood
+    lls = sampler.blobs
+    flat_lls = np.reshape(lls, (np.shape(lls)[0]*np.shape(lls)[1]))
+    samp = np.vstack((sampler.chain[:, :, :].reshape(-1, ndim).T, flat_lls)).T
 
     # save samples
     f = h5py.File("%s_samples_%s.h5" % (whichx, fname), "w")
@@ -66,6 +67,7 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=500):
     data[:, 1] = np.exp(samp[:, 1])
     data[:, 2] = np.exp(samp[:, 2])
     data[:, 3] = np.exp(samp[:, 3])
+    data[:, 4] = np.exp(samp[:, 4])
     f.close()
 
 def make_plots(whichx, fname):
@@ -88,5 +90,5 @@ if __name__ == "__main__":
     whichx = str(sys.argv[1])
     fname = "f_extra"
     nd = 0 # set to zero to use all the data
-    MCMC(whichx, 500, fname, nd, bigdata=True)
+    MCMC(whichx, 5, fname, nd, bigdata=True, burnin=100, run=100)
     make_plots(whichx, fname)
