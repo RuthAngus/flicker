@@ -50,7 +50,7 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=1000):
     sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob,
                                     args=(s, obs, u))
     print "burning in..."
-    pos, _, _, = sampler.run_mcmc(pos, burnin)
+    pos, _, _, _ = sampler.run_mcmc(pos, burnin)
     sampler.reset()
     print "production run..."
     sampler.run_mcmc(pos, run)
@@ -75,7 +75,7 @@ def make_plots(whichx, fname):
     x, y, xerr, yerr = load_data(whichx)
 
     with h5py.File("%s_samples_%s.h5" % (whichx, fname)) as f:
-        samp = f["samples"][...]
+        samp = f["samples"][:, 3]
     m, c, ln_sig, lnf = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
                zip(*np.percentile(samp, [16, 50, 84], axis=0)))
     pars = [m[0], c[0], ln_sig[0], lnf[0]]

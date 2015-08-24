@@ -42,8 +42,9 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
     lls = samples[:, -1]
     m = lls == max(lls)
     beta, alpha, tau = [samples[i, m] for i in range(np.shape(samples)[0]-1)]
-#     sigma = abs(tau)**.5
-    sigma = tau
+    sigma = abs(tau)**.5
+    if fname == "simple":
+        sigma = tau
     pars = [beta, alpha, sigma]
 
     print alpha, beta, tau, sigma
@@ -51,7 +52,8 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
     b_samp = np.random.choice(samples[0, :], ndraws)
     a_samp = np.random.choice(samples[1, :], ndraws)
     t_samp = np.random.choice(samples[2, :], ndraws)
-#     s_samp = abs(t_samp)**.5 * np.random.randn(ndraws)
+    s_samp = abs(t_samp)**.5 * np.random.randn(ndraws)
+    if fname == "simple"
     s_samp = t_samp
     if extra:
         f_samp = np.random.choice(samples[3, :], ndraws)
@@ -71,10 +73,14 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         for i in range(ndraws):
             ys = model1([b_samp[i], a_samp[i]], xs)
             if fractional:
-                plt.plot(xs, ys + ys * s_samp[i] - 3, col, alpha=.05)
+#                 plt.plot(xs, ys + ys * s_samp[i] - 3, col, alpha=.05)
+                lines.append(ys + ys * np.random.randn(1)*s_samp[i]
+                             - 3) #FIXME: opt
             elif extra:
-                plt.plot(xs, f_samp[i] * ys + s_samp[i] - 3, col,
-                         alpha=.05)
+#                 plt.plot(xs, f_samp[i] * ys + s_samp[i] - 3, col,
+#                          alpha=.05)
+                lines.append(ys*f_samp[i] + np.random.randn(1)*s_samp[i]
+                             - 3) #FIXME: opt
             else:
 #                 plt.plot(xs, ys + s_samp[i] - 3, col, alpha=.05)
 #                 plt.plot(xs, ys + np.random.randn(1)*s_samp[i] - 3, col,
@@ -112,10 +118,13 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         for i in range(ndraws):
             ys = model1([b_samp[i], a_samp[i]], xs)
             if fractional:
-                plt.plot(xs, ys + ys * s_samp[i], col, alpha=.05)
+#                 plt.plot(xs, ys + ys * s_samp[i], col, alpha=.05)
+                lines.append(ys + ys*np.random.randn(1)*s_samp[i]) #FIXME: opt
             elif extra:
-                plt.plot(xs, ys + f_samp[i] * ys + s_samp[i], col,
-                         alpha=.05)
+#                 plt.plot(xs, ys + f_samp[i] * ys + s_samp[i], col,
+#                          alpha=.05)
+                lines.append(ys*f_samp[i] +
+                             np.random.randn(1)*s_samp[i]) #FIXME: opt
             else:
 #                 plt.plot(xs, ys + s_samp[i], col, alpha=.05)
 #                 plt.plot(xs, ys + np.random.randn(1)*s_samp[i], col, alpha=.05)
