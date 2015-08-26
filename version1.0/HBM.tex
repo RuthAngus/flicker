@@ -6,8 +6,8 @@
 For our calibration data, we used a sample of \Kepler\ stars with
 both asteroseismic and flicker measurements available. \citet{chaplin:2014}
 report asteroseismic \rhostar\ estimates (and the associated uncertainties) for
-518 \Kepler\ stars. The authors report three different sets of results, 
-depending on the choice of \Teff\ and \FeH, and in this work we elected to use 
+518 \Kepler\ stars. The authors report three different sets of results,
+depending on the choice of \Teff\ and \FeH, and in this work we elected to use
 values reported in their Table 6 over Table 5, and Table 5 over Table 4. We
 additionally used the 71 additional planet hosting stars with asteroseismology
 reported in \citet{huber:2013} but not reported in \citet{chaplin:2014}. Values
@@ -44,20 +44,20 @@ during the fitting process.
 Secondly, we are interested in producing probability distributions over stellar
 densities and surface gravities, as opposed to point estimates, and propagating
 these probability distributions through to subsequent analyses.
-Several recent studies have required posterior Probability Distribution
+Several recent studies have required posterior Probability Density
 Function (PDF) samples, in order to conduct their (hierarchical)
-analyses \citep[e.g.][]{rogers:2015, foreman-mackey:2014, angus:2015}.
+analyses \citep[e.g.][]{foreman-mackey:2014, rogers:2015, angus:2015}.
 
 Including observational uncertainties on the independent variable within our
 analysis is also important, because ordinary least squares regression methods
 performed on data with two-dimensional uncertainties will result in a slope
 that is biased towards zero
-(e.g., Fuller 1987; Akritas \& Bershady 1996; Fox 1997).
-For a demonstration of the effects of neglecting intrinsic scatter and
-two-dimensional uncertainties, see Kelly (2007).
+\citep[e.g.][]{fuller:1987, fox:1997}.
+For a demonstration of the affects of neglecting intrinsic scatter and
+two-dimensional uncertainties, see \citet{kelly:2007}.
 
-The two models describing the relationship between $F_8$, \logg\ and \rhostar\
-density can be written as
+We write the two models describing the relationship between $F_8$, \logg\ and
+\rhostar\ as
 \begin{equation}
 	\log_{10}(\rho_\star) \sim \mathcal{N}(\mu = \alpha + \beta
 	\log_{10}(F_8), \sigma = \sigma_{\rho}),
@@ -66,7 +66,7 @@ density can be written as
 and
 \begin{equation}
 	\log_{10}(g) \sim \mathcal{N}(\mu = \gamma + \delta \log_{10}(F_8),
-	\sigma = \sigma_g)
+	\sigma = \sigma_g).
 \end{equation}
 \label{eq:logg}
 The free parameters of the two models are $\alpha$, $\beta$, $\sigma_{\rho}$,
@@ -110,7 +110,7 @@ approximation provided the posteriors are Gaussian (or log-Normal) and the
 priors used by the previous fitters were uninformative.
 Such an approximation {\it will not be necessary} for those studies using
 \rhostar\ or \logg\ calculated using the newly-calibrated relations
-presented here, as long as the posterior samples are published.
+presented here, since we have published our posterior samples.
 After producing new posterior PDF samples we then add up the individual
 log-likelihoods of each sample to compute the total marginalized likelihood
 for a star.
@@ -118,22 +118,42 @@ The marginalized likelihood of the whole dataset is then computed as the sum
 of the log-likelihoods of each star.
 The importance sampling method allows us to approximate the integral over the
 latent variables.
+We used flat priors for all except the $\sigma$ parameters, for which we used
+priors which were flat in log-space.
 
 Figures \ref{fig:rhostar} and \ref{fig:logg} show the data with the best-fit
-model.
-The faint colored lines show the model where the parameters have been drawn
-from their posterior PDFs.
+models.
+The shaded regions show the 1 and 2$\sigma$ confidence interval.
+These intervals are representative of the uncertainty in the flicker relations,
+but also of the intrinsic scatter in those relations.
+% Given a measurement of flicker, the predictive probability distribution of
+% \logg and \rhostar will be a Gaussian distribution
+
+We also used an analytic form of the marginal likelihood, which accounts for
+2-d uncertainties but does not allow for the modelling of the intrinsic scatter
+as a function of $x$ or $y$.
+For the relation between flicker and \rhostar This likelihood function can be
+written as
+\begin{eqnarray}
+	p(\rho_*|\alpha, \beta, \sigma_{\rho}) = &
+	\exp \left[-\frac{1}{2} \sum_{n=1}^N\frac{[y_n-(\alpha + \beta x_n)]^2}
+	{\left[\beta \sigma_x^2 + (\sigma_y + \sigma_{\rho})^2\right]}\right]
+	\\ \nonumber
+	& + \beta^2 \sigma_x^2 + (\sigma_y + \sigma_{\rho})^2,
+\end{eqnarray}
+and similarly for \logg.
+The parameter values found using this simpler likelihood function are included
+in table \ref{tab:results2}.
 
 %%% rhostar plot
 \begin{figure}
 \begin{center}
 \includegraphics[width=8.4cm,angle=0,clip=true]{../figs/rho_vs_flicker.pdf}
 \caption{
-Stellar density vs. flicker. This figure shows the model, conditioned on the
-data. The solid black line shows the median model values, and the pink lines
-are random draws from the posterior PDFs of the model parameters; $\alpha$,
-$\beta$ and $\sigma_{\rho}$.
-}
+Stellar density vs. flicker.
+This figure shows the model, conditioned on the data.
+The solid black line shows the highest-likelihood sample, and the pink shaded
+regions show the 1 and 2$\sigma$ confidence intervals.}
 \label{fig:rhostar}
 \end{center}
 \end{figure}
@@ -143,21 +163,20 @@ $\beta$ and $\sigma_{\rho}$.
 \begin{center}
 \includegraphics[width=8.4cm,angle=0,clip=true]{../figs/logg_vs_flicker.pdf}
 \caption{
-$\log(g)$ vs. flicker. As in \ref{fig:rhostar} this figure shows
-the model, conditioned on the data. The solid black line shows the median model
-values, and the blue lines are random draws from the posterior PDFs of the
-model parameters; $\gamma$, $\delta$ and $\sigma_g$.
-}
+$\log(g)$ vs. flicker.
+As in \ref{fig:rhostar} this figure shows the model, conditioned on the data.
+The solid black line shows the highest-likelihood sample, and the blue shaded
+regions show the 1 and 2$\sigma$ confidence intervals.}
 \label{fig:logg}
 \end{center}
 \end{figure}
 
 \begin{table}
-\caption{Median parameter values with their 16th and 84th percentile
-	 uncertainties.}
+\caption{Highest-likelihood parameter values with their 16th and 84th
+	percentile uncertainties.}
 \begin{tabular}{lcc}
 \hline\hline
-    Parameter & Median value \\
+    Parameter & highest-likelihood value \\
     \hline
     $\alpha$         &   \\
     $\beta$          &   \\
