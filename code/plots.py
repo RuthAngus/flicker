@@ -53,8 +53,8 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
     a_samp = np.random.choice(samples[1, :], ndraws)
     t_samp = np.random.choice(samples[2, :], ndraws)
     s_samp = abs(t_samp)**.5 * np.random.randn(ndraws)
-    if fname == "simple"
-    s_samp = t_samp
+    if fname == "simple":
+        s_samp = t_samp
     if extra:
         f_samp = np.random.choice(samples[3, :], ndraws)
 
@@ -90,13 +90,11 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         plt.errorbar(x, y-3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
                              alpha=.5, ecolor=".5", mec=".2")
 
-        quantiles = np.percentile(lines, [16, 84], axis=0)
-        diff1 = model1(pars, xs) - 3 - quantiles[0]
-        diff2 = quantiles[1] - model1(pars, xs) - 3
-        plt.fill_between(xs, quantiles[0], quantiles[1], color=col,
-                         alpha=.5)
-        plt.fill_between(xs, quantiles[0]-diff1, quantiles[1]+diff2, color=col,
-                         alpha=.5)
+        quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
+        plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
+                         alpha=.4)
+        plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
+                         alpha=.2)
 
         ys = model1(pars, xs)
 #         if fractional:
@@ -139,13 +137,11 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
                      alpha=.5, ecolor=".5", mec=".2")
         ys = model1(pars, xs)
 
-        quantiles = np.percentile(lines, [16, 84], axis=0)
-        plt.fill_between(xs, quantiles[0], quantiles[1], color=col,
-                         alpha=.5)
-        diff1 = model1(pars, xs) - 3 - quantiles[0]
-        diff2 = quantiles[1] - model1(pars, xs) - 3
-        plt.fill_between(xs, quantiles[0]-diff1, quantiles[1]+diff2, color=col,
-                         alpha=.5)
+        quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
+        plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
+                         alpha=.4)
+        plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
+                         alpha=.2)
 
 #         if fractional:
 #             plt.plot(xs, ys + ys*sigma, "k--")

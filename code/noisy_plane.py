@@ -87,7 +87,7 @@ def lnlikeHF(pars, samples, obs, u, extra=False):
                     np.exp(pars[3]) * model1(pars, xobs[i]) )**2)
         else:
             inv_sigma2 = 1.0/(yerr[i]**2 + \
-                    (np.exp(pars[2])*model1(pars, xobs[i]))**2)
+                    (pars[2]*model1(pars, xobs[i]))**2)
         ll[i, :] = -.5*((yobs[i] - ypred)**2*inv_sigma2) + np.log(inv_sigma2)
     loglike = np.sum(np.logaddexp.reduce(ll, axis=1))
     if np.isfinite(loglike):

@@ -8,9 +8,14 @@ import triangle
 import sys
 import h5py
 
-def lnprior(pars, mm=False):
+def lnprior_extra(pars, mm=False):
     if -100 < pars[0] < 100 and -100 < pars[1] < 100 and -10 < pars[2] < 10 \
             and -100 < pars[3] < 100:
+        return 0., 0.
+    return -np.inf, None
+
+def lnprior(pars, mm=False):
+    if -100 < pars[0] < 100 and -100 < pars[1] < 100 and -100 < pars[2] < 100:
         return 0., 0.
     return -np.inf, None
 
@@ -28,8 +33,12 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=1000):
     """
 
     # set initial parameters
-    rho_pars = [-2., 6., np.log(.0065), .05]
-    logg_pars = [-1.850, 7., np.log(.0065), .05]
+    if fname == "f_extra":
+        rho_pars = [-2., 6., np.log(.0065), .05]
+        logg_pars = [-1.850, 7., np.log(.0065), .05]
+    else:
+        rho_pars = [-2., 6., .0065]
+        logg_pars = [-1.850, 7., .0065]
     pars_init = logg_pars
     if whichx == "rho":
         pars_init = rho_pars
@@ -67,7 +76,8 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=1000):
     data[:, 1] = samp[:, 1]
     data[:, 2] = np.exp(samp[:, 2])
     data[:, 3] = samp[:, 3]
-    data[:, 4] = samp[:, 4]
+    if fname == "f_extra":
+        data[:, 4] = samp[:, 4]
     f.close()
 
 def make_plots(whichx, fname):
@@ -76,19 +86,27 @@ def make_plots(whichx, fname):
 
     with h5py.File("%s_samples_%s.h5" % (whichx, fname)) as f:
         samp = f["samples"][:, :-1]
-    m, c, ln_sig, lnf = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
-               zip(*np.percentile(samp, [16, 50, 84], axis=0)))
-    pars = [m[0], c[0], ln_sig[0], lnf[0]]
+
+    if fname == "f_extra":
+        m, c, ln_sig, lnf = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
+                   zip(*np.percentile(samp, [16, 50, 84], axis=0)))
+        pars = [m[0], c[0], ln_sig[0], lnf[0]]
+        labels = ["$m$", "$c$", "$\ln(\sigma)$", "$\ln(f)$"]
+    else:
+        m, c, ln_sig = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
+                   zip(*np.percentile(samp, [16, 50, 84], axis=0)))
+        pars = [m[0], c[0], ln_sig[0]]
+        labels = ["$m$", "$c$", "$\ln(\sigma)$"]
+
     print pars
 
-    labels = ["$m$", "$c$", "$\ln(\sigma)$", "$\ln(f)$"]
     plt.clf()
     fig = triangle.corner(samp, labels=labels)
     fig.savefig("triangle_%s_%s" % (whichx, fname))
 
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
-    fname = "f_extra"
+    fname = "f"
     nd = 0 # set to zero to use all the data
-    MCMC(whichx, 500, fname, nd, bigdata=True)
+    MCMC(whichx, 2, fname, nd, bigdata=True, burnin=50, run=100)
     make_plots(whichx, fname)
