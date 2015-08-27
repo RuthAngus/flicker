@@ -52,7 +52,8 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
     b_samp = np.random.choice(samples[0, :], ndraws)
     a_samp = np.random.choice(samples[1, :], ndraws)
     t_samp = np.random.choice(samples[2, :], ndraws)
-    s_samp = abs(t_samp)**.5 * np.random.randn(ndraws)
+    if fname == "f":
+        s_samp = (abs(t_samp)**.5 - 1) * np.random.randn(ndraws) + 1
     if fname == "simple":
         s_samp = t_samp
     if extra:
@@ -68,14 +69,16 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         plt.text(1.95, .22, "$\\alpha = %.3f$" % (alpha-3))
         plt.text(1.95, .07, "$\\beta = %.3f$" % beta)
         plt.text(1.95, -.08, "$\\sigma_{\\rho} = %.3f$" % sigma)
-        plt.ylim(-2, 1)
+#         plt.ylim(-2, 1)
+
         lines = []
         for i in range(ndraws):
             ys = model1([b_samp[i], a_samp[i]], xs)
             if fractional:
-#                 plt.plot(xs, ys + ys * s_samp[i] - 3, col, alpha=.05)
-                lines.append(ys + ys * np.random.randn(1)*s_samp[i]
-                             - 3) #FIXME: opt
+                plt.plot(xs, ys-3 + (ys-3) * (s_samp[i]), col, alpha=.05)
+                plt.plot(xs, ys-3 , "b", alpha=.05)
+#                 lines.append(ys-3 + ys * (np.random.randn(1)*s_samp[i] - 1))
+#                              - 3) #FIXME: opt
             elif extra:
 #                 plt.plot(xs, f_samp[i] * ys + s_samp[i] - 3, col,
 #                          alpha=.05)
@@ -89,14 +92,14 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         plt.plot(xs, model1(pars, xs)-3, ".2", linewidth=1)
         plt.errorbar(x, y-3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
                              alpha=.5, ecolor=".5", mec=".2")
+#
+#         quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
+#         plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
+#                          alpha=.4)
+#         plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
+#                          alpha=.2)
 
-        quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
-        plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
-                         alpha=.4)
-        plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
-                         alpha=.2)
-
-        ys = model1(pars, xs)
+#         ys = model1(pars, xs)
 #         if fractional:
 #             plt.plot(xs, ys + ys * sigma - 3 , "k--")
 #             plt.plot(xs, ys - ys * sigma - 3, "k--")
@@ -160,7 +163,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
                          alpha=.5)
     plt.subplots_adjust(bottom=.1)
 
-    plt.xlim(1, 2.4)
+#     plt.xlim(1, 2.4)
     plt.xlabel("$\log_{10}\mathrm{(F}_8~\mathrm{[ppm]})$")
     print "..figs/%s_vs_flicker_%s.pdf" % (whichx, fname)
     plt.savefig("../figs/%s_vs_flicker_%s.pdf" % (whichx, fname))

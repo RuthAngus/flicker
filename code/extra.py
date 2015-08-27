@@ -9,18 +9,18 @@ import sys
 import h5py
 
 def lnprior_extra(pars, mm=False):
-    if -100 < pars[0] < 100 and -100 < pars[1] < 100 and -10 < pars[2] < 10 \
-            and -100 < pars[3] < 100:
+    if -1e6 < pars[0] < 1e6 and -1e6 < pars[1] < 1e6 and -1e6 < pars[2] < 1e6 \
+            and 0 < pars[3] < 1e6:
         return 0., 0.
     return -np.inf, None
 
 def lnprior(pars, mm=False):
-    if -100 < pars[0] < 100 and -100 < pars[1] < 100 and -100 < pars[2] < 100:
+    if -1e6 < pars[0] < 1e6 and -1e6 < pars[1] < 1e6 and -1e6 < pars[2] < 1e6:
         return 0., 0.
     return -np.inf, None
 
 def lnprob(pars, samples, obs, u):
-    return lnlikeHF(pars, samples, obs, u) + lnprior(pars)
+    return lnlikeHF(pars, samples, obs, u, extra=True) + lnprior_extra(pars)
 
 def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=1000):
     """
@@ -34,11 +34,11 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=1000):
 
     # set initial parameters
     if fname == "f_extra":
-        rho_pars = [-2., 6., np.log(.0065), .05]
-        logg_pars = [-1.850, 7., np.log(.0065), .05]
+        rho_pars = [-1.69293833, 5.1408906, .0065, .05]
+        logg_pars = [-1.05043614, 5.66819525, .0065, .05]
     else:
-        rho_pars = [-2., 6., .0065]
-        logg_pars = [-1.850, 7., .0065]
+        rho_pars = [-1.69293833, 5.1408906, .0065]
+        logg_pars = [-1.05043614, 5.66819525, .0065]
     pars_init = logg_pars
     if whichx == "rho":
         pars_init = rho_pars
@@ -91,7 +91,7 @@ def make_plots(whichx, fname):
         m, c, ln_sig, lnf = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
                    zip(*np.percentile(samp, [16, 50, 84], axis=0)))
         pars = [m[0], c[0], ln_sig[0], lnf[0]]
-        labels = ["$m$", "$c$", "$\ln(\sigma)$", "$\ln(f)$"]
+        labels = ["$m$", "$c$", "$\sigma$", "$f$"]
     else:
         m, c, ln_sig = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
                    zip(*np.percentile(samp, [16, 50, 84], axis=0)))
@@ -106,7 +106,7 @@ def make_plots(whichx, fname):
 
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
-    fname = "f"
+    fname = "f_extra"
     nd = 0 # set to zero to use all the data
-    MCMC(whichx, 2, fname, nd, bigdata=True, burnin=50, run=100)
+    MCMC(whichx, 2, fname, nd, bigdata=True, burnin=10, run=50)
     make_plots(whichx, fname)
