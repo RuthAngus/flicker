@@ -34,8 +34,8 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=1000):
 
     # set initial parameters
     if fname == "f_extra":
-        rho_pars = [-1.69293833, 5.1408906, .0065, .05]
-        logg_pars = [-1.05043614, 5.66819525, .0065, .05]
+        rho_pars = [-1.69293833, 5.1408906, 1., -.001]
+        logg_pars = [-1.05043614, 5.66819525, 1., .06]
     else:
         rho_pars = [-1.69293833, 5.1408906, .0065]
         logg_pars = [-1.05043614, 5.66819525, .0065]
@@ -108,5 +108,5 @@ if __name__ == "__main__":
     whichx = str(sys.argv[1])
     fname = "f_extra"
     nd = 0 # set to zero to use all the data
-    MCMC(whichx, 2, fname, nd, bigdata=True, burnin=10, run=50)
+    MCMC(whichx, 500, fname, nd, bigdata=True, burnin=500, run=1000)
     make_plots(whichx, fname)
