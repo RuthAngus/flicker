@@ -9,7 +9,7 @@ import sys
 import h5py
 
 def lnprior_extra(pars, mm=False):
-    if -1e6 < pars[0] < 1e6 and -1e6 < pars[1] < 1e6 and -1e6 < pars[2] < 1e6 \
+    if -1e6 < pars[0] < 0 and 0 < pars[1] < 1e6 and -1e6 < pars[2] < 1e6 \
             and 0 < pars[3] < 1e6:
         return 0., 0.
     return -np.inf, None
@@ -19,10 +19,16 @@ def lnprior(pars, mm=False):
         return 0., 0.
     return -np.inf, None
 
-def lnprob(pars, samples, obs, u):
-    return lnlikeHF(pars, samples, obs, u, extra=True) + lnprior_extra(pars)
+def lnprob(pars, samples, obs, u, extra, f):
+    if extra:
+        return lnlikeHF(pars, samples, obs, u, extra=extra) + \
+                lnprior_extra(pars)
+    elif f:
+        return lnlikeHF(pars, samples, obs, u, extra=extra) + lnprior(pars)
+    else:
+        return lnlikeH(pars, samples, obs, u) + lnprior(pars)
 
-def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=1000):
+def MCMC(whichx, nsamp, fname, nd, extra, f, bigdata, burnin=500, run=1000):
     """
     nsamp (int) = number of samples.
     whichx (str) = logg or rho.
@@ -57,7 +63,7 @@ def MCMC(whichx, nsamp, fname, nd, bigdata, burnin=500, run=1000):
     ndim, nwalkers = len(pars_init), 32
     pos = [pars_init + 1e-4*np.random.randn(ndim) for i in range(nwalkers)]
     sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob,
-                                    args=(s, obs, u))
+                                    args=(s, obs, u, extra, f))
     print "burning in..."
     pos, _, _, _ = sampler.run_mcmc(pos, burnin)
     sampler.reset()
@@ -106,7 +112,11 @@ def make_plots(whichx, fname):
 
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
-    fname = "f_extra"
+    fname = str(sys.argv[2])  # "f_extra"
+    if fname == "f_extra": extra, f = True, True
+    elif fname == "f": extra, f = False, True
+    else: extra, f = False, False
     nd = 0 # set to zero to use all the data
-    MCMC(whichx, 500, fname, nd, bigdata=True, burnin=500, run=1000)
+    ns, bi, r = 5, 10, 50
+    MCMC(whichx, ns, fname, nd, extra, f, bigdata=True, burnin=bi, run=r)
     make_plots(whichx, fname)
