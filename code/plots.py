@@ -30,6 +30,9 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
     assert np.shape(samples)[0] < np.shape(samples)[1], \
             "samples is wrong shape"
 
+    m = samples[0, :] < 0
+    samples = samples[:, m]
+
     # use highest likelihood samples
     lls = samples[:, -1]
     m = lls == max(lls)
@@ -44,13 +47,13 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         sigma = tau
     pars = [beta, alpha, sigma]
 
-    # take medians
-    results = np.median(samples, axis=1)
-    print 'results = ', results
-    beta, alpha, tau = results[:3]
-    if extra:
-        print np.shape(results), "shape"
-        beta, alpha, tau, f = results[:4]
+#     # take medians
+#     results = np.median(samples, axis=1)
+#     print 'results = ', results
+#     beta, alpha, tau = results[:3]
+#     if extra:
+#         print np.shape(results), "shape"
+#         beta, alpha, tau, f = results[:4]
 
     print alpha, beta, tau, sigma
 
@@ -61,6 +64,8 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         s_samp = (abs(t_samp)**.5 - 1) * np.random.randn(ndraws) + 1
     if fname == "simple":
         s_samp = t_samp
+    if fname == "test":
+        s_samp = (abs(t_samp)**.5) * np.random.randn(ndraws)
     if extra:
         s_samp = (abs(t_samp)**.5 - 1) * np.random.randn(ndraws) + 1
         f_samp = np.random.choice(samples[3, :], ndraws)
@@ -78,20 +83,20 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
 #         plt.ylim(-2, 1)
 
         lines = []
-        ym = model1([np.median(b_samp), np.median(a_samp)], xs) - 3
+        ym = model1([np.median(b_samp), np.median(a_samp)], xs)
         for i in range(ndraws):
             ys = model1([b_samp[i], a_samp[i]], xs)
             y3 = ys - 3
             if fractional:
-#                 plt.plot(xs, ys-3 + (ys-3) * (s_samp[i]), col, alpha=.05)
-#                 plt.plot(xs, ys-3 , "b", alpha=.05)
-                lines.append(ys-3 + ys * (np.random.randn(1)*s_samp[i] - 1))
+                plt.plot(xs, ym + ym * np.random.randn(1)*sigma - 3 ,
+                        "b", alpha=.05)
+#                 lines.append(ys-3 + ys * (np.random.randn(1)*s_samp[i] - 1))
+#                 lines.append(ym + ym * np.random.randn(1)*(sigma-1) - 3)
             elif extra:
 #                 plt.plot(xs, y3 * (1 + f_samp[i]), "k", alpha=.05)
 #                 plt.plot(xs, ys - 3, col, alpha=.05)
 #                 lines.append(y3 * f_samp[i] + s_samp[i]) #FIXME: opt
                 lines.append(ym * (1+f_samp[i]) + s_samp[i] - 1) #FIXME: opt
-                print s_samp[i]
             else:
 #                 plt.plot(xs, ys + s_samp[i] - 3, col, alpha=.05)
 #                 plt.plot(xs, ys + np.random.randn(1)*s_samp[i] - 3, col,
@@ -101,11 +106,11 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         plt.errorbar(x, y-3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
                              alpha=.5, ecolor=".5", mec=".2")
 
-        quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
-        plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
-                         alpha=.4)
-        plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
-                         alpha=.2)
+#         quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
+#         plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
+#                          alpha=.4)
+#         plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
+#                          alpha=.2)
 
 #         ys = model1(pars, xs)
 #         if fractional:
@@ -128,19 +133,26 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         plt.text(1.95, 4.42, "$\\delta = %.3f$" % beta)
         plt.text(1.95, 4.32, "$\\sigma_g = %.3f$" % sigma)
         lines = []
+        ym = model1([np.median(b_samp), np.median(a_samp)], xs)
         for i in range(ndraws):
             ys = model1([b_samp[i], a_samp[i]], xs)
             if fractional:
-#                 plt.plot(xs, ys + ys * s_samp[i], col, alpha=.05)
-                lines.append(ys + ys*np.random.randn(1)*s_samp[i]) #FIXME: opt
+                plt.plot(xs, ym + ym * np.random.randn(1)*sigma - 3 ,
+                        "b", alpha=.05)
+#                 lines.append(ys + ys*np.random.randn(1)*s_samp[i])
             elif extra:
-                plt.plot(xs, ys + f_samp[i] * ys + s_samp[i], col, alpha=.05)
-                lines.append(ys*f_samp[i] +
-                             np.random.randn(1)*s_samp[i]) #FIXME: opt
+#                 plt.plot(xs, ys + np.median(f_samp-1)*np.random.randn(1) * \
+#                         ys + np.median(s_samp-1)*np.random.randn(1), col, alpha=.05)
+#                 plt.plot(xs, ys + np.median(f_samp)*np.random.randn(1)*ys
+#                          + np.median(s_samp-1)*np.random.randn(1),
+#                          col, alpha=.05)
+#                 lines.append(ys + ys*np.median(f_samp)*np.random.randn(1))
+                lines.append(ys + ys*np.median(f_samp)*np.random.randn(1)
+                             + np.random.randn(1)*np.median(s_samp-1))
             else:
 #                 plt.plot(xs, ys + s_samp[i], col, alpha=.05)
 #                 plt.plot(xs, ys + np.random.randn(1)*s_samp[i], col, alpha=.05)
-                lines.append(ys + np.random.randn(1)*s_samp[i]) #FIXME: opt
+                lines.append(ys + np.random.randn(1)*s_samp[i])
 
         plt.plot(xs, model1(pars, xs), ".2", linewidth=1)
         plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
@@ -198,11 +210,12 @@ if __name__ == "__main__":
     whichx = str(sys.argv[1]) # should be either "rho" or "logg"
     fname = str(sys.argv[2]) # mixture, f_extra, f, test, simple
 
-    x, y, xerr, yerr = load_data(whichx, bigdata=True)
+#     x, y, xerr, yerr = load_data(whichx, bigdata=True)
+    x, y, xerr, yerr = load_data(whichx, bigdata=False)
 
     # load chains
     with h5py.File("%s_samples_%s.h5" % (whichx, fname), "r") as f:
-        samples = f["samples"][10000:, :]
+        samples = f["samples"][...]
     samples = samples.T
     print np.shape(samples)
 

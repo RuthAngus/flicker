@@ -80,9 +80,10 @@ def MCMC(whichx, nsamp, fname, nd, extra, f, bigdata, burnin=500, run=1000):
     data = f.create_dataset("samples", np.shape(samp))
     data[:, 0] = samp[:, 0]
     data[:, 1] = samp[:, 1]
-    data[:, 2] = np.exp(samp[:, 2])
+    data[:, 2] = samp[:, 2]
     data[:, 3] = samp[:, 3]
-    if fname == "f_extra":
+    print "samp shape = ", np.shape(samp), np.shape(data)
+    if extra:
         data[:, 4] = samp[:, 4]
     f.close()
 
@@ -117,6 +118,6 @@ if __name__ == "__main__":
     elif fname == "f": extra, f = False, True
     else: extra, f = False, False
     nd = 0 # set to zero to use all the data
-    ns, bi, r = 5, 10, 50
-    MCMC(whichx, ns, fname, nd, extra, f, bigdata=True, burnin=bi, run=r)
+    ns, bi, r = 50, 100, 500
+    MCMC(whichx, ns, fname, nd, extra, f, bigdata=False, burnin=bi, run=r)
     make_plots(whichx, fname)

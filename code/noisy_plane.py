@@ -58,10 +58,12 @@ def lnlikeH(pars, samples, obs, u):
     zerr = u[1, :]
     ll = np.zeros((nobs, nsamp*nobs))
     for i in range(nobs):
-        inv_sigma2 = 1.0/(zerr[i]**2 + pars[2]**2)
+        inv_sigma2 = 1.0/(zerr[i]**2 + pars[2])
         ll[i, :] = -.5*((zobs[i] - zpred)**2*inv_sigma2) + np.log(inv_sigma2)
     loglike = np.sum(np.logaddexp.reduce(ll, axis=1))
-    return loglike
+    if np.isfinite(loglike):
+        return loglike, loglike
+    return -np.inf, None
 
 # n-D, hierarchical log-likelihood with sigma as a function of y
 def lnlikeHF(pars, samples, obs, u, extra=False):
@@ -79,7 +81,7 @@ def lnlikeHF(pars, samples, obs, u, extra=False):
     for i in range(nobs):
         if extra:
             inv_sigma2 = 1.0/(u[1, :][i]**2 + \
-                    (pars[2]**2 + pars[3] * model1(pars, obs[0, :][i])**2))
+                    (pars[2] + pars[3] * model1(pars, obs[0, :][i]))**2)
         else:
             inv_sigma2 = 1.0/(u[1, :][i]**2 + \
                     (pars[2]*model1(pars, obs[0, :][i]))**2)
