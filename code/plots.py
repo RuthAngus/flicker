@@ -80,7 +80,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         plt.text(1.95, .22, "$\\alpha = %.3f$" % (alpha-3))
         plt.text(1.95, .07, "$\\beta = %.3f$" % beta)
         plt.text(1.95, -.08, "$\\sigma_{\\rho} = %.3f$" % sigma)
-#         plt.ylim(-2, 1)
+        plt.ylim(-2, 1)
 
         lines = []
         ym = model1([np.median(b_samp), np.median(a_samp)], xs)
@@ -106,11 +106,11 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         plt.errorbar(x, y-3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
                              alpha=.5, ecolor=".5", mec=".2")
 
-#         quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
-#         plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
-#                          alpha=.4)
-#         plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
-#                          alpha=.2)
+        quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
+        plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
+                         alpha=.4)
+        plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
+                         alpha=.2)
 
 #         ys = model1(pars, xs)
 #         if fractional:
@@ -182,7 +182,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
                          alpha=.5)
     plt.subplots_adjust(bottom=.1)
 
-#     plt.xlim(1, 2.4)
+    plt.xlim(1, 2.4)
     plt.xlabel("$\log_{10}\mathrm{(F}_8~\mathrm{[ppm]})$")
     print "..figs/%s_vs_flicker_%s.pdf" % (whichx, fname)
     plt.savefig("../figs/%s_vs_flicker_%s.pdf" % (whichx, fname))
