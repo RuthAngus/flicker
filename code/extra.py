@@ -9,8 +9,8 @@ import sys
 import h5py
 
 def lnprior_extra(pars, mm=False):
-    if -1e6 < pars[0] < 0 and 0 < pars[1] < 1e6 and -1e6 < pars[2] < 1e6 \
-            and 0 < pars[3] < 1e6:
+    if -100 < pars[0] < 0 and 0 < pars[1] < 100 and 0 < pars[2] < 100 \
+            and -100 < pars[3] < 100:
         return 0., 0.
     return -np.inf, None
 
@@ -24,6 +24,7 @@ def lnprob(pars, samples, obs, u, extra, f):
         return lnlikeHF(pars, samples, obs, u, extra=extra) + \
                 lnprior_extra(pars)
     elif f:
+        print extra, f
         return lnlikeHF(pars, samples, obs, u, extra=extra) + lnprior(pars)
     else:
         return lnlikeH(pars, samples, obs, u) + lnprior(pars)
@@ -118,6 +119,7 @@ if __name__ == "__main__":
     elif fname == "f": extra, f = False, True
     else: extra, f = False, False
     nd = 0 # set to zero to use all the data
-    ns, bi, r = 50, 100, 500
+#     ns, bi, r = 50, 100, 500
+    ns, bi, r = 2, 50, 200
     MCMC(whichx, ns, fname, nd, extra, f, bigdata=False, burnin=bi, run=r)
     make_plots(whichx, fname)

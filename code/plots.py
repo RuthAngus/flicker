@@ -87,12 +87,14 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         for i in range(ndraws):
             ys = model1([b_samp[i], a_samp[i]], xs)
             y3 = ys - 3
-            if fractional:
-                plt.plot(xs, ym + ym * np.random.randn(1)*sigma - 3 ,
-                        "b", alpha=.05)
+#             if fractional:
+#                 plt.plot(xs, ym + ym * np.random.randn(1)*sigma - 3 ,
+#                         "b", alpha=.05)
 #                 lines.append(ys-3 + ys * (np.random.randn(1)*s_samp[i] - 1))
 #                 lines.append(ym + ym * np.random.randn(1)*(sigma-1) - 3)
-            elif extra:
+            if extra:
+                plt.plot(xs, y3 + np.random.randn(1)*np.median(s_samp) +
+                        np.random.randn(1)*np.median(f_samp)*xs, col, alpha=.05)
 #                 plt.plot(xs, y3 * (1 + f_samp[i]), "k", alpha=.05)
 #                 plt.plot(xs, ys - 3, col, alpha=.05)
 #                 lines.append(y3 * f_samp[i] + s_samp[i]) #FIXME: opt
@@ -136,11 +138,13 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         ym = model1([np.median(b_samp), np.median(a_samp)], xs)
         for i in range(ndraws):
             ys = model1([b_samp[i], a_samp[i]], xs)
-            if fractional:
-                plt.plot(xs, ym + ym * np.random.randn(1)*sigma - 3 ,
-                        "b", alpha=.05)
+#             if fractional:
+#                 plt.plot(xs, ym + ym * np.random.randn(1)*sigma - 3 ,
+#                         "b", alpha=.05)
 #                 lines.append(ys + ys*np.random.randn(1)*s_samp[i])
-            elif extra:
+            if extra:
+                plt.plot(xs, ys + np.random.randn(1)*np.median(s_samp) +
+                        np.random.randn(1)*np.median(f_samp)*xs, col, alpha=.05)
 #                 plt.plot(xs, ys + np.median(f_samp-1)*np.random.randn(1) * \
 #                         ys + np.median(s_samp-1)*np.random.randn(1), col, alpha=.05)
 #                 plt.plot(xs, ys + np.median(f_samp)*np.random.randn(1)*ys
