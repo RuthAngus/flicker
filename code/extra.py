@@ -23,9 +23,9 @@ def lnprob(pars, samples, obs, u, extra, f):
     if extra:
         return lnlikeHF(pars, samples, obs, u, extra=extra) + \
                 lnprior_extra(pars)
-    elif f:
-        print extra, f
-        return lnlikeHF(pars, samples, obs, u, extra=extra) + lnprior(pars)
+#     elif f:
+#         print extra, f
+#         return lnlikeHF(pars, samples, obs, u, extra=extra) + lnprior(pars)
     else:
         return lnlikeH(pars, samples, obs, u) + lnprior(pars)
 
