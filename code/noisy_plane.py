@@ -81,7 +81,7 @@ def lnlikeHF(pars, samples, obs, u, extra=False):
     for i in range(nobs):
         if extra:
             inv_sigma2 = 1.0/(u[1, :][i]**2 + \
-                    pars[2]**2 + pars[3] * model1(pars, obs[0, :][i]))**2
+                    pars[2]**2 + pars[3] * obs[0, :][i])
         else:
             inv_sigma2 = 1.0/(u[1, :][i]**2 + \
                     (pars[2]*model1(pars, obs[0, :][i]))**2)
