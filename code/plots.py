@@ -19,6 +19,71 @@ def fit_straight_line(x, y, yerr):
     ATCy = np.dot(np.dot(AT, C), y)
     return np.linalg.solve(ATCA, ATCy)
 
+def make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
+                          fractional=False, extra=False):
+
+    # draw samples from post
+    b_samp = np.random.choice(samples[0, :], ndraws)
+    a_samp = np.random.choice(samples[1, :], ndraws)
+    s_samp = np.random.choice(samples[2, :], ndraws)
+    f_samp = np.random.choice(samples[3, :], ndraws)
+
+    # rho plot
+    plt.clf()
+    xs = np.linspace(.7, 2.5, 100)
+    if whichx == "rho":
+        plt.ylabel("$\log_{10}(\\rho_{\star}[\mathrm{g~cm}^{-3}])$")
+        col = "#FF33CC"
+        plt.ylim(-2, 1)
+
+        # plot line draws
+        for i in range(ndraws):
+            ys = model1([b_samp[i], a_samp[i]], xs)
+            y3 = ys - 3
+            line = ys + (np.random.randn(1)*np.median(s_samp)**2 + \
+                    np.random.randn(1)*np.median(f_samp)*xs)**.5 - 3
+            plt.plot(xs, line, col, alpha=.05)
+
+        # plot best fit and data
+        ym = model1([np.median(b_samp), np.median(a_samp)], xs)
+        plt.plot(xs, ym - 3, ".2", linewidth=1)
+        plt.errorbar(x, y - 3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
+                             alpha=.5, ecolor=".5", mec=".2")
+        plt.savefig("new_rho")
+
+    # logg plot
+    elif whichx == "logg":
+        plt.ylim(3, 5)
+        col = "#0066CC"
+        plt.ylabel("$\log_{10}(g [\mathrm{cm~s}^{-2}])$")
+
+        # plot line draws
+#         lines = np.zeros((ndraws, len(xs)))
+        lines = []
+        for i in range(ndraws):
+            ys = model1([b_samp[i], a_samp[i]], xs)
+            line = ys + (np.random.randn(1)*np.median(s_samp)**2 + \
+                    np.random.randn(1)*np.median(f_samp)*xs)**.5
+            plt.plot(xs, line, col, alpha=.05)
+#             lines[i, :] = line
+            lines.append(line)
+
+        # plot regions
+        quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
+        print quantiles[1]
+        print quantiles[2]
+        plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
+                         alpha=.4)
+        plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
+                         alpha=.2)
+
+        # plot best fit and data
+        ym = model1([np.median(b_samp), np.median(a_samp)], xs)
+        plt.plot(xs, ym, ".2", linewidth=1)
+        plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="k.", capsize=0,
+                     alpha=.5, ecolor=".5", mec=".2")
+        plt.savefig("new_logg")
+
 def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
                               fractional=False, extra=False):
 
@@ -93,12 +158,10 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
 #                 lines.append(ys-3 + ys * (np.random.randn(1)*s_samp[i] - 1))
 #                 lines.append(ym + ym * np.random.randn(1)*(sigma-1) - 3)
             if extra:
-                plt.plot(xs, y3 + np.random.randn(1)*np.median(s_samp) +
-                        np.random.randn(1)*np.median(f_samp)*xs, col, alpha=.05)
-#                 plt.plot(xs, y3 * (1 + f_samp[i]), "k", alpha=.05)
-#                 plt.plot(xs, ys - 3, col, alpha=.05)
-#                 lines.append(y3 * f_samp[i] + s_samp[i]) #FIXME: opt
-                lines.append(ym * (1+f_samp[i]) + s_samp[i] - 1) #FIXME: opt
+                line = y3 + np.random.randn(1)*np.median(s_samp-1) + \
+                        np.random.randn(1)*np.median(f_samp)*xs
+                plt.plot(xs, line, col, alpha=.05)
+                lines.append(line)
             else:
 #                 plt.plot(xs, ys + s_samp[i] - 3, col, alpha=.05)
 #                 plt.plot(xs, ys + np.random.randn(1)*s_samp[i] - 3, col,
@@ -143,7 +206,7 @@ def make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
 #                         "b", alpha=.05)
 #                 lines.append(ys + ys*np.random.randn(1)*s_samp[i])
             if extra:
-                plt.plot(xs, ys + np.random.randn(1)*np.median(s_samp) +
+                plt.plot(xs, ys + np.random.randn(1)*np.median(s_samp-1) +
                         np.random.randn(1)*np.median(f_samp)*xs, col, alpha=.05)
 #                 plt.plot(xs, ys + np.median(f_samp-1)*np.random.randn(1) * \
 #                         ys + np.median(s_samp-1)*np.random.randn(1), col, alpha=.05)
@@ -221,12 +284,13 @@ if __name__ == "__main__":
     with h5py.File("%s_samples_%s.h5" % (whichx, fname), "r") as f:
         samples = f["samples"][...]
     samples = samples.T
-    print np.shape(samples)
 
     fractional, extra = False, False
     if fname == "f":
        fractional = True
     elif fname == "f_extra":
        extra = True
+    make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, 1000,
+                              fractional=fractional, extra=extra)
     make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, 1000,
                               fractional=fractional, extra=extra)

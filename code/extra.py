@@ -9,7 +9,7 @@ import sys
 import h5py
 
 def lnprior_extra(pars, mm=False):
-    if -100 < pars[0] < 0 and 0 < pars[1] < 100 and 0 < pars[2] < 100 \
+    if -100 < pars[0] < 0 and 0 < pars[1] < 100 and -100 < pars[2] < 100 \
             and -100 < pars[3] < 100:
         return 0., 0.
     return -np.inf, None
@@ -51,7 +51,7 @@ def MCMC(whichx, nsamp, fname, nd, extra, f, bigdata, burnin=500, run=1000):
         pars_init = rho_pars
 
     # load the data
-    x, y, xerr, yerr = load_data(whichx, nd=nd, bigdata=True)
+    x, y, xerr, yerr = load_data(whichx, nd=nd, bigdata=False)
 
     # format data and generate samples
     obs = np.vstack((x, y))
@@ -120,6 +120,6 @@ if __name__ == "__main__":
     else: extra, f = False, False
     nd = 0 # set to zero to use all the data
 #     ns, bi, r = 50, 100, 500
-    ns, bi, r = 2, 50, 200
+    ns, bi, r = 2, 50, 500
     MCMC(whichx, ns, fname, nd, extra, f, bigdata=False, burnin=bi, run=r)
     make_plots(whichx, fname)
