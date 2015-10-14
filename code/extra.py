@@ -20,13 +20,13 @@ def lnprior_extra(pars, mm=False):
 #      return -np.inf, None
 
 def lnprob(pars, samples, obs, u, extra, f):
-#     if extra:
-    print pars
-    pars[-2] = 1.2
-    print pars
-    print lnlikeHF(pars, samples, obs, u, extra=extra) + \
-            lnprior_extra(pars)
-    raw_input('tetner')
+# #     if extra:
+#     print pars
+#     pars[-2] = 1.2
+#     print pars
+#     print lnlikeHF(pars, samples, obs, u, extra=extra) + \
+#             lnprior_extra(pars)
+#     raw_input('tetner')
     return lnlikeHF(pars, samples, obs, u, extra=extra) + \
             lnprior_extra(pars)
 #     elif f:
@@ -126,6 +126,6 @@ if __name__ == "__main__":
     else: extra, f = False, False
     nd = 0 # set to zero to use all the data
 #     ns, bi, r = 50, 100, 500
-    ns, bi, r = 2, 50, 500
+    ns, bi, r = 2, 50, 1000
     MCMC(whichx, ns, fname, nd, extra, f, bigdata=False, burnin=bi, run=r)
     make_plots(whichx, fname)
