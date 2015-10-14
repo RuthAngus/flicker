@@ -3,7 +3,30 @@
 
 We have recalibrated the relation between short timescale brightness
 fluctuations in the {\it Kepler} light curves of stars (flicker) with both
-stellar density and surface gravity.
+stellar density and surface gravity, whilst including parameters to describe
+the intrinsic scatter in these relationships.
+We included both an additive variance term {\it and} a term that allows for
+some abscissa-dependent variance, presented in table \ref{tab:table}.
+The additive terms, $\sigma_\rho$ and $ \sigma_g$ are both greater than zero,
+suggesting that there is an additional source of scatter in the relations, not
+accounted for by the observational uncertainties alone.
+This is either caused by intrinsic scatter in the physical relationship
+between flicker and density and \logg, produced by some physical process that
+is not accounted for in the model, or by an underestimation of the
+observational uncertainties.
+Interestingly, the abscissa-dependent variances, $\gamma$ and $\zeta$ are both
+less than zero.
+This indicates that the intrinsic scatter either decreases with increasing
+flicker and decreasing stellar density and surface gravity, or that the
+uncertainty underestimation is more severe for the giant stars.
+Regardless of the cause of the additional `jitter' needed to describe the
+relations between these parameters, the conclusions of this study are the same.
+Firstly, naively modelling stochastic relationships deterministically will
+lead to an underprediction of the dependent variable.
+Secondly, we find no evidence for a weakening dependence at higher surface
+gravities and densities, i.e. the relations between flicker, surface gravity
+and stellar density are equally valid for dwarfs and giants alike.
+
 This is a simple `fitting a line to data' exercise, however it continues the
 discussion of probabilistic modelling that is an active topic within the
 fields of exoplanet and stellar astronomy.
@@ -11,9 +34,9 @@ We use Hierarchical Bayesian Modelling (HBM) to constrain the intrinsic
 scatter in the relationship between flicker, surface gravity and density.
 We also include the effects of the non-negligable two-dimensional observational
 uncertainties by marginalizing over latent variables using importance sampling.
-Although none of these methods, nor the data used here are new taken alone,
-we use the example of flicker to demonstrate the ideas and the importance of
-probabilistic, hierarchical inference.
+% Although none of these methods, nor the data used here are new taken alone,
+% we use the example of flicker to demonstrate the ideas and the importance of
+% probabilistic, hierarchical inference.
 Relationships between astronomical parameters are almost always
 non-deterministic; an element of stochasticity effects the physical parameters
 of stars so one can never perfectly predict $y$ given an observation of $x$.

@@ -2,16 +2,17 @@
 %%
 
 Accurate stellar characterization plays a vital role for many active research
-fields within astronomy. For example, stellar populations, galactic archaeology,
-the study of binary stars, asteroseismology and exoplanet studies all rely on
-inferences of basic stellar parameters to varying degrees. Empirically-derived
-and reliable estimates are of particular value, increasing our confidence in the
-end-product results built upon these inputs.
+fields within astronomy. For example, stellar populations, galactic
+archaeology, the study of binary stars, asteroseismology and exoplanet studies
+all rely on inferences of basic stellar parameters to varying degrees.
+Empirically-derived and reliable estimates are of particular value, increasing
+our confidence in the end-product results built upon these inputs.
 
 Basic stellar parameters, such as effective temperature and surface gravity,
 can be inferred using one (or more) of several types of observations, such as
-spectroscopy, photometry, interferometry, etc. This inference can be done by
-invoking theoretical models or by building an empirical calibration library.
+spectroscopy, photometry, interferometry, etc. This inference can be performed
+by invoking theoretical models or by building an empirical calibration
+library.
 For example, an observed stellar spectrum could be matched against a library of
 theoretical spectra generated using stellar atmosphere models, or, against a
 library of observed spectra of ``standard stars'', serving as calibrators.
@@ -23,33 +24,36 @@ Regardless of the approach, be it theoretical or empirical, the methods used
 for the inference of stellar parameters are traditionally ``deterministic''.
 In this context, a deterministic model can be loosely described as one where
 a particular observational input always returns a single-valued output for a
-parameter of interest. In this framework, nature itself has no variance and
-our underlying model is considered to be a perfect description of reality.
+parameter of interest, i.e. nature itself has no variance and the underlying
+model is considered to be a perfect description of reality.
 
-An alternative approach for inferring model parameters is the
-``probabilistic'' one. Unlike the deterministic case, a single observational
-input is intepretted to be caused by a range of possible model parameters
-described by a probability distribution. This statement is true even in the case
-of a perfect observation of infinite signal-to-noise, since our underlying
-model itself comes with uncertainty. In recent years, there has been a shift
-towards such methods in several areas of astronomy, particularly within the
-exoplanet community. For example, \citet{wolfgang:2015} considered that
-the mass-radius relationship of exoplanets is probabilistic, since a particular
-sized planet could be due to a range of planet masses, cdue to unmodeled
-variances in compositions, environment and other complications. These recent
-demonstrations in exoplanetary science have prompted us to consider the need for
-treating the parent stars in the same probabilistic framework, with potential
-applications spanning many fields of astronomy.
+An alternative approach for inferring model parameters is to allow
+relationships between observables to be stochastic.
+Unlike the deterministic case, a single observational input is intepreted to
+be caused by a range of possible model parameters, described by a probability
+distribution.
+This statement is true even in the case of a perfect observation of infinite
+signal-to-noise, since the underlying model itself comes with uncertainty.
+In recent years, there has been a shift towards such methods in several areas
+of astronomy, particularly within the exoplanet community.
+For example, \citet{wolfgang:2015} considered that the mass-radius
+relationship of exoplanets is stochastic, since a particular sized planet
+could be have a range of planet masses due to unmodeled variances in
+compositions, environment and other complications.
+These recent demonstrations in exoplanetary science have prompted us to
+consider the need for treating the parent stars in the same probabilistic
+framework, with potential applications spanning many fields of astronomy.
 
 The demand for probilistic stellar parameters is not only motivated by the fact
 that probability distributions are far more representative of our `beliefs'
-about astrophysical parameters, is also has a practical purpose.
+about astrophysical parameters, it also has a practical purpose.
 When using data published in the astronomical literature to, for example, infer
 relationships between observed parameters, that inference can be performed as
-the final stage in a hierarchical treatment.
+the final stage in a hierarchical treatment
+\citep[see, e.g.][]{forman-mackey:2014}.
 This is useful if one wants to account for multi-dimensional uncertainties by
 marginalizing over the `true' parameter values upon which the noisy
-observations are dependent.
+observations are conditioned.
 This point is discussed further in \textsection\ref{sec:HBM}.
 
 %A number of recent exoplanet studies have used Hierarchical Bayesian Modeling
@@ -61,35 +65,44 @@ This point is discussed further in \textsection\ref{sec:HBM}.
 % RA text...
 
 One of the more recent tools developed to characterize stars is known as
-``flicker'' \citep{bastien:2013}. Flicker is a proxy for the scatter on an
-8-hour timescale (denoted as $F_8$) in a broad visible bandpass time series
-photometric light curve, such as that from \textit{Kepler} or the upcoming TESS
-mission. A more detailed account of the proceedure to calculate flicker is
-described in \citet{bastien:2013}. As shown in \citet{bastien:2013}, flicker
-displays a remarkable correlation to the asteroseismically determined parent
-star surface gravities (\logg). Turning this around, the observation implies
-that flicker can be used to blindly infer surface gravities at the level of
-$\sim0.1$\,dex, an attractive proposition given the wealth of photometric light
-curves available through the array of exoplanet transit missions flying and
-scheduled to launch.
+``flicker'' \citep{bastien:2013}.
+Flicker is a proxy for the scatter on an 8-hour timescale (denoted as $F_8$)
+in a broad visible bandpass time series photometric light curve, such as that
+from \textit{Kepler} or the upcoming TESS mission. A more detailed account of
+the proceedure to calculate flicker is described in \citet{bastien:2013}. As
+shown in \citet{bastien:2013}, flicker displays a remarkable correlation to
+the asteroseismically determined parent star surface gravities (\logg).
+Turning this around, the observation implies that flicker can be used to
+blindly infer surface gravities at the level of $\sim0.1$\,dex, an attractive
+proposition given the wealth of photometric light curves available through the
+array of exoplanet transit missions flying and scheduled to launch.
 
 \citet{cranmer:2014} demonstrated that models of stellar surface granulation
 indeed reproduce a flicker effect in close agreement with that observed by
-\citet{bastien:2013}, providing a physically-plausible explanation. Since
-surface gravity is highly correlated to mean stellar density (\rhostar) on
-evolutionary tracks, \citet{kipping:2014} showed that flicker can be also
-be used to infer \rhostar, which is more useful for exoplanet transit
-analysis \citep{seager:2003}.
+\citet{bastien:2013}, providing a physically-plausible explanation.
+Since surface gravity is highly correlated with mean stellar density (\rhostar)
+on evolutionary tracks, \citet{kipping:2014} showed that flicker can be also
+be used to infer \rhostar, which is more useful for exoplanet transit analysis
+\citep{seager:2003}.
 
 Whether one calibrates flicker to \logg\ or \rhostar, there are several aspects
 of the problem which are attractive for our purposes of a simple demonstration
-of probabilistic inference of stellar parameters. Firstly, in log-log space the
-relationship is very simple, appearing to be linear \citep{kipping:2014}.
+of probabilistic inference of stellar parameters.
+Firstly, in log-log space the relationship is very simple, appearing to be
+linear \citep{kipping:2014}.
 Secondly, there is a sufficiently large number of points in the sample (439
-stars) to constrain a population-based model. Thirdly, there is significant
-excess scatter around the best-fitting relation implying that a deterministic
-model is inadequate. This is not surprising given that granulation is a complex
-and messy process for which one should not expect any parametric model to
-provide a perfect description. For these reasons, we identify the calibration of
+stars) to constrain a population-based model.
+Thirdly, there is significant excess scatter around the best-fitting relation
+implying that a deterministic model is inadequate.
+This is not surprising given that granulation is a complex and messy process
+for which one should not expect any parametric model to provide a perfect
+description.
+Fourthly, the physical processes that produce surface granulation, of which
+flicker is an observational tracer, may be more `noisy' for different types of
+stars.
+We will test whether flicker has greater predictive power in certain regions
+of parameter space; i.e. is flicker significantly more informative for
+subgiants than for dwarfs?
+For these reasons, we identify the calibration of
 flicker to \logg\ and \rhostar\ as a well-posed problem to first demonstrate
 probabilistic inference in the arena of stellar characterization.
