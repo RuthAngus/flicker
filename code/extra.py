@@ -9,25 +9,31 @@ import sys
 import h5py
 
 def lnprior_extra(pars, mm=False):
-    if -100 < pars[0] < 0 and 0 < pars[1] < 100 and -100 < pars[2] < 100 \
+    if -10 < pars[0] < 0 and 0 < pars[1] < 10 and -100 < pars[2] < 100 \
             and -100 < pars[3] < 100:
         return 0., 0.
     return -np.inf, None
 
-def lnprior(pars, mm=False):
-    if -1e6 < pars[0] < 1e6 and -1e6 < pars[1] < 1e6 and -1e6 < pars[2] < 1e6:
-        return 0., 0.
-    return -np.inf, None
+# def lnprior(pars, mm=False):
+#     if -1e6 < pars[0] < 1e6 and -1e6 < pars[1] < 1e6 and -1e6 < pars[2] < 1e6:
+#         return 0., 0.
+#      return -np.inf, None
 
 def lnprob(pars, samples, obs, u, extra, f):
-    if extra:
-        return lnlikeHF(pars, samples, obs, u, extra=extra) + \
-                lnprior_extra(pars)
+#     if extra:
+    print pars
+    pars[-2] = 1.2
+    print pars
+    print lnlikeHF(pars, samples, obs, u, extra=extra) + \
+            lnprior_extra(pars)
+    raw_input('tetner')
+    return lnlikeHF(pars, samples, obs, u, extra=extra) + \
+            lnprior_extra(pars)
 #     elif f:
 #         print extra, f
 #         return lnlikeHF(pars, samples, obs, u, extra=extra) + lnprior(pars)
-    else:
-        return lnlikeH(pars, samples, obs, u) + lnprior(pars)
+#     else:
+#         return lnlikeH(pars, samples, obs, u) + lnprior(pars)
 
 def MCMC(whichx, nsamp, fname, nd, extra, f, bigdata, burnin=500, run=1000):
     """
@@ -41,8 +47,8 @@ def MCMC(whichx, nsamp, fname, nd, extra, f, bigdata, burnin=500, run=1000):
 
     # set initial parameters
     if fname == "f_extra":
-        rho_pars = [-1.69293833, 5.1408906, 1., -.001]
-        logg_pars = [-1.05043614, 5.66819525, 1., .06]
+        rho_pars = [-1.69293833, 5.1408906, .25, -.001]
+        logg_pars = [-1.05043614, 5.66819525, .25, .06]
     else:
         rho_pars = [-1.69293833, 5.1408906, .0065]
         logg_pars = [-1.05043614, 5.66819525, .0065]
