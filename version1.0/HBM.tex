@@ -71,7 +71,7 @@ and
 \label{eq:logg}
 The free parameters of the two models are $\alpha$, $\beta$, $\sigma_{\rho}$,
 $\gamma$, $\delta$, and $\sigma_g$.
-These relationships can be described as Gaussian distributions with means
+These relations are Gaussian distributions with means
 given by the equation of a straight line, and standard deviations which
 describe the intrinsic scatter about the mean.
 
@@ -81,12 +81,15 @@ this data set, we marginalize over the latent, `true' values of $F_8$,
 \citep{hogg:2010}\footnote{Note that while the pseudo-marginal MCMC method of
 \citep{andrieu:2009} provides a truly unbiased estimate of the marginalized
 likelhood, we expect any bias introduced by the importance sampling method to
-be negligable.}.
-In what follows we give an overview of this procedure, but encourage the reader
-to refer back  to this original reference for a more detailed description of
-the mathematics.
-The observed values of the variables; $F_8$, \rhostar\ and \logg\ can be thought
-of as a single `draw' from an underlying (assumed Gaussian) probability
+be negligable.}, may be used.
+We tested a model of the data where the intrinsic scatter {\it does} depend on
+the dependent variable but found that there was no strong dependence, so opted
+to use the analytic version.
+In what follows we give an overview of the importance sampling procedure, but
+encourage the reader to refer back to the original reference for a more
+detailed description of the mathematics.
+The observed values of the variables; $F_8$, \rhostar\ and \logg\ can be
+thought of as a single `draw' from an underlying (assumed Gaussian) probability
 distribution, with mean equal to the `true' value\footnote{We use `true' to
 mean the value that would have been observed, given infinitely high
 signal-to-noise.} and standard deviation equal to the observational
@@ -121,17 +124,9 @@ latent variables.
 We used flat priors for all except the $\sigma$ parameters, for which we used
 priors which were flat in log-space.
 
-Figures \ref{fig:rhostar} and \ref{fig:logg} show the data with the best-fit
-models.
-The shaded regions show the 1 and 2$\sigma$ confidence interval.
-These intervals are representative of the uncertainty in the flicker relations,
-but also of the intrinsic scatter in those relations.
-% Given a measurement of flicker, the predictive probability distribution of
-% \logg and \rhostar will be a Gaussian distribution
-
-We also used an analytic form of the marginal likelihood, which accounts for
-2-d uncertainties but does not allow for the modelling of the intrinsic scatter
-as a function of $x$ or $y$.
+We also performed this inference using an analytic form of the marginal
+likelihood, which accounts for 2-D uncertainties but does not allow the
+intrinsic scatter to be a function of the dependent or independent variables.
 For the relation between flicker and \rhostar This likelihood function can be
 written as
 \begin{eqnarray}
@@ -141,14 +136,26 @@ written as
 	\\ \nonumber
 	& + \beta^2 \sigma_x^2 + (\sigma_y + \sigma_{\rho})^2,
 \end{eqnarray}
+\label{eq:likelihood}
 and similarly for \logg.
-The parameter values found using this simpler likelihood function are included
+The parameter values found using this simple likelihood function are included
 in table \ref{tab:results2}.
+
+The analytic likelihood function, equation \ref{eq:likelihood} is suitable for
+cases where the intrinsic scatter is not a function of $x$ or $y$.
+
+Figures \ref{fig:rhostar} and \ref{fig:logg} show the data with the best-fit
+models.
+The shaded regions show the 1 and 2$\sigma$ confidence interval.
+These intervals are representative of the uncertainty in the flicker relations,
+but also of the intrinsic scatter in those relations.
+% Given a measurement of flicker, the predictive probability distribution of
+% \logg and \rhostar will be a Gaussian distribution
 
 %%% rhostar plot
 \begin{figure}
 \begin{center}
-\includegraphics[width=8.4cm,angle=0,clip=true]{../figs/rho_vs_flicker.pdf}
+\includegraphics[width=8.4cm,angle=0,clip=true]{../figs/rho_vs_flicker_simple.pdf}
 \caption{
 Stellar density vs. flicker.
 This figure shows the model, conditioned on the data.
@@ -161,7 +168,7 @@ regions show the 1 and 2$\sigma$ confidence intervals.}
 %%% logg plot
 \begin{figure}
 \begin{center}
-\includegraphics[width=8.4cm,angle=0,clip=true]{../figs/logg_vs_flicker.pdf}
+\includegraphics[width=8.4cm,angle=0,clip=true]{../figs/logg_vs_flicker_simple.pdf}
 \caption{
 $\log(g)$ vs. flicker.
 As in \ref{fig:rhostar} this figure shows the model, conditioned on the data.
