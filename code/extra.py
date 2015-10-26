@@ -9,7 +9,7 @@ import sys
 import h5py
 
 def lnprior_extra(pars, mm=False):
-    if -10 < pars[0] < 0 and 0 < pars[1] < 10 and -100 < pars[2] < 100 \
+    if -10 < pars[0] < 10 and -10 < pars[1] < 10 and -100 < pars[2] < 100 \
             and -100 < pars[3] < 100:
         return 0., 0.
     return -np.inf, None
@@ -27,6 +27,8 @@ def lnprob(pars, samples, obs, u, extra, f):
 #     print lnlikeHF(pars, samples, obs, u, extra=extra) + \
 #             lnprior_extra(pars)
 #     raw_input('tetner')
+#     print lnlikeHF(pars, samples, obs, u, extra=extra) + \
+#             lnprior_extra(pars)
     return lnlikeHF(pars, samples, obs, u, extra=extra) + \
             lnprior_extra(pars)
 #     elif f:
@@ -46,8 +48,8 @@ def MCMC(whichx, nsamp, fname, nd, extra, f, bigdata, burnin=500, run=1000):
     """
 
     # set initial parameters
-    if fname == "f_extra":
-        rho_pars = [-1.793214679, 5.34215688, 0.02334097, -.0002600777]
+    if extra:
+        rho_pars = [-1.793214679, 5.34215688, 0.02334097, .0002600777]
         logg_pars = [-1.02143776, 5.69156647, .24239756, .049233887]
     else:
         rho_pars = [-1.69293833, 5.1408906, .0065]
@@ -82,6 +84,11 @@ def MCMC(whichx, nsamp, fname, nd, extra, f, bigdata, burnin=500, run=1000):
     flat_lls = np.reshape(lls, (np.shape(lls)[0]*np.shape(lls)[1]))
     samp = np.vstack((sampler.chain[:, :, :].reshape(-1, ndim).T, flat_lls)).T
 
+    sa = samp.T[0]
+    print type(sa)
+    print np.isfinite(sa)
+    print sa
+    print np.shape(sa), np.shape(sa[np.isfinite(sa)])
     # save samples
     f = h5py.File("%s_samples_%s.h5" % (whichx, fname), "w")
     data = f.create_dataset("samples", np.shape(samp))
@@ -101,7 +108,7 @@ def make_plots(whichx, fname):
     with h5py.File("%s_samples_%s.h5" % (whichx, fname)) as f:
         samp = f["samples"][:, :-1]
 
-    if fname == "f_extra":
+    if fname == "f_extra" or "short":
         m, c, ln_sig, lnf = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]),
                    zip(*np.percentile(samp, [16, 50, 84], axis=0)))
         pars = [m[0], c[0], ln_sig[0], lnf[0]]
@@ -121,11 +128,12 @@ def make_plots(whichx, fname):
 if __name__ == "__main__":
     whichx = str(sys.argv[1])
     fname = str(sys.argv[2])  # "f_extra"
-    if fname == "f_extra": extra, f = True, True
+    if fname == "f_extra" or "short": extra, f = True, True
+#     elif fname == "short": extra, f = True, True
     elif fname == "f": extra, f = False, True
     else: extra, f = False, False
     nd = 0 # set to zero to use all the data
-#     ns, bi, r = 50, 100, 500
-    ns, bi, r = 500, 100, 5000
+    ns, bi, r = 2, 100, 1000
+#     ns, bi, r = 500, 100, 5000
     MCMC(whichx, ns, fname, nd, extra, f, bigdata=False, burnin=bi, run=r)
     make_plots(whichx, fname)

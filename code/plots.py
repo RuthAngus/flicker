@@ -22,6 +22,29 @@ def fit_straight_line(x, y, yerr):
 def make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
                           fractional=False, extra=False):
 
+    # use highest likelihood samples
+    lls = samples[:, -1]
+    m = lls == max(lls)
+
+    if fname == "simple":
+        beta, alpha, tau = [samples[i, m]
+                               for i in range(np.shape(samples)[0]-1)]
+    else:
+        beta, alpha, tau, f = [samples[i, m]
+                           for i in range(np.shape(samples)[0]-1)]
+#     sigma = abs(tau)**.5
+    sigma = tau
+    print "parameters:"
+    bp = np.percentile(samples[0, :], [16, 50, 84])
+    print "beta =", beta, "-", bp[1]-bp[0], "+", bp[2]-bp[1]
+    ap = np.percentile(samples[1, :], [16, 50, 84])
+    print "alpha =", alpha, "-", ap[1]-ap[0], "+", ap[2]-ap[1]
+    tp = np.percentile(samples[1, :], [16, 50, 84])
+    print "tau =", tau, "-", tp[1]-tp[0], "+", tp[2]-tp[1]
+    if fname != "simple":
+        fp = np.percentile(samples[1, :], [16, 50, 84])
+        print "f =", f, "-", tp[1]-tp[0], "+", tp[2]-tp[1]
+
     # draw samples from post
     b_samp = np.random.choice(samples[0, :], ndraws)
     a_samp = np.random.choice(samples[1, :], ndraws)
@@ -34,6 +57,13 @@ def make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
     if whichx == "rho":
         plt.ylabel("$\log_{10}(\\rho_{\star}[\mathrm{g~cm}^{-3}])$")
         col = "#FF33CC"
+        plt.text(1.4, .5, "$\log_{10} (\\rho_{\star}) \sim \mathcal{N} \
+                \\left(\\alpha + \\beta \log_{10}(F_8), \
+                \\sigma=\sqrt{\\sigma_{\\rho}^2+\\gamma F_8}\\right)$")
+        plt.text(1.95, .24, "$\\alpha = %.3f$" % (alpha-3))
+        plt.text(1.95, .09, "$\\beta = %.3f$" % beta)
+        plt.text(1.95, -.06, "$\\sigma_{\\rho} = %.3f$" % sigma)
+        plt.text(1.95, -.21, "$\\gamma = %.3f$" % f)
         plt.ylim(-2, 1)
 
         # plot line draws
@@ -47,6 +77,7 @@ def make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         # plot best fit and data
         ym = model1([np.median(b_samp), np.median(a_samp)], xs)
         plt.plot(xs, ym - 3, ".2", linewidth=1)
+        plt.xlim(min(xs), max(xs))
         plt.errorbar(x, y - 3, xerr=xerr, yerr=xerr, fmt="k.", capsize=0,
                              alpha=.5, ecolor=".5", mec=".2")
         plt.savefig("new_rho")
@@ -55,6 +86,13 @@ def make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
     elif whichx == "logg":
         plt.ylim(3, 5)
         col = "#0066CC"
+        plt.text(1.5, 4.7, "$\log(g) \sim \mathcal{N} \
+                 \\left(\\delta + \\epsilon \log_{10}(\\rho_{\star}), \
+                 \\sigma=\sqrt{\\sigma_g^2 + \zeta F_8}\\right)$")
+        plt.text(1.95, 4.52, "$\\delta = %.3f$" % alpha)
+        plt.text(1.95, 4.42, "$\\epsilon = %.3f$" % beta)
+        plt.text(1.95, 4.32, "$\\sigma_g = %.3f$" % sigma)
+        plt.text(1.95, 4.22, "$\\zeta = %.3f$" % f)
         plt.ylabel("$\log_{10}(g [\mathrm{cm~s}^{-2}])$")
 
         # plot line draws
@@ -68,10 +106,9 @@ def make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
 #             lines[i, :] = line
             lines.append(line)
 
+        plt.xlim(min(xs), max(xs))
         # plot regions
         quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
-        print quantiles[1]
-        print quantiles[2]
         plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
                          alpha=.4)
         plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
@@ -288,9 +325,9 @@ if __name__ == "__main__":
     fractional, extra = False, False
     if fname == "f":
        fractional = True
-    elif fname == "f_extra":
+    elif fname == "f_extra" or "short":
        extra = True
     make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, 1000,
                               fractional=fractional, extra=extra)
-    make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, 1000,
-                              fractional=fractional, extra=extra)
+#     make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, 1000,
+#                               fractional=fractional, extra=extra)
