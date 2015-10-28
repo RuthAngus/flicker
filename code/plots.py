@@ -119,17 +119,25 @@ def make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
             ys = model1([b_samp[i], a_samp[i]], xs)
             line = ys + (np.random.randn(1)*np.median(s_samp)**2 + \
                     np.random.randn(1)*np.median(f_samp)*xs)**.5
-            plt.plot(xs, line, col, alpha=.05)
-#             lines[i, :] = line
-            lines.append(line)
+#             plt.plot(xs, line, col, alpha=.05)
+            print len(line[np.isfinite(line)])
+            if len(line[np.isfinite(line)])==len(xs):
+                print len(line[np.isfinite(line)])
+                lines.append(line)
 
         plt.xlim(min(xs), max(xs))
+        print np.shape(lines)
         # plot regions
-        quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
-        plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
+        quantiles = np.percentile(lines, [16, 84], axis=0)
+#         print np.shape(quantiles)
+#         assert 0
+        print quantiles
+        plt.fill_between(xs, quantiles[0], quantiles[1], color=col,
                          alpha=.4)
-        plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
-                         alpha=.2)
+#         plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
+#                          alpha=.4)
+#         plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
+#                          alpha=.2)
 
         # plot best fit and data
         ym = model1([np.median(b_samp), np.median(a_samp)], xs)
