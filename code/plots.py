@@ -34,16 +34,33 @@ def make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
                            for i in range(np.shape(samples)[0]-1)]
 #     sigma = abs(tau)**.5
     sigma = tau
+    if whichx == "rho":
+        pars = ["alpha", "beta", "rho", "gamma"]
+        alpha -= 3
+    if whichx == "logg":
+        pars = ["delta", "epsilon", "g", "zeta"]
     print "parameters:"
-    bp = np.percentile(samples[0, :], [16, 50, 84])
-    print "beta =", beta, "-", bp[1]-bp[0], "+", bp[2]-bp[1]
     ap = np.percentile(samples[1, :], [16, 50, 84])
-    print "alpha =", alpha, "-", ap[1]-ap[0], "+", ap[2]-ap[1]
+    print "$\\%s$ &    %s$_{-%s}^{+%s}$ & \\" \
+            % (pars[0], np.round(alpha[0], 3),
+                    np.round(ap[1], 2)-np.round(ap[0], 2),
+                    np.round(ap[2], 2)-np.round(ap[1], 2))
+    bp = np.percentile(samples[0, :], [16, 50, 84])
+    print "$\\%s$ &    %s$_{-%s}^{+%s}$ & \\" \
+            % (pars[1], np.round(beta[0], 3),
+                    np.round(bp[1], 2)-np.round(bp[0], 2),
+                    np.round(bp[2], 2)-np.round(bp[1], 2))
     tp = np.percentile(samples[1, :], [16, 50, 84])
-    print "tau =", tau, "-", tp[1]-tp[0], "+", tp[2]-tp[1]
+    print "$\\sigma_%s$ &    %s$_{-%s}^{+%s}$ & \\" \
+            % (pars[2], np.round(tau[0], 3),
+                    np.round(tp[1], 2)-np.round(tp[0], 2),
+                    np.round(tp[2], 2)-np.round(tp[1], 2))
     if fname != "simple":
         fp = np.percentile(samples[1, :], [16, 50, 84])
-        print "f =", f, "-", tp[1]-tp[0], "+", tp[2]-tp[1]
+        print "$\\%s$ &    %s$_{-%s}^{+%s}$ & \\" \
+            % (pars[3], np.round(f[0], 3),
+                    np.round(fp[1], 2)-np.round(fp[0], 2),
+                    np.round(fp[2], 2)-np.round(fp[1], 2))
 
     # draw samples from post
     b_samp = np.random.choice(samples[0, :], ndraws)
@@ -102,17 +119,25 @@ def make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
             ys = model1([b_samp[i], a_samp[i]], xs)
             line = ys + (np.random.randn(1)*np.median(s_samp)**2 + \
                     np.random.randn(1)*np.median(f_samp)*xs)**.5
-            plt.plot(xs, line, col, alpha=.05)
-#             lines[i, :] = line
-            lines.append(line)
+#             plt.plot(xs, line, col, alpha=.05)
+            print len(line[np.isfinite(line)])
+            if len(line[np.isfinite(line)])==len(xs):
+                print len(line[np.isfinite(line)])
+                lines.append(line)
 
         plt.xlim(min(xs), max(xs))
+        print np.shape(lines)
         # plot regions
-        quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
-        plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
+        quantiles = np.percentile(lines, [16, 84], axis=0)
+#         print np.shape(quantiles)
+#         assert 0
+        print quantiles
+        plt.fill_between(xs, quantiles[0], quantiles[1], color=col,
                          alpha=.4)
-        plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
-                         alpha=.2)
+#         plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
+#                          alpha=.4)
+#         plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
+#                          alpha=.2)
 
         # plot best fit and data
         ym = model1([np.median(b_samp), np.median(a_samp)], xs)

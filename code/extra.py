@@ -133,7 +133,7 @@ if __name__ == "__main__":
     elif fname == "f": extra, f = False, True
     else: extra, f = False, False
     nd = 0 # set to zero to use all the data
-    ns, bi, r = 2, 100, 1000
+    ns, bi, r = 2, 100, 2000
 #     ns, bi, r = 500, 100, 5000
     MCMC(whichx, ns, fname, nd, extra, f, bigdata=False, burnin=bi, run=r)
     make_plots(whichx, fname)
