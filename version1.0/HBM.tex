@@ -40,11 +40,11 @@ There are two excellent reasons for modelling the relation stochastically;
 firstly, if the intrinsic scatter is ignored and the relation between
 variables is assumed to be deterministic, those data points with smaller
 measurement uncertainties may have an unrepresentative greater weighting
-during the fitting process.
+during the fitting process \citep{hogg:2010b}.
 Secondly, we are interested in producing probability distributions over stellar
 densities and surface gravities, as opposed to point estimates, and propagating
 these probability distributions through to subsequent analyses.
-Several recent studies have required posterior Probability Density
+Several recent studies have required posterior Probability Distribution
 Function (PDF) samples, in order to conduct their (hierarchical)
 analyses \citep[e.g.][]{foreman-mackey:2014, rogers:2015, angus:2015}.
 
@@ -65,7 +65,7 @@ We write the two models describing the relationship between $F_8$, \logg\ and
 \label{eq:rho}
 and
 \begin{equation}
-	\log_{10}(g) \sim \mathcal{N}\left(\mu = \delta + \epsilon \log_{10}(\rho_\star),
+	\log_{10}(g) \sim \mathcal{N}\left(\mu = \delta + \epsilon \log_{10}(F_8),
 	\sigma = \sqrt{\sigma_g^2 + \zeta F_8}\right).
 \end{equation}
 \label{eq:logg}
@@ -73,7 +73,7 @@ The free parameters of the two models are $\alpha$, $\beta$, $\gamma$
 $\sigma_{\rho}$, $\delta$, $\epsilon$, $\zeta$ and $\sigma_g$.
 These relations are Gaussian distributions with means
 given by the equation of a straight line, and standard deviations which
-describe the intrinsic scatter about the mean.
+describe the intrinsic scatter about the mean as a function of flicker.
 
 In order to account for the two-dimensional observational uncertainties in
 this data set, we marginalize over the latent, `true' values of $F_8$,
@@ -92,11 +92,10 @@ In what follows we give an overview of the importance sampling procedure, but
 encourage the reader to refer back to the original reference for a more
 detailed description of the mathematics.
 The observed values of the variables; $F_8$, \rhostar\ and \logg\ can be
-thought of as a single `draw' from an underlying (assumed Gaussian) probability
-distribution, with mean equal to the `true' value\footnote{We use `true' to
-mean the value that would have been observed, given infinitely high
-signal-to-noise.} and standard deviation equal to the observational
-uncertainty.
+thought of as a single `draw' from an underlying (assumed Gaussian)
+probability distribution, with mean equal to the `true' value---the value that
+would have been observed, given infinitely high signal-to-noise---and standard
+deviation equal to the observational uncertainty.
 We compute the likelihood of the data given the model, marginalized over the
 true values, using importance sampling.
 We sample from the posterior PDFs of the true values of the variables,
@@ -112,11 +111,11 @@ samples.
 % {\it Kepler} light curves and stellar models.
 We would use the posterior samples generated in previous model fitting process
 if they were available, however generating new samples is an acceptable
-approximation provided the posteriors are Gaussian (or log-Normal) and the
-priors used by the previous fitters were uninformative.
-Such an approximation {\it will not be necessary} for those studies using
-\rhostar\ or \logg\ calculated using the newly-calibrated relations
-presented here, since we have published our posterior samples.
+approximation provided the posteriors are Gaussian and the priors used by the
+previous fitters were uninformative.
+Such an approximation will not be necessary for those studies using \rhostar\
+or \logg\ calculated using the newly-calibrated relations presented here,
+since we have published our posterior samples.
 After producing new posterior PDF samples we then add up the individual
 log-likelihoods of each sample to compute the total marginalized likelihood
 for a star.
@@ -124,12 +123,20 @@ The marginalized likelihood of the whole dataset is then computed as the sum
 of the log-likelihoods of each star.
 The importance sampling method allows us to approximate the integral over the
 latent variables.
-We used flat priors for all except the $\sigma$ parameters, for which we used
-priors which were flat in log-space.
+% We used flat priors for all except the $\sigma$ parameters, for which we used
+% priors which were flat in log-space.
+We used uniform priors over all our parameters:
+\begin{eqnarray}
+	&	\alpha, \beta, \delta, \epsilon
+	\sim U(-10:10) \\ \nonumber
+ 	&	\sigma_{rho}, \gamma, \sigma_g, \zeta  \sim U(-100:100).
+\end{eqnarray}
+\label{eq:priors}
 
-We also performed this inference using an analytic form of the marginal
-likelihood, which accounts for 2-D uncertainties but does not allow the
-intrinsic scatter to be a function of the dependent or independent variables.
+We also performed this inference using an alternative, analytic form of the
+marginal likelihood, which accounts for 2-D uncertainties but does not allow
+the intrinsic scatter to be a function of the dependent or independent
+variables.
 For the relation between flicker and \rhostar, this likelihood function can be
 written as
 \begin{eqnarray}
@@ -144,7 +151,7 @@ written as
 \label{eq:likelihood}
 and similarly for \logg.
 The parameter values found using this simple likelihood function are included
-in table \ref{tab:results2}.
+in table \ref{tab:results}.
 % The analytic likelihood function, equation \ref{eq:likelihood} is suitable for
 % cases where the intrinsic scatter is not a function of $x$ or $y$.
 Figures \ref{fig:rhostar} and \ref{fig:logg} show the data with the best-fit
@@ -157,7 +164,8 @@ representative of the intrinsic scatter in the relations.
 %%% rhostar plot
 \begin{figure}
 \begin{center}
-\includegraphics[width=8.4cm,angle=0,clip=true]{../figs/rho_vs_flicker.pdf}
+% \includegraphics[width=8.4cm,angle=0,clip=true]{../figs/rho_vs_flicker.pdf}
+\includegraphics[width=8.4cm,angle=0,clip=true]{../figs/new_rho.pdf}
 \caption{
 Stellar density vs. flicker.
 This figure shows the model, conditioned on the data.
@@ -170,7 +178,8 @@ regions show the 1 and 2$\sigma$ confidence intervals.}
 %%% logg plot
 \begin{figure}
 \begin{center}
-\includegraphics[width=8.4cm,angle=0,clip=true]{../figs/logg_vs_flicker.pdf}
+% \includegraphics[width=8.4cm,angle=0,clip=true]{../figs/logg_vs_flicker.pdf}
+\includegraphics[width=8.4cm,angle=0,clip=true]{../figs/new_logg.pdf}
 \caption{
 $\log(g)$ vs. flicker.
 As in \ref{fig:rhostar} this figure shows the model, conditioned on the data.
@@ -181,21 +190,21 @@ regions show the 1 and 2$\sigma$ confidence intervals.}
 \end{figure}
 
 \begin{table}
-\caption{Highest-likelihood parameter values with their 16th and 84th
+\caption{Highest-likelihood parameter values with 16th and 84th
 	percentile uncertainties.}
 \begin{tabular}{lccc}
 \hline\hline
 Parameter & highest-likelihood value & simple model result \\
     \hline
-    $\alpha$ &    2.287$_{-0.03}^{+0.14}$ &     2.191$_{-0.05}^{+0.05}$  \\
-    $\beta$ &    -1.762$_{-0.07}^{+0.02}$ &     -1.724$_{-0.03}^{+0.03}$ \\
-    $\sigma_rho$ &    0.009$_{-0.03}^{+0.14}$ & 0.085$_{-0.05}^{+0.05}$  \\
-    $\gamma$ &    -0.0$_{-0.03}^{+0.14}$ &  \\
-    $\delta$ &    5.287$_{-0.03}^{+0.14}$ &     5.739$_{-0.03}^{+0.03}$  \\
-    $\epsilon$ &    -1.762$_{-0.07}^{+0.02}$ &  -1.095$_{-0.02}^{+0.01}$ \\
-    $\sigma_g$ &    0.009$_{-0.03}^{+0.14}$ &   0.015$_{-0.03}^{+0.03}$  \\
-    $\zeta$ &    -0.0$_{-0.03}^{+0.14}$ & \\
+$\alpha$ &    2.358$_{-0.04}^{+0.08}$ &       2.191$_{-0.05}^{+0.05}$  \\
+$\beta$ &    -1.79$_{-0.03}^{+0.04}$ &        -1.724$_{-0.03}^{+0.03}$ \\
+$\sigma_{rho}$ &    0.015$_{-0.04}^{+0.08}$ &   0.085$_{-0.05}^{+0.05}$  \\
+$\gamma$ &    -0.0$_{-0.04}^{+0.08}$ & \\
+$\delta$ &    5.535$_{-0.07}^{+0.07}$ &      5.739$_{-0.03}^{+0.03}$  \\
+$\epsilon$ &    -1.005$_{-0.04}^{+0.03}$ &   -1.095$_{-0.02}^{+0.01}$ \\
+$\sigma_g$ &    0.168$_{-0.07}^{+0.07}$ &    0.015$_{-0.03}^{+0.03}$  \\
+$\zeta$ &    -0.014$_{-0.07}^{+0.07}$ & \\
     \hline
+\label{tab:results}
 \end{tabular}
 \end{table}
-

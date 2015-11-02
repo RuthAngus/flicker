@@ -109,29 +109,31 @@ Based on archival data of the \Kepler\ telescope.
 
 % aims
 The relations between observable stellar parameters are usually assumed to be
-deterministic.
-That is, given an infinitely precise measurement of independant
+deterministic, that is, given an infinitely precise measurement of independant
 variable, `$x$', and some model, the value of dependant variable, `y' can be
 known exactly.
 In practise this assumption is rarely valid and intrinsic stochasticity means
 that two stars with exactly the same `$x$', will have slightly different
 `$y$'s.
 % methods
-The relation between short-timescale brightness fluctuations (flicker) of stars
-and both surface gravity \citep{bastien:2013} and stellar density
+The relation between short-timescale brightness fluctuations (flicker) of
+stars and both surface gravity \citep{bastien:2013} and stellar density
 \citep{kipping:2014} are two such stochastic relations that have, until now,
 been treated as deterministic ones.
 We recalibrate these relations in a probabilistic framework, using
-Hierarchical Bayesian Modelling (HBM) and constrain the instrinsic scatter in
+Hierarchical Bayesian Modelling (HBM) to constrain the instrinsic scatter in
 the relations.
-Our treatment also fully accounts for the observational uncertainties on all
-variables.
+% Our treatment also fully accounts for the observational uncertainties on all
+% variables.
 % results
-We find evidence for additional scatter in the relationships, that cannot be
-accounted for by the observational uncertainties alone.
-This intrinsic scatter increases with decreasing flicker, i.e. there is more
-additional scatter for subgiants than for dwarfs, suggesting that the flicker
-relationships are equally (if not more) valid for dwarf stars.
+We find evidence for additional scatter in the relationships, particularly in
+the relation between flicker and surface gravity, that cannot be accounted for
+by the observational uncertainties alone.
+The scatter in surface gravity increases with decreasing flicker, i.e. there
+is greater scatter for subgiants than for dwarfs, suggesting that using flicker
+as a proxy for surface gravity is just as (if not more) valid for dwarf stars,
+despite the fact that the observational uncertainties tend to be larger for
+these stars.
 
 \end{abstract}
 
@@ -170,10 +172,10 @@ relationships are equally (if not more) valid for dwarf stars.
 \section*{Acknowledgements}
 
 RA would like to thank Dan Foreman-Mackey for his extremely helpful suggestions
-and comments, and Angie Wolfgang and John Johnson for their fantastic advice.
+and comments, Angie Wolfgang for her expert guidance and John Johnson for hit
+fantastic advice and support.
 RA would also like to thank the SAMSI institute and the other members of the
 SAMSI {\it Kepler} exoplanet statistics working groups.
-DMK thanks...
 
 %% EOF Acknowledgements
 
@@ -203,6 +205,8 @@ Fuller, W.~A., 1987, Wiley Series in Probability and Mathematical Statistics
 \bibitem[\protect\citeauthoryear{Hogg et al.}{2010}]{hogg:2010}
 Hogg, D.~W., Myers, A.~D. \& Bovy, J., 2010, ApJ, 725,
 2166
+\bibitem[\protect\citeauthoryear{Hogg et al.}{2010b}]{hogg:2010b}
+Hogg, D.~W., Bovy, J. \& Lang, D., 2010
 \bibitem[\protect\citeauthoryear{Huber et al.}{2013}]{huber:2013}
 Huber, D., Chaplin, W.~J., Christensen-Dalsgaard, J. et al., 2013, ApJ, 767,
 127
