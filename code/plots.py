@@ -84,12 +84,23 @@ def make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         plt.ylim(-2, 1)
 
         # plot line draws
+        lines = []
         for i in range(ndraws):
             ys = model1([b_samp[i], a_samp[i]], xs)
             y3 = ys - 3
-            line = ys + (np.random.randn(1)*np.median(s_samp)**2 + \
-                    np.random.randn(1)*np.median(f_samp)*xs)**.5 - 3
-            plt.plot(xs, line, col, alpha=.05)
+#             line = ys + (np.random.randn(1)*np.median(s_samp)**2 + \
+#                     np.random.randn(1)*np.median(f_samp)*xs)**.5 - 3
+            line = ys + (np.random.randn(1)*np.median(sigma)**2 + \
+                    np.random.randn(1)*np.median(f)*xs)**.5 - 3
+#             plt.plot(xs, line, col, alpha=.05)
+            if len(line[np.isfinite(line)])==len(xs):
+                lines.append(line)
+
+        quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
+        plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
+                         alpha=.4)
+        plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
+                         alpha=.4)
 
         # plot best fit and data
         ym = model1([np.median(b_samp), np.median(a_samp)], xs)
@@ -117,22 +128,24 @@ def make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, ndraws,
         lines = []
         for i in range(ndraws):
             ys = model1([b_samp[i], a_samp[i]], xs)
-            line = ys + (np.random.randn(1)*np.median(s_samp)**2 + \
-                    np.random.randn(1)*np.median(f_samp)*xs)**.5
+            if np.all(tau[0]**2+f[0]*xs) > 0:
+                line = ys + np.random.randn(1)*(tau**2 + f*xs)**.5
 #             plt.plot(xs, line, col, alpha=.05)
-            print len(line[np.isfinite(line)])
+#             print len(line[np.isfinite(line)])
             if len(line[np.isfinite(line)])==len(xs):
-                print len(line[np.isfinite(line)])
+#                 print len(line[np.isfinite(line)])
                 lines.append(line)
 
         plt.xlim(min(xs), max(xs))
-        print np.shape(lines)
+#         print np.shape(lines)
         # plot regions
-        quantiles = np.percentile(lines, [16, 84], axis=0)
+        quantiles = np.percentile(lines, [2, 16, 84, 98], axis=0)
 #         print np.shape(quantiles)
 #         assert 0
-        print quantiles
-        plt.fill_between(xs, quantiles[0], quantiles[1], color=col,
+#         print quantiles
+        plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
+                         alpha=.4)
+        plt.fill_between(xs, quantiles[0], quantiles[3], color=col,
                          alpha=.4)
 #         plt.fill_between(xs, quantiles[1], quantiles[2], color=col,
 #                          alpha=.4)
@@ -352,7 +365,7 @@ if __name__ == "__main__":
        fractional = True
     elif fname == "f_extra" or "short":
        extra = True
-    make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, 1000,
+    make_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, 10000,
                               fractional=fractional, extra=extra)
 #     make_inverse_flicker_plot(x, xerr, y, yerr, samples, whichx, fname, 1000,
 #                               fractional=fractional, extra=extra)
