@@ -85,18 +85,15 @@ Application to Flickering Stars %to Surface Gravity and Mean Density
 
 %% Authors
 \author{
-	{\bf	Ruth~Angus\altaffilmark{1,2},
-		David.~M.~Kipping\altaffilmark{2,3},
+	{\bf	Ruth~Angus\altaffilmark{1},
+		David.~M.~Kipping\altaffilmark{2},
 	}
 }
 
 \altaffiltext{1}{Dept. of Physics, University of Oxford, UK; email:
 		 ruth.angus@astro.ox.ac.uk}
 
-\altaffiltext{2}{Harvard-Smithsonian Center for Astrophysics,
-		Cambridge, MA 02138, USA; email: dkipping@cfa.harvard.edu}
-
-\altaffiltext{3}{Department of Astronomy, Columbia University, 550 W 120th St.,
+\altaffiltext{2}{Department of Astronomy, Columbia University, 550 W 120th St.,
                  New York, NY 10027, US}
 
 \altaffiltext{$\dagger$}{
@@ -204,7 +201,7 @@ These recent demonstrations in exoplanetary science have prompted us to
 consider the need for treating the parent stars in the same probabilistic
 framework, with potential applications spanning many fields of astronomy.
 
-The demand for probilistic stellar parameters is not only motivated by the fact
+The demand for probabilistic stellar parameters is not only motivated by the fact
 that probability distributions are far more representative of our `beliefs'
 about astrophysical parameters, it also has a practical purpose.
 When using data published in the astronomical literature to, for example, infer
@@ -257,7 +254,7 @@ implying that a deterministic model is inadequate.
 This is not surprising given that granulation is a complex and messy process
 for which one should not expect any parametric model to provide a perfect
 description.
-Fourthly, the physical processes that produce surface granulation, of which
+Finally, the physical processes that produce surface granulation, of which
 flicker is an observational tracer, may be more or less noisy for different
 types of stars.
 We will test whether flicker has greater predictive power in certain regions
@@ -422,8 +419,8 @@ written as
 \end{eqnarray}
 \label{eq:likelihood}
 and similarly for \logg.
-The parameter values found using this simple likelihood function are included
-in table \ref{tab:results}.
+The parameter values found using this simple likelihood function, with a
+constant dispersion are included in table \ref{tab:results}.
 % The analytic likelihood function, equation \ref{eq:likelihood} is suitable for
 % cases where the intrinsic scatter is not a function of $x$ or $y$.
 Figures \ref{fig:rhostar} and \ref{fig:logg} show the data with the best-fit
@@ -466,20 +463,21 @@ regions show the 1 and 2$\sigma$ confidence intervals.}
 	percentile uncertainties.}
 \begin{tabular}{lccc}
 \hline\hline
-Parameter & highest-likelihood value & simple model result \\
+Parameter & Variable dispersion model & Constant dispersion model \\
     \hline
 $\alpha$ &    2.358$_{-0.04}^{+0.08}$ &       2.191$_{-0.05}^{+0.05}$  \\
 $\beta$ &    -1.79$_{-0.03}^{+0.04}$ &        -1.724$_{-0.03}^{+0.03}$ \\
 $\sigma_{rho}$ &    0.015$_{-0.04}^{+0.08}$ &   0.085$_{-0.05}^{+0.05}$  \\
 $\gamma$ &    -0.0$_{-0.04}^{+0.08}$ & \\
+\hline
 $\delta$ &    5.535$_{-0.07}^{+0.07}$ &      5.739$_{-0.03}^{+0.03}$  \\
 $\epsilon$ &    -1.005$_{-0.04}^{+0.03}$ &   -1.095$_{-0.02}^{+0.01}$ \\
 $\sigma_g$ &    0.168$_{-0.07}^{+0.07}$ &    0.015$_{-0.03}^{+0.03}$  \\
 $\zeta$ &    -0.014$_{-0.07}^{+0.07}$ & \\
     \hline
-\label{tab:results}
 \end{tabular}
 \end{table}
+\label{tab:results}
 
 \section{DISCUSSION}
 \label{sec:discussion}
@@ -511,16 +509,17 @@ Firstly, naively modelling the relationship between flicker and surface
 gravity or stellar density, or any other stochastic relationship
 deterministically, will lead to an underprediction of the uncertainties in
 dependent variable.
-Secondly, we find no evidence for a increased scatter at higher surface
+Secondly, we find marginal evidence for decreased scatter at higher surface
 gravities and densities, i.e. the relations between flicker, surface gravity
-and stellar density are equally valid for dwarfs and giants alike.
+and stellar density are valid for dwarfs and giants alike, despite the fact
+that observational uncertainties tend to be larger for dwarfs.
 
 This is a simple `fitting a line to data' exercise, however it continues the
 discussion of probabilistic modelling that is an active topic within the
 fields of exoplanet and stellar astronomy.
-We use Hierarchical Bayesian Modelling (HBM) to constrain the intrinsic
+We used Hierarchical Bayesian Modelling (HBM) to constrain the intrinsic
 scatter in the relationship between flicker, surface gravity and density.
-We also include the effects of the non-negligable two-dimensional observational
+We also included the effects of the non-negligable two-dimensional observational
 uncertainties by marginalizing over latent variables using importance sampling.
 % Although none of these methods, nor the data used here are new taken alone,
 % we use the example of flicker to demonstrate the ideas and the importance of
