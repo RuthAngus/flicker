@@ -110,9 +110,10 @@ Based on archival data of the \Kepler\ telescope.
 
 % aims
 The relations between observable stellar parameters are usually assumed to be
-deterministic, that is, given an infinitely precise measurement of independant
-variable, `$x$', and some model, the value of dependant variable, `y' can be
-known exactly.
+deterministic.
+That is, given an infinitely precise measurement of independent variable,
+`$x$', and some model, the value of dependent variable, `$y$' can be known
+exactly.
 In practise this assumption is rarely valid and intrinsic stochasticity means
 that two stars with exactly the same `$x$', will have slightly different
 `$y$'s.
@@ -301,7 +302,7 @@ zero covariance between $M_{\star}$ and $R_{\star}$.}.
 
 \subsection{Hierarchical Bayesian Model}
 
-We model the stochastic relationship between $F_8$ and \logg\ or \rhostar,
+We model the stochastic relationship between $F_8$, \logg\ and \rhostar,
 accounting for the fact that there exists some intrinsic scatter in
 the dependent variable.
  % and including the heteroskedastic uncertainties on both
@@ -311,102 +312,123 @@ firstly, if the intrinsic scatter is ignored and the relation between
 variables is assumed to be deterministic, those data points with smaller
 measurement uncertainties may have an unrepresentative greater weighting
 during the fitting process \citep{hogg:2010b}.
-Secondly, we are interested in producing probability distributions over stellar
-densities and surface gravities, as opposed to point estimates, and propagating
-these probability distributions through to subsequent analyses.
+Secondly, we are interested in producing probability distributions over
+stellar densities and surface gravities, as opposed to point estimates, and
+propagating these probability distributions through to subsequent analyses.
 Several recent studies have required posterior Probability Distribution
-Function (PDF) samples, in order to conduct their (hierarchical)
-analyses \citep[e.g.][]{foreman-mackey:2014, rogers:2015, angus:2015}.
+Function (PDF) samples, in order to conduct their hierarchical analyses
+\citep[e.g.][]{foreman-mackey:2014, rogers:2015, angus:2015}
+% These studies account for multi-dimensional uncertainties using the sampling
+% method outlined in \citet{hogg:2010}.
+% This can be important because ordinary least squares regression methods
+% performed on data with two-dimensional uncertainties can result in a slope
+% that is biased towards zero \citep[e.g.][]{fuller:1987, fox:1997}.
+% For a demonstration of the affects of neglecting intrinsic scatter and
+% two-dimensional uncertainties, see \citet{kelly:2007}.
 
-Including observational uncertainties on the independent variable within our
-analysis is also important, because ordinary least squares regression methods
-performed on data with two-dimensional uncertainties will result in a slope
-that is biased towards zero
-\citep[e.g.][]{fuller:1987, fox:1997}.
-For a demonstration of the affects of neglecting intrinsic scatter and
-two-dimensional uncertainties, see \citet{kelly:2007}.
+% Multi-dimensional uncertainties have been included in a number of recent
+% studies, including \citet{foreman-mackey:2014, rogers:2015, angus:2015}.
+% In order to account for the two-dimensional observational uncertainties in
+% this data set, we marginalize over the latent, `true' values of $F_8$,
+% \rhostar\ and \logg\ using the importance sampling method of
+% \citep{hogg:2010}\footnote{Note that while the pseudo-marginal MCMC method of
 
-We write the two models describing the relationship between $F_8$, \logg\ and
-\rhostar\ as
+The two models we use to describe the relationships between $F_8$, \logg\ and
+\rhostar\ are
 \begin{equation}
-	\log_{10}(\rho_\star) \sim \mathcal{N} \left(\mu = \alpha + \beta
-	\log_{10}(F_8), \sigma = \sqrt{\sigma_{\rho}^2 + \gamma F_8}\right),
+% 	\log_{10}(\rho_\star) \sim \mathcal{N} \left(\mu = \alpha + \beta
+% 	\log_{10}(F_8), \sigma = \sqrt{\sigma_{\rho}^2 + \gamma F_8}\right),
+	\log_{10}(\rho_\star) \sim \mathcal{N} \left(\mu = \alpha_\rho +
+    \beta_\rho \log_{10}(F_8), \sigma^2 = \sigma_\rho^2 \right),
 \end{equation}
 \label{eq:rho}
 and
 \begin{equation}
-	\log_{10}(g) \sim \mathcal{N}\left(\mu = \delta + \epsilon \log_{10}(F_8),
-	\sigma = \sqrt{\sigma_g^2 + \zeta F_8}\right).
+% 	\log_{10}(g) \sim \mathcal{N}\left(\mu = \delta + \epsilon \log_{10}(F_8),
+% 	\sigma = \sqrt{\sigma_g^2 + \zeta F_8}\right).
+	\log_{10}(g) \sim \mathcal{N} \left(\mu = \alpha_g + \beta_g
+    \log_{10}(F_8), \sigma^2 = \sigma_g^2 \right).
 \end{equation}
 \label{eq:logg}
-The free parameters of the two models are $\alpha$, $\beta$, $\gamma$
-$\sigma_{\rho}$, $\delta$, $\epsilon$, $\zeta$ and $\sigma_g$.
-These relations are Gaussian distributions with means
-given by the equation of a straight line, and standard deviations which
-describe the intrinsic scatter about the mean as a function of flicker.
+The free parameters of the two models are $\alpha_\rho$, $\beta_\rho$,
+$\sigma_\rho$, $\alpha_g$, $\beta_g$ and $\sigma_g$.
+These relations are Gaussian distributions with means given by the equation of
+a straight line, and standard deviations which describe the intrinsic scatter
+about the mean.
 
-In order to account for the two-dimensional observational uncertainties in
-this data set, we marginalize over the latent, `true' values of $F_8$,
-\rhostar\ and \logg\ using the importance sampling method of
-\citep{hogg:2010}\footnote{Note that while the pseudo-marginal MCMC method of
-\citep{andrieu:2009} provides a truly unbiased estimate of the marginalized
-likelhood, we expect any bias introduced by the importance sampling method to
-be negligable.}.
-In what follows we give an overview of this procedure, but encourage the
-reader to refer back  to this original reference for a more detailed
-description of the mathematics.
-The observed values of the variables; $F_8$, \rhostar\ and \logg\ can be
-thought of as a single `draw' from an underlying (assumed Gaussian)
-probability
-In what follows we give an overview of the importance sampling procedure, but
-encourage the reader to refer back to the original reference for a more
-detailed description of the mathematics.
-The observed values of the variables; $F_8$, \rhostar\ and \logg\ can be
-thought of as a single `draw' from an underlying (assumed Gaussian)
-probability distribution, with mean equal to the `true' value---the value that
-would have been observed, given infinitely high signal-to-noise---and standard
-deviation equal to the observational uncertainty.
-We compute the likelihood of the data given the model, marginalized over the
-true values, using importance sampling.
-We sample from the posterior PDFs of the true values of the variables,
-conditioned on the observed values, and compute the likelihood of each of those
-samples.
-% These posterior PDFs could be produced by the astronomers who provide the
-% catalog.
-% If posterior samples are made available, they can be used in this stage of
-% the inference.
-% In the event that they are not provided however, they can be generated.
-% For example, the $log(g)$ values used here are point estimates of the
-% posterior PDFs of $log(g)$, produced by \citet{chaplin:2014} using
-% {\it Kepler} light curves and stellar models.
-We would use the posterior samples generated in previous model fitting process
-if they were available, however generating new samples is an acceptable
-approximation provided the posteriors are Gaussian and the priors used by the
-previous fitters were uninformative.
-Such an approximation will not be necessary for those studies using \rhostar\
-or \logg\ calculated using the newly-calibrated relations presented here,
-since we have published our posterior samples.
-After producing new posterior PDF samples we then add up the individual
-log-likelihoods of each sample to compute the total marginalized likelihood
-for a star.
-The marginalized likelihood of the whole dataset is then computed as the sum
-of the log-likelihoods of each star.
-The importance sampling method allows us to approximate the integral over the
-latent variables.
-% We used flat priors for all except the $\sigma$ parameters, for which we used
-% priors which were flat in log-space.
-We used uniform priors over all our parameters:
-\begin{eqnarray}
-	&	\alpha, \beta, \delta, \epsilon
-	\sim U(-10:10) \\ \nonumber
- 	&	\sigma_{rho}, \gamma, \sigma_g, \zeta  \sim U(-100:100).
-\end{eqnarray}
-\label{eq:priors}
+We also tested a model in which the additional scatter depends on flicker
+itself, defined as
+\begin{equation}
+	\log_{10}(\rho_\star) \sim \mathcal{N} \left(\mu = \alpha_\rho +
+    \beta_\rho \log_{10}(F_8), \sigma = \sqrt{\sigma_{\rho}^2 +
+    \gamma_\rho F_8}\right),
+\end{equation}
+\label{eq:rho2}
+for flicker vs $\rho_\star$ and similarly for \logg.
+This model allowed us to determine whether there the magnitude of additional
+scatter varied as a function of \logg or \rhostar.
+In other words, whether flicker was a better proxy for \logg\ or \rhostar\ for
+either dwarf or giant stars.
+We found that the maximum {\it a-posteriori} values for the $\gamma$
+parameters were consistent with zero: $\gamma_{rho} = 0.006 \pm 0.02, \gamma_g
+= -0.01 \pm\ 0.01$, and interpret this as evidence for a constant intrinsic
+scatter level across evolutionary stages.
 
-We also performed this inference using an alternative, analytic form of the
-marginal likelihood, which accounts for 2-D uncertainties but does not allow
-the intrinsic scatter to be a function of the dependent or independent
-variables.
+% In order to account for the two-dimensional observational uncertainties in
+% this data set, we marginalize over the latent, `true' values of $F_8$,
+% \rhostar\ and \logg\ using the importance sampling method of
+% \citep{hogg:2010}\footnote{Note that while the pseudo-marginal MCMC method of
+% \citep{andrieu:2009} provides a truly unbiased estimate of the marginalized
+% likelhood, we expect any bias introduced by the importance sampling method to
+% be negligable.}.
+% In what follows we give an overview of this procedure, but encourage the
+% reader to refer back  to this original reference for a more detailed
+% description of the mathematics.
+% The observed values of the variables; $F_8$, \rhostar\ and \logg\ can be
+% thought of as a single `draw' from an underlying (assumed Gaussian)
+% probability
+% In what follows we give an overview of the importance sampling procedure, but
+% encourage the reader to refer back to the original reference for a more
+% detailed description of the mathematics.
+% The observed values of the variables; $F_8$, \rhostar\ and \logg\ can be
+% thought of as a single `draw' from an underlying (assumed Gaussian)
+% probability distribution, with mean equal to the `true' value---the value that
+% would have been observed, given infinitely high signal-to-noise---and standard
+% deviation equal to the observational uncertainty.
+% We compute the likelihood of the data given the model, marginalized over the
+% true values, using importance sampling.
+% We sample from the posterior PDFs of the true values of the variables,
+% conditioned on the observed values, and compute the likelihood of each of those
+% samples.
+% % These posterior PDFs could be produced by the astronomers who provide the
+% % catalog.
+% % If posterior samples are made available, they can be used in this stage of
+% % the inference.
+% % In the event that they are not provided however, they can be generated.
+% % For example, the $log(g)$ values used here are point estimates of the
+% % posterior PDFs of $log(g)$, produced by \citet{chaplin:2014} using
+% % {\it Kepler} light curves and stellar models.
+% We would use the posterior samples generated in previous model fitting process
+% if they were available, however generating new samples is an acceptable
+% approximation provided the posteriors are Gaussian and the priors used by the
+% previous fitters were uninformative.
+% Such an approximation will not be necessary for those studies using \rhostar\
+% or \logg\ calculated using the newly-calibrated relations presented here,
+% since we have published our posterior samples.
+% After producing new posterior PDF samples we then add up the individual
+% log-likelihoods of each sample to compute the total marginalized likelihood
+% for a star.
+% The marginalized likelihood of the whole dataset is then computed as the sum
+% of the log-likelihoods of each star.
+% The importance sampling method allows us to approximate the integral over the
+% latent variables.
+% % We used flat priors for all except the $\sigma$ parameters, for which we used
+% % priors which were flat in log-space.
+% as a function of flicker.
+
+We tested a likelihood function which accounts for 2-D uncertainties but does
+not allow the intrinsic scatter to be a function of the dependent or
+independent variables.
 For the relation between flicker and \rhostar, this likelihood function can be
 written as
 \begin{eqnarray}
@@ -420,10 +442,27 @@ written as
 \end{eqnarray}
 \label{eq:likelihood}
 and similarly for \logg.
-The parameter values found using this simple likelihood function, with a
-constant dispersion are included in table \ref{tab:results}.
-% The analytic likelihood function, equation \ref{eq:likelihood} is suitable for
-% cases where the intrinsic scatter is not a function of $x$ or $y$.
+We found that the posterior PDFs for the model parameters obtained using this
+likelihood function were consistent with those obtained using a model that
+only accounts for the uncertainties on the flicker measurements, so instead
+used a standard Gaussian likelihood function $(-1/2\chi^2)$ in our analysis.
+% Since the uncertainties on flicker were significantly larger than those on
+% \logg or \rhostar, regression was performed with flicker as the dependent
+% variable.
+
+We used uniform priors over all our parameters:
+\begin{eqnarray}
+	&	\alpha, \beta, \delta, \epsilon
+	\sim U(-10:10) \\ \nonumber
+ 	&	\sigma_{rho}, \gamma, \sigma_g, \zeta  \sim U(-100:100).
+\end{eqnarray}
+\label{eq:priors}
+
+% The parameter values found using this simple likelihood function, with a
+% constant dispersion are included in table \ref{tab:results}.
+% % The analytic likelihood function, equation \ref{eq:likelihood} is suitable for
+% % cases where the intrinsic scatter is not a function of $x$ or $y$.
+
 Figures \ref{fig:rhostar} and \ref{fig:logg} show the data with the best-fit
 models.
 The shaded regions show the 1 and 2$\sigma$ confidence interval which are
