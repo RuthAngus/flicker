@@ -338,16 +338,16 @@ The two models we use to describe the relationships between $F_8$, \logg\ and
 \begin{equation}
 % 	\log_{10}(\rho_\star) \sim \mathcal{N} \left(\mu = \alpha + \beta
 % 	\log_{10}(F_8), \sigma = \sqrt{\sigma_{\rho}^2 + \gamma F_8}\right),
-	\log_{10}(\rho_\star) \sim \mathcal{N} \left(\mu = \alpha_\rho +
-    \beta_\rho \log_{10}(F_8), \sigma^2 = \sigma_\rho^2 \right),
+	\log_{10}(F_8) \sim \mathcal{N} \left(\mu = \alpha_\rho +
+    \beta_\rho \log_{10}(\rho_\star), \sigma^2 = \sigma_\rho^2 \right),
 \end{equation}
 \label{eq:rho}
 and
 \begin{equation}
 % 	\log_{10}(g) \sim \mathcal{N}\left(\mu = \delta + \epsilon \log_{10}(F_8),
 % 	\sigma = \sqrt{\sigma_g^2 + \zeta F_8}\right).
-	\log_{10}(g) \sim \mathcal{N} \left(\mu = \alpha_g + \beta_g
-    \log_{10}(F_8), \sigma^2 = \sigma_g^2 \right).
+	\log_{10}(F_8) \sim \mathcal{N} \left(\mu = \alpha_g + \beta_g
+    \log_{10}(g), \sigma^2 = \sigma_g^2 \right).
 \end{equation}
 \label{eq:logg}
 The free parameters of the two models are $\alpha_\rho$, $\beta_\rho$,
@@ -359,14 +359,14 @@ about the mean.
 We also tested a model in which the additional scatter depends on flicker
 itself, defined as
 \begin{equation}
-	\log_{10}(\rho_\star) \sim \mathcal{N} \left(\mu = \alpha_\rho +
-    \beta_\rho \log_{10}(F_8), \sigma = \sqrt{\sigma_{\rho}^2 +
+	\log_{10}(F_8) \sim \mathcal{N} \left(\mu = \alpha_\rho +
+    \beta_\rho \log_{10}(\rho_\star), \sigma = \sqrt{\sigma_{\rho}^2 +
     \gamma_\rho F_8}\right),
 \end{equation}
 \label{eq:rho2}
 for flicker vs $\rho_\star$ and similarly for \logg.
 This model allowed us to determine whether there the magnitude of additional
-scatter varied as a function of \logg or \rhostar.
+scatter varied as a function of flicker.
 In other words, whether flicker was a better proxy for \logg\ or \rhostar\ for
 either dwarf or giant stars.
 We found that the maximum {\it a-posteriori} values for the $\gamma$
@@ -426,13 +426,13 @@ scatter level across evolutionary stages.
 % % priors which were flat in log-space.
 % as a function of flicker.
 
-We tested a likelihood function which accounts for 2-D uncertainties but does
+We used a likelihood function which accounts for 2-D uncertainties but does
 not allow the intrinsic scatter to be a function of the dependent or
 independent variables.
 For the relation between flicker and \rhostar, this likelihood function can be
 written as
 \begin{eqnarray}
-	& p(\rho_*| F_8, \alpha, \beta, \sigma_{\rho}) =  \\ \nonumber
+	& p(F_8|\rho_\star, \alpha, \beta, \sigma_{\rho}) =  \\ \nonumber
 						      & \exp \left[-\frac{1}{2}
 		\sum_{n=1}^N \frac{[F_{8n}-(\alpha + \beta \rho_{*n})]^2}
 	{\left[\beta \sigma_{F8, n}^2 + (\sigma_{\rho *, n}
@@ -444,18 +444,23 @@ written as
 and similarly for \logg.
 We found that the posterior PDFs for the model parameters obtained using this
 likelihood function were consistent with those obtained using a model that
-only accounts for the uncertainties on the flicker measurements, so instead
-used a standard Gaussian likelihood function $(-1/2\chi^2)$ in our analysis.
+only accounts for the uncertainties on the flicker measurements.
+Accounting for uncertainties on $y$ {\it and} $x$ is therefore not essential
+in this case but still good practise and will, in general, produce more
+accurate model parameters and uncertainties.
+
+% so instead
+% used a standard Gaussian likelihood function $(-1/2\chi^2)$ in our analysis.
 % Since the uncertainties on flicker were significantly larger than those on
 % \logg or \rhostar, regression was performed with flicker as the dependent
 % variable.
 
-We used uniform priors over all our parameters:
-\begin{eqnarray}
-	&	\alpha, \beta, \delta, \epsilon
-	\sim U(-10:10) \\ \nonumber
- 	&	\sigma_{rho}, \gamma, \sigma_g, \zeta  \sim U(-100:100).
-\end{eqnarray}
+We used the uninformative prior for the parameters of a straight line with
+unknown variance, outlined in \citet{vanderplas},
+\begin{equation}
+P(\alpha, \beta, \sigma) \propto \frac{1}{\sigma} \left( 1 + \beta^2
+\right)^{-3/2}.
+\end{equation}
 \label{eq:priors}
 
 % The parameter values found using this simple likelihood function, with a
@@ -473,13 +478,17 @@ representative of the intrinsic scatter in the relations.
 %%% rhostar plot
 \begin{figure}
 \begin{center}
+\includegraphics[width=8.4cm,angle=0,clip=true]{flicker_vs_rho.pdf}
 % \includegraphics[width=8.4cm,angle=0,clip=true]{../figs/rho_vs_flicker.pdf}
-\includegraphics[width=8.4cm,angle=0,clip=true]{new_rho.pdf}
+% \includegraphics[width=8.4cm,angle=0,clip=true]{new_rho.pdf}
 \caption{
 Stellar density vs. flicker.
 This figure shows the model, conditioned on the data.
-The solid black line shows the highest-likelihood sample, and the pink shaded
-regions show the 1 and 2$\sigma$ confidence intervals.}
+The solid black line shows the model with the parameter values quoted in the
+text.
+The solid pink lines show the 1$\sigma$ region where the extra scatter is not
+included and the pink shaded regions show the 1 and 2$\sigma$ regions with the
+additional scatter.}
 \label{fig:rhostar}
 \end{center}
 \end{figure}
@@ -487,35 +496,45 @@ regions show the 1 and 2$\sigma$ confidence intervals.}
 %%% logg plot
 \begin{figure}
 \begin{center}
+\includegraphics[width=8.4cm,angle=0,clip=true]{flicker_vs_logg.pdf}
 % \includegraphics[width=8.4cm,angle=0,clip=true]{../figs/logg_vs_flicker.pdf}
-\includegraphics[width=8.4cm,angle=0,clip=true]{new_logg.pdf}
+% \includegraphics[width=8.4cm,angle=0,clip=true]{new_logg.pdf}
 \caption{
 $\log(g)$ vs. flicker.
 As in \ref{fig:rhostar} this figure shows the model, conditioned on the data.
-The solid black line shows the highest-likelihood sample, and the blue shaded
-regions show the 1 and 2$\sigma$ confidence intervals.}
+The solid black line shows the model with the parameter values quoted in the
+text.
+The solid blue lines show the 1$\sigma$ region where the extra scatter is not
+included and the blue shaded regions show the 1 and 2$\sigma$ regions with the
+additional scatter.}
 \label{fig:logg}
 \end{center}
 \end{figure}
 
 \begin{table}
-\caption{Highest-likelihood parameter values with 16th and 84th
+\begin{center}
+\caption{Median parameter values with 16th and 84th
 	percentile uncertainties.}
-\begin{tabular}{lccc}
+\begin{tabular}{lcc}
 \hline\hline
-Parameter & Variable dispersion model & Constant dispersion model \\
+Parameter & Median value \\
     \hline
-$\alpha$ &    2.358$_{-0.04}^{+0.08}$ &       2.191$_{-0.05}^{+0.05}$  \\
-$\beta$ &    -1.79$_{-0.03}^{+0.04}$ &        -1.724$_{-0.03}^{+0.03}$ \\
-$\sigma_{rho}$ &    0.015$_{-0.04}^{+0.08}$ &   0.085$_{-0.05}^{+0.05}$  \\
-$\gamma$ &    -0.0$_{-0.04}^{+0.08}$ & \\
+$\alpha_\rho$   &    1.315$\pm 0.008$   \\
+$\beta_\rho$    &    -0.526$\pm 0.009$   \\
+$\sigma_\rho$   &    0.065$\pm 0.003$   \\
+% 1.31476104613 0.00759733599155 0.00767814819025
+% -0.525867117083 0.00913323668806 0.00926420817321
+% 0.0650160215492 0.00300880167448 0.00288553857806
 \hline
-$\delta$ &    5.535$_{-0.07}^{+0.07}$ &      5.739$_{-0.03}^{+0.03}$  \\
-$\epsilon$ &    -1.005$_{-0.04}^{+0.03}$ &   -1.095$_{-0.02}^{+0.01}$ \\
-$\sigma_g$ &    0.168$_{-0.07}^{+0.07}$ &    0.015$_{-0.03}^{+0.03}$  \\
-$\zeta$ &    -0.014$_{-0.07}^{+0.07}$ & \\
+$\alpha_g$      &    4.90$\pm 0.05$   \\
+$\beta_g$       &   -0.83$\pm 0.01$   \\
+$\sigma_g$      &    0.056$\pm 0.003$   \\
+% 4.90451472909 0.0514398889837 0.0509386027456
+% -0.8252952869 0.0130730719222 0.0131097233196
+% 0.0565263079576 0.00279179051697 0.00271277097572
     \hline
 \end{tabular}
+\end{center}
 \end{table}
 \label{tab:results}
 
@@ -528,9 +547,8 @@ $\zeta$ &    -0.014$_{-0.07}^{+0.07}$ & \\
 We have recalibrated the relation between short timescale brightness
 fluctuations in the {\it Kepler} light curves of stars (flicker) with both
 stellar density and surface gravity, whilst including parameters to describe
-the intrinsic scatter in these relationships.
-We included both an additive variance term {\it and} a term that allows for
-some abscissa-dependent variance, presented in table \ref{tab:table}.
+the intrinsic scatter in these relationships, presented in table
+\ref{tab:results}.
 The additive terms, $\sigma_\rho$ and $ \sigma_g$ are both non-zero,
 suggesting that there {\it is} an additional source of scatter in the
 relations, not accounted for by the observational uncertainties alone.
@@ -538,29 +556,19 @@ This is either caused by intrinsic scatter in the physical relationship
 between flicker and density and \logg, produced by some physical process that
 is not accounted for in the model, or by an underestimation of the
 observational uncertainties.
-Interestingly, the abscissa-dependent variances, $\gamma$ and $\zeta$ are both
-less than zero.
-This indicates that the intrinsic scatter either decreases with increasing
-flicker and decreasing stellar density and surface gravity, or that the
-uncertainty underestimation is more severe for the giant stars.
-Regardless of the cause of the additional scatter needed to describe the
-relations between these parameters, the conclusions of this study are the same.
-Firstly, naively modelling the relationship between flicker and surface
-gravity or stellar density, or any other stochastic relationship
-deterministically, will lead to an underprediction of the uncertainties in
-dependent variable.
-Secondly, we find marginal evidence for decreased scatter at higher surface
-gravities and densities, i.e. the relations between flicker, surface gravity
-and stellar density are valid for dwarfs and giants alike, despite the fact
-that observational uncertainties tend to be larger for dwarfs.
+We also tested a model with both an additive variance term {\it and} a term
+that included flicker-dependent variance.
+We found that the need for additional flicker-dependent variance was not
+supported by the data, indicating that the intrinsic scatter in the relations
+between flicker, \logg\ and \rhostar\ does not depend on evolutionary state.
 
 This is a simple `fitting a line to data' exercise, however it continues the
 discussion of probabilistic modelling that is an active topic within the
 fields of exoplanet and stellar astronomy.
 We used Hierarchical Bayesian Modelling (HBM) to constrain the intrinsic
-scatter in the relationship between flicker, surface gravity and density.
-We also included the effects of the non-negligable two-dimensional observational
-uncertainties by marginalizing over latent variables using importance sampling.
+scatter in the relationship between flicker, surface gravity and density and
+included the effects of the non-negligable two-dimensional observational
+uncertainties.
 % Although none of these methods, nor the data used here are new taken alone,
 % we use the example of flicker to demonstrate the ideas and the importance of
 % probabilistic, hierarchical inference.
@@ -583,9 +591,9 @@ We provide posterior PDF samples and the code used in this project at
 \url{https://github.com/RuthAngus/flicker}.
 Whenever a prediction for the surface gravity or density of a star is required,
 for a given estimate of flicker, we recommend using these posterior samples
-within the calculation of $\rho_{*}$ or $\log(g)$ and its (Monte Carlo)
+within the calculation of \rhostar or \logg\ and its (Monte Carlo)
 uncertainty.
-These posterior samples will naturally fold-in the covariances between
+These posterior samples will naturally fold in the covariances between
 parameters.
 Simple analytical uncertainty propagation is only valid when uncertainties are
 Gaussian and uncorrelated which is rarely true and certainly not the case when
@@ -594,7 +602,7 @@ A flicker value with uncertainties (or even better: posterior PDF
 samples), input into our model will result in a probability distribution over
 stellar densities or surface gravities which reflects both the uncertainties
 on the flicker measurement, the uncertainties on the model parameters {\it and}
-the intrinsic scatter in the flicker-$\rho_{*}$-$\log(g)$ relations.
+the intrinsic scatter in the flicker-\rhostar-\logg\ relations.
 
 % #####################################################################
 %% Acknowledgements
@@ -650,6 +658,8 @@ Rogers, L.~A., 2015, ApJ, 801, 41
 \bibitem[\protect\citeauthoryear{Seager \& Mall\'{e}n-Ornelas}{2003}]
 {seager:2003}Seager, S., \& Mall\'{e}n-Ornelas, G., 2003, ApJ, 585, 1038
 \bibitem[\protect\citeauthoryear{Wolfgang et al.}{2015}]{wolfgang:2015}
+\bibitem[VanderPlas(2014)]{vanderplas}
+VanderPlas, J.\ 2014, arXiv:1411.5018
 Wolfgang, A., Rogers, L.~A., Ford, E.~B., 2015, ApJ, submitted
 (astro-ph:1504.07557)
 \end{thebibliography}
