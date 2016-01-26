@@ -62,8 +62,8 @@ plt.clf()
 fig = corner.corner(samples, labels=["m", "c", "s"])
 
 # Make figure for paper
-plotpar = {'axes.labelsize': 18,
-           'text.fontsize': 14,
+plotpar = {'axes.labelsize': 25,
+           'text.fontsize': 18,
            'legend.fontsize': 18,
            'xtick.labelsize': 18,
            'ytick.labelsize': 18,
@@ -90,12 +90,16 @@ plt.xlabel("$\log_{10}(\\rho_{\star}[\mathrm{g~cm}^{-3}])$")
 #plt.text(-1.15, 2.25, "$\log_{10} (\\rho_{\star}) \sim \mathcal{N} \left(\\alpha_\\rho + \\beta_\\rho \log_{10}(F_8), \
 #                \\sigma=\\sigma_{\\rho}\\right)$")
 plt.text(-1.15, 2.25, "$\log_{10} (F_8) \sim \mathcal{N} \left(\\alpha_\\rho + \\beta_\\rho \log_{10}(\\rho_{\star}),                 \\sigma=\\sigma_{\\rho}\\right)$")
-plt.text(-1.45, 1.2, "$\\alpha_\\rho = %.2f \pm %.2f$" % (np.round(alpha, 2), np.round(ap, 2)))
-plt.text(-1.45, 1., "$\\beta_\\rho = %.2f \pm %.2f $" % (np.round(beta, 2), np.round(bp, 2)))
-plt.text(-1.45, .8, "$\\sigma_{\\rho} = %.3f \pm %.3f $" % (np.round(sigma, 2), np.round(sp, 3)))
+plt.text(-1.45, 1.2, "$\\alpha_\\rho = %.3f \pm %.3f$" % (np.round(alpha, 3), np.round(ap, 3)))
+plt.text(-1.45, 1., "$\\beta_\\rho = %.3f \pm %.3f $" % (np.round(beta, 3), np.round(bp, 3)))
+plt.text(-1.45, .8, "$\\sigma_{\\rho} = %.3f \pm %.3f $" % (np.round(sigma, 3), np.round(sp, 3)))
 plt.xlim(min(r)-.2, max(r)+.2)
 plt.ylim(.4, 2.5)
 plt.savefig("../version1.0/flicker_vs_rho.pdf")
+print("rho")
+print(alpha, ap, am)
+print(beta, bp, bm)
+print(sigma, sp, sm)
 
 # Now with flicker vs logg
 # load data
@@ -144,7 +148,11 @@ plt.xlabel("$\log_{10}(g [\mathrm{cm~s}^{-2}])$")
 plt.text(3.55, 2.25, "$\log_{10} (F_8) \sim \mathcal{N} \left(\\alpha_g + \\beta_g \log_{10}(g),                 \\sigma=\\sigma_g\\right)$")
 plt.text(3.45, 1.2, "$\\alpha_g = %.2f \pm %.2f$" % (np.round(alpha, 2), np.round(ap, 2)))
 plt.text(3.45, 1., "$\\beta_g = %.2f \pm %.2f $" % (np.round(beta, 2), np.round(bp, 2)))
-plt.text(3.45, .8, "$\\sigma_g = %.3f \pm %.3f $" % (np.round(sigma, 2), np.round(sp, 3)))
+plt.text(3.45, .8, "$\\sigma_g = %.3f \pm %.3f $" % (np.round(sigma, 3), np.round(sp, 3)))
 plt.xlim(min(l)-.2, max(l)+.2)
 plt.ylim(.4, 2.5)
 plt.savefig("../version1.0/flicker_vs_logg.pdf")
+print("logg")
+print(alpha, ap, am)
+print(beta, bp, bm)
+print(sigma, sp, sm)
