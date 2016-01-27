@@ -187,11 +187,11 @@ model is considered to be a perfect description of reality.
 
 An alternative approach for inferring model parameters is to allow
 relationships between observables to be stochastic.
-Unlike the deterministic case, a single observational input is intepreted to
-be caused by a range of possible model parameters, described by a probability
-distribution.
-This statement is true even in the case of a perfect observation of infinite
-signal-to-noise, since the underlying model itself comes with uncertainty.
+% Unlike the deterministic case, a single observational input is interpreted to
+% be caused by a range of possible model parameters, described by a probability
+% distribution.
+% This statement is true even in the case of a perfect observation of infinite
+% signal-to-noise, since the underlying model itself comes with uncertainty.
 In recent years, there has been a shift towards such methods in several areas
 of astronomy, particularly within the exoplanet community.
 For example, \citet{wolfgang:2015} considered that the mass-radius
@@ -202,17 +202,20 @@ These recent demonstrations in exoplanetary science have prompted us to
 consider the need for treating the parent stars in the same probabilistic
 framework, with potential applications spanning many fields of astronomy.
 
-The demand for probabilistic stellar parameters is not only motivated by the fact
-that probability distributions are far more representative of our `beliefs'
-about astrophysical parameters, it also has a practical purpose.
-When using data published in the astronomical literature to, for example, infer
-relationships between observed parameters, that inference can be performed as
-the final stage in a hierarchical treatment
-\citep[see, e.g.][]{foreman-mackey:2014}.
-This is useful if, for example, one wants to account for multi-dimensional
-uncertainties by marginalizing over the `true' parameter values upon which the
-noisy observations are conditioned.
-This point is discussed further in \textsection\ref{sec:HBM}.
+The demand for probabilistic stellar parameters is not only motivated by the
+fact that probability distributions are far more representative of our
+`beliefs' about astrophysical parameters, it also has a practical purpose.
+When using data published in the astronomical literature to, for example,
+infer relationships between parameters that are themselves the product of an
+inference process (for example, exoplanet transit depth and period), inference
+can be performed as the final stage in a hierarchical treatment \citep[see,
+e.g.][]{foreman-mackey:2014}.
+% This is useful if, for example, one wants to account for multi-dimensional
+% uncertainties by marginalizing over the `true' parameter values upon which the
+% noisy observations are conditioned.
+Studies such as these are benefited by posterior PDF samples, rather than
+point estimates of inferred properties.
+% This point is discussed further in \textsection\ref{sec:HBM}.
 
 %A number of recent exoplanet studies have used Hierarchical Bayesian Modeling
 %(HBM) to model the dispersion, or intrinsic scatter in relations between
@@ -231,9 +234,10 @@ the proceedure to calculate flicker is described in \citet{bastien:2013}. As
 shown in \citet{bastien:2013}, flicker displays a remarkable correlation to
 the asteroseismically determined parent star surface gravities (\logg).
 Turning this around, the observation implies that flicker can be used to
-blindly infer surface gravities at the level of $\sim0.1$\,dex, an attractive
-proposition given the wealth of photometric light curves available through the
-array of exoplanet transit missions flying and scheduled to launch.
+empirically infer surface gravities at the level of $\sim0.1$\,dex, an
+attractive proposition given the wealth of photometric light curves available
+through the array of exoplanet transit missions flying and scheduled to
+launch.
 
 \citet{cranmer:2014} demonstrated that models of stellar surface granulation
 indeed reproduce a flicker effect in close agreement with that observed by
@@ -288,7 +292,7 @@ which:
 
 \begin{itemize}
 \item[{\tiny$\blacksquare$}] Range (defined in \citealt{bastien:2013})
-$<1$\,ppt
+$<1000$\,ppm
 \item[{\tiny$\blacksquare$}] $4500<T_{\mathrm{eff}}<6500$\,K
 \item[{\tiny$\blacksquare$}] $K_P<14$
 \item[{\tiny$\blacksquare$}] $1.2 < \log_{10}$($F_8$\,[ppm])$< 2.2$
@@ -339,7 +343,7 @@ The two models we use to describe the relationships between $F_8$, \logg\ and
 % 	\log_{10}(\rho_\star) \sim \mathcal{N} \left(\mu = \alpha + \beta
 % 	\log_{10}(F_8), \sigma = \sqrt{\sigma_{\rho}^2 + \gamma F_8}\right),
 	\log_{10}(F_8) \sim \mathcal{N} \left(\mu = \alpha_\rho +
-    \beta_\rho \log_{10}(\rho_\star), \sigma^2 = \sigma_\rho^2 \right),
+    \beta_\rho \log_{10}(\rho_\star), \sigma^2 + \sigma_\rho^2 \right),
 \end{equation}
 \label{eq:rho}
 and
@@ -347,7 +351,7 @@ and
 % 	\log_{10}(g) \sim \mathcal{N}\left(\mu = \delta + \epsilon \log_{10}(F_8),
 % 	\sigma = \sqrt{\sigma_g^2 + \zeta F_8}\right).
 	\log_{10}(F_8) \sim \mathcal{N} \left(\mu = \alpha_g + \beta_g
-    \log_{10}(g), \sigma^2 = \sigma_g^2 \right).
+    \log_{10}(g), \sigma^2 + \sigma_g^2 \right).
 \end{equation}
 \label{eq:logg}
 The free parameters of the two models are $\alpha_\rho$, $\beta_\rho$,
@@ -360,8 +364,8 @@ We also tested a model in which the additional scatter depends on flicker
 itself, defined as
 \begin{equation}
 	\log_{10}(F_8) \sim \mathcal{N} \left(\mu = \alpha_\rho +
-    \beta_\rho \log_{10}(\rho_\star), \sigma = \sqrt{\sigma_{\rho}^2 +
-    \gamma_\rho F_8}\right),
+    \beta_\rho \log_{10}(\rho_\star), \sigma^2 + \sigma_{\rho}^2 +
+    \gamma_\rho F_8 \right),
 \end{equation}
 \label{eq:rho2}
 for flicker vs $\rho_\star$ and similarly for \logg.
@@ -432,13 +436,13 @@ independent variables.
 For the relation between flicker and \rhostar, this likelihood function can be
 written as
 \begin{eqnarray}
-	& p(F_8|\rho_\star, \alpha, \beta, \sigma_{\rho}) =  \\ \nonumber
+	& p(F_8|\rho_\star, \alpha, \beta, \sigma_{\rho}) \propto  \\ \nonumber
 						      & \exp \left[-\frac{1}{2}
 		\sum_{n=1}^N \frac{[F_{8n}-(\alpha + \beta \rho_{*n})]^2}
-	{\left[\beta \sigma_{F8, n}^2 + (\sigma_{\rho *, n}
-	+ \sigma_{\rho})^2\right]}\right]
+	{\left[\beta \sigma_{F8, n}^2 + \sigma_{\rho *, n}^2
+	+ \sigma_{\rho}^2\right]}\right]
 	\\ \nonumber
-	& + \beta^2 \sigma_{F8, n}^2 + (\sigma_{\rho *, n} + \sigma_{\rho})^2,
+	& + \beta^2 \sigma_{F8, n}^2 + \sigma_{\rho *, n}^2 + \sigma_{\rho}^2,
 \end{eqnarray}
 \label{eq:likelihood}
 and similarly for \logg.
@@ -455,8 +459,8 @@ accurate model parameters and uncertainties.
 % \logg or \rhostar, regression was performed with flicker as the dependent
 % variable.
 
-We used the uninformative prior for the parameters of a straight line with
-unknown variance, outlined in \citet{vanderplas},
+We used the uninformative prior for the parameters of a straight line for
+data with unknown uncertainties, outlined in \citet{vanderplas},
 \begin{equation}
 P(\alpha, \beta, \sigma) \propto \frac{1}{\sigma} \left( 1 + \beta^2
 \right)^{-3/2}.
@@ -513,8 +517,7 @@ additional scatter.}
 
 \begin{table}
 \begin{center}
-\caption{Median parameter values with 16th and 84th
-	percentile uncertainties.}
+\caption{Median parameter values with 1$\sigma$ uncertainties.}
 \begin{tabular}{lcc}
 \hline\hline
 Parameter & Median value \\
@@ -580,7 +583,7 @@ step, {\it and} when using an empirically calibrated model to predict
 parameter values.
 The fitting stage benefits because if the relationships between parameters are
 falsely assumed to be deterministic, they will be skewed by data points with
-unrepresentative uncertainties.
+uncertainties that only represent measurement error and no additional scatter.
 The prediction stage benefits from the stochastic treatment both because a
 probability distribution is in many ways more representative of an observation
 than a point estimate, and because posterior PDF samples can be used in
@@ -657,9 +660,9 @@ Buchhave, L.~A., 2014, ApJ, 785, 32
 Rogers, L.~A., 2015, ApJ, 801, 41
 \bibitem[\protect\citeauthoryear{Seager \& Mall\'{e}n-Ornelas}{2003}]
 {seager:2003}Seager, S., \& Mall\'{e}n-Ornelas, G., 2003, ApJ, 585, 1038
-\bibitem[\protect\citeauthoryear{Wolfgang et al.}{2015}]{wolfgang:2015}
 \bibitem[VanderPlas(2014)]{vanderplas}
 VanderPlas, J.\ 2014, arXiv:1411.5018
+\bibitem[\protect\citeauthoryear{Wolfgang et al.}{2015}]{wolfgang:2015}
 Wolfgang, A., Rogers, L.~A., Ford, E.~B., 2015, ApJ, submitted
 (astro-ph:1504.07557)
 \end{thebibliography}
