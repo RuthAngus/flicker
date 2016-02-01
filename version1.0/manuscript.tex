@@ -286,7 +286,11 @@ values reported in their Table 6 over Table 5, and Table 5 over Table 4. We
 additionally used the 71 additional planet hosting stars with asteroseismology
 reported in \citet{huber:2013} but not reported in \citet{chaplin:2014}. Values
 for flicker and ``range'' were taken from \citet{kipping:2014}, based upon the
-methods described in \citet{bastien:2013}. Following \citet{kipping:2014} and
+methods described in \citet{bastien:2013}.
+% Following \citet{kipping:2014} and
+% for reasons described there-in, we only include targets in our calibration for
+% which:
+In order to use the same data set as \citet{kipping:2014} and
 for reasons described there-in, we only include targets in our calibration for
 which:
 
@@ -462,7 +466,7 @@ accurate model parameters and uncertainties.
 We used the uninformative prior for the parameters of a straight line for
 data with unknown uncertainties, outlined in \citet{vanderplas},
 \begin{equation}
-P(\alpha, \beta, \sigma) \propto \frac{1}{\sigma} \left( 1 + \beta^2
+p(\alpha, \beta, \sigma) \propto \frac{1}{\sigma} \left( 1 + \beta^2
 \right)^{-3/2}.
 \end{equation}
 \label{eq:priors}
