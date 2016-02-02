@@ -440,13 +440,13 @@ independent variables.
 For the relation between flicker and \rhostar, this likelihood function can be
 written as
 \begin{eqnarray}
-	& p(F_8|\rho_\star, \alpha, \beta, \sigma_{\rho}) \propto  \\ \nonumber
+	& p(F_8|\rho_\star, \alpha_\rho, \beta_\rho, \sigma_{\rho}) \propto  \\ \nonumber
 						      & \exp \left[-\frac{1}{2}
-		\sum_{n=1}^N \frac{[F_{8n}-(\alpha + \beta \rho_{*n})]^2}
-	{\left[\beta \sigma_{F8, n}^2 + \sigma_{\rho *, n}^2
+		\sum_{n=1}^N \frac{[F_{8n}-(\alpha_\rho + \beta_\rho \rho_{*n})]^2}
+	{\left[\beta_\rho \sigma_{F8, n}^2 + \sigma_{\rho *, n}^2
 	+ \sigma_{\rho}^2\right]}\right]
 	\\ \nonumber
-	& + \beta^2 \sigma_{F8, n}^2 + \sigma_{\rho *, n}^2 + \sigma_{\rho}^2,
+	& + \beta_\rho^2 \sigma_{F8, n}^2 + \sigma_{\rho *, n}^2 + \sigma_{\rho}^2,
 \end{eqnarray}
 \label{eq:likelihood}
 and similarly for \logg.
@@ -476,6 +476,8 @@ p(\alpha, \beta, \sigma) \propto \frac{1}{\sigma} \left( 1 + \beta^2
 % % The analytic likelihood function, equation \ref{eq:likelihood} is suitable for
 % % cases where the intrinsic scatter is not a function of $x$ or $y$.
 
+We also tested flat priors and found that the results were insensitive to this
+choice.
 Figures \ref{fig:rhostar} and \ref{fig:logg} show the data with the best-fit
 models.
 The shaded regions show the 1 and 2$\sigma$ confidence interval which are
@@ -492,8 +494,8 @@ representative of the intrinsic scatter in the relations.
 \caption{
 Stellar density vs. flicker.
 This figure shows the model, conditioned on the data.
-The solid black line shows the model with the parameter values quoted in the
-text.
+The solid black line shows the model with the best-fitting parameter values
+quoted in the text.
 The solid pink lines show the 1$\sigma$ region where the extra scatter is not
 included and the pink shaded regions show the 1 and 2$\sigma$ regions with the
 additional scatter.}
@@ -510,8 +512,8 @@ additional scatter.}
 \caption{
 $\log(g)$ vs. flicker.
 As in \ref{fig:rhostar} this figure shows the model, conditioned on the data.
-The solid black line shows the model with the parameter values quoted in the
-text.
+The solid black line shows the model with the best-fitting parameter values
+quoted in the text.
 The solid blue lines show the 1$\sigma$ region where the extra scatter is not
 included and the blue shaded regions show the 1 and 2$\sigma$ regions with the
 additional scatter.}
