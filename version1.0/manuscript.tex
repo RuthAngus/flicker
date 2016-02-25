@@ -448,12 +448,16 @@ and similarly for \logg.
 We found that the posterior PDFs for the model parameters obtained using this
 likelihood function were consistent with those obtained using a model that
 only accounts for the uncertainties on the flicker measurements.
-Accounting for uncertainties on $y$ {\it and} $x$ is therefore not essential
-in this case but still good practise and will, in general, produce more
-accurate model parameters and uncertainties.
+The median values of the model parameters differed by around $0.05 \sigma$
+for the $\alpha$ and $\beta$ parameters, by $0.3 \sigma$ for $\sigma_\rho$
+and by 0.8 $\sigma$ for $\sigma_g$.
+Since they are so dependent on the observational uncertainties, the parameters
+that describe the intrinsic scatter in the relations are more sensitive to
+whether the uncertainties in the $x$-direction are included.
+Accounting for uncertainties on $y$ {\it and} $x$ is not essential in this
+case but is still good practise and will, in general, produce more accurate
+model parameters and uncertainties.
 
-% so instead
-% used a standard Gaussian likelihood function $(-1/2\chi^2)$ in our analysis.
 % Since the uncertainties on flicker were significantly larger than those on
 % \logg or \rhostar, regression was performed with flicker as the dependent
 % variable.
@@ -471,14 +475,25 @@ p(\alpha, \beta, \sigma) \propto \frac{1}{\sigma} \left( 1 + \beta^2
 % % The analytic likelihood function, equation \ref{eq:likelihood} is suitable for
 % % cases where the intrinsic scatter is not a function of $x$ or $y$.
 
-We also tested flat priors and found that the results were insensitive to this
-choice.
+We also tested uniform, flat priors as defined below:
+\begin{eqnarray}
+ 	&	\alpha, \beta \sim U(-10:10) \\ \nonumber
+  	&	\log (\sigma_{rho}), \log(\sigma_g) \sim U(-10:10).
+ \end{eqnarray}
+ \label{eq:priors}
+We found that the results were relatively insensitive to the choice of prior,
+with median parameter values differing by only around $0.05\sigma$.
+MCMC chains were run until the Gelman \& Rubin convergence criterion,
+$\hat{R}$ reached a value of less than 1.002 and the number of autocorrelation
+times was greater than 35.
 Figures \ref{fig:rhostar} and \ref{fig:logg} show the data with the best-fit
 models.
 The shaded regions show the 1 and 2$\sigma$ confidence interval which are
 representative of the intrinsic scatter in the relations.
-% Given a measurement of flicker, the predictive probability distribution of
-% \logg and \rhostar will be a Gaussian distribution
+The marginal posterior PDFs of the model parameters for \rhostar are shown in
+figure \ref{fig:triangle}.
+The marginal posterior PDFs for \logg are similarly Gaussian and, as with
+$\sigma_\rho$, $\sigma_g$ is clearly greater than zero.
 
 %%% rhostar plot
 \begin{figure}
@@ -513,6 +528,16 @@ The solid blue lines show the 1$\sigma$ region where the extra scatter is not
 included and the blue shaded regions show the 1 and 2$\sigma$ regions with the
 additional scatter.}
 \label{fig:logg}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=8.4cm,angle=0,clip=true]{rho_triangle.pdf}
+\caption{Marginal posterior PDFs of the model parameters for \rhostar.
+This figure was generated using the {\tt corner} python package
+\citep{corner}.}
+\label{fig:triangle}
 \end{center}
 \end{figure}
 
@@ -615,10 +640,11 @@ the intrinsic scatter in the flicker-\rhostar-\logg\ relations.
 \section*{Acknowledgements}
 
 RA would like to thank Dan Foreman-Mackey for his extremely helpful suggestions
-and comments, Angie Wolfgang for her expert guidance and John Johnson for hit
+and comments, Angie Wolfgang for her expert guidance and John Johnson for his
 fantastic advice and support.
-RA would also like to thank the SAMSI institute and the other members of the
-SAMSI {\it Kepler} exoplanet statistics working groups.
+RA would also like to thank the anonymous referee for their excellent
+suggestions, SAMSI institute and the other members of the SAMSI {\it Kepler}
+exoplanet statistics working groups.
 
 %% EOF Acknowledgements
 
@@ -642,6 +668,9 @@ Cranmer, S. R., Bastien, F. A., Stassun, K. G. \& Saar, S. H., 2014, ApJ, 781,
 ApJ, 795, 64
 \bibitem[Foreman-Mackey et al.(2013)]{foreman-mackey:2013}
 Foreman-Mackey, D., Hogg, D.~W., Lang, D., \& Goodman, J.\ 2013, \pasp, 125, 306
+\bibitem[Foreman-Mackey et al. (2014)]{corner}
+Foreman-Mackey, D., Price-Whelan, A., Ryan, G. et al.\ 2014,
+10.5281/zenodo.10598, http://dx.doi.org/10.5281/zenodo.10598
 \bibitem[\protect\citeauthoryear{Fox}{1997}]{fox:1997}
 Fox, J., 1997, Applied Regression Analysis, Linear Models, and Related Methods
 (Thousand Oaks:Sage Publications, Inc.)
