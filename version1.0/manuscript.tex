@@ -337,24 +337,20 @@ Function (PDF) samples, in order to conduct their hierarchical analyses
 The two models we use to describe the relationships between $F_8$, \logg\ and
 \rhostar\ are
 \begin{equation}
-% 	\log_{10}(\rho_\star) \sim \mathcal{N} \left(\mu = \alpha + \beta
-% 	\log_{10}(F_8), \sigma = \sqrt{\sigma_{\rho}^2 + \gamma F_8}\right),
-	\log_{10}(F_8) \sim \mathcal{N} \left(\mu = \alpha_\rho +
-    \beta_\rho \log_{10}(\rho_\star), \sigma^2 + \sigma_\rho^2 \right),
+	\log_{10}(F_8) \sim \mathcal{N} \left(\alpha_\rho +
+    \beta_\rho \log_{10}(\rho_\star), \sigma_\rho^2 \right),
 \end{equation}
 \label{eq:rho}
 and
 \begin{equation}
-% 	\log_{10}(g) \sim \mathcal{N}\left(\mu = \delta + \epsilon \log_{10}(F_8),
-% 	\sigma = \sqrt{\sigma_g^2 + \zeta F_8}\right).
-	\log_{10}(F_8) \sim \mathcal{N} \left(\mu = \alpha_g + \beta_g
-    \log_{10}(g), \sigma^2 + \sigma_g^2 \right).
+	\log_{10}(F_8) \sim \mathcal{N} \left(\alpha_g + \beta_g
+    \log_{10}(g), \sigma_g^2 \right).
 \end{equation}
 \label{eq:logg}
 The free parameters of the two models are $\alpha_\rho$, $\beta_\rho$,
 $\sigma_\rho$, $\alpha_g$, $\beta_g$ and $\sigma_g$.
 These relations are Gaussian distributions with means given by the equation of
-a straight line, and standard deviations which describe the intrinsic scatter
+a straight line and standard deviations which describe the intrinsic scatter
 about the mean.
 We used the MCMC package, {\tt emcee} \citep{foreman-mackey:2013} to explore the
 posterior PDFs of our model parameters.
@@ -363,8 +359,9 @@ We also tested a model in which the additional scatter depends on flicker
 itself, defined as
 \begin{equation}
 	\log_{10}(F_8) \sim \mathcal{N} \left(\mu = \alpha_\rho +
-    \beta_\rho \log_{10}(\rho_\star), \sigma^2 + \sigma_{\rho}^2 +
-    \gamma_\rho F_8 \right),
+    \beta_\rho \log_{10}(\rho_\star), \sigma_{\rho}^2 + \gamma_\rho
+    \log_{10}(F_8)
+    \right),
 \end{equation}
 \label{eq:rho2}
 for flicker vs $\rho_\star$ and similarly for \logg.
@@ -435,25 +432,26 @@ independent variables.
 For the relation between flicker and \rhostar, this likelihood function can be
 written as
 \begin{eqnarray}
-	& p(F_8|\rho_\star, \alpha_\rho, \beta_\rho, \sigma_{\rho}) \propto  \\ \nonumber
-						      & \exp \left[-\frac{1}{2}
-		\sum_{n=1}^N \frac{[F_{8n}-(\alpha_\rho + \beta_\rho \rho_{*n})]^2}
-	{\left[\beta_\rho \sigma_{F8, n}^2 + \sigma_{\rho *, n}^2
-	+ \sigma_{\rho}^2\right]}\right]
+	& \ln\left[p(F_8|\rho_\star, \alpha_\rho, \beta_\rho, \sigma_{\rho})\right]
+        \propto  \\ \nonumber
+    & -\frac{1}{2}\sum_{n=1}^N \left[\frac{[F_{8n}-(\alpha_\rho
+    + \beta_\rho \rho_{*n})]^2}
+	{\left[\beta_\rho \sigma_{F8, n}^2 + \sigma_{\rho *, n}^2 +
+    \sigma_{\rho}^2\right]} + \ln(\sigma_{F8, n}^2) + \ln(\sigma_{\rho*, n}^2)
+    + \ln(\sigma_\rho^2) \right]
 	\\ \nonumber
-	& + \beta_\rho^2 \sigma_{F8, n}^2 + \sigma_{\rho *, n}^2 + \sigma_{\rho}^2,
 \end{eqnarray}
 \label{eq:likelihood}
 and similarly for \logg.
 We found that the posterior PDFs for the model parameters obtained using this
 likelihood function were consistent with those obtained using a model that
 only accounts for the uncertainties on the flicker measurements.
-The median values of the model parameters differed by around $0.05 \sigma$
-for the $\alpha$ and $\beta$ parameters, by $0.3 \sigma$ for $\sigma_\rho$
-and by 0.8 $\sigma$ for $\sigma_g$.
+{\bf The median values of the model parameters differed by around $0.05
+\sigma$ for the $\alpha$ and $\beta$ parameters, by $0.3 \sigma$ for
+$\sigma_\rho$ and by $0.8 \sigma$ for $\sigma_g$.
 Since they are so dependent on the observational uncertainties, the parameters
 that describe the intrinsic scatter in the relations are more sensitive to
-whether the uncertainties in the $x$-direction are included.
+whether the uncertainties in the $x$-direction are included.}
 Accounting for uncertainties on $y$ {\it and} $x$ is not essential in this
 case but is still good practise and will, in general, produce more accurate
 model parameters and uncertainties.
@@ -482,18 +480,23 @@ We also tested uniform, flat priors as defined below:
  \end{eqnarray}
  \label{eq:priors}
 We found that the results were relatively insensitive to the choice of prior,
-with median parameter values differing by only around $0.05\sigma$.
+{\bf with median parameter values differing by only around $0.05\sigma$.
 MCMC chains were run until the Gelman \& Rubin convergence criterion,
 $\hat{R}$ reached a value of less than 1.002 and the number of autocorrelation
-times was greater than 35.
+times was greater than 35.}
 Figures \ref{fig:rhostar} and \ref{fig:logg} show the data with the best-fit
 models.
 The shaded regions show the 1 and 2$\sigma$ confidence interval which are
 representative of the intrinsic scatter in the relations.
-The marginal posterior PDFs of the model parameters for \rhostar are shown in
-figure \ref{fig:triangle}.
-The marginal posterior PDFs for \logg are similarly Gaussian and, as with
+{\bf The marginal posterior PDFs of the model parameters for \rhostar are
+shown in figure \ref{fig:triangle}.
+The marginal posterior PDFs for \logg\ are similarly Gaussian and, as with
 $\sigma_\rho$, $\sigma_g$ is clearly greater than zero.
+We checked the consistency between the two relations by calculating flicker
+values for the Sun, finding $F_8 = 1.24 \pm 0.07$ and $F_8 = 1.21 \pm 0.1$
+from Solar density and surface gravity measurements, respectively.
+All the code used for this project and several ipython notebooks explaining
+our analysis are available at {\url https://github.com/RuthAngus/flicker}.}
 
 %%% rhostar plot
 \begin{figure}
@@ -548,19 +551,13 @@ This figure was generated using the {\tt corner} python package
 \hline\hline
 Parameter & Median value \\
     \hline
-$\alpha_\rho$   &    1.315$\pm 0.008$   \\
-$\beta_\rho$    &    -0.526$\pm 0.009$   \\
-$\sigma_\rho$   &    0.065$\pm 0.003$   \\
-% 1.31476104613 0.00759733599155 0.00767814819025
-% -0.525867117083 0.00913323668806 0.00926420817321
-% 0.0650160215492 0.00300880167448 0.00288553857806
+$\alpha_\rho$   &    1.31$\pm 0.01$   \\
+$\beta_\rho$    &    -0.53$\pm 0.01$   \\
+$\sigma_\rho$   &    0.060$\pm 0.003$   \\
 \hline
-$\alpha_g$      &    4.90$\pm 0.05$   \\
+$\alpha_g$      &    4.91$\pm 0.05$   \\
 $\beta_g$       &   -0.83$\pm 0.01$   \\
-$\sigma_g$      &    0.056$\pm 0.003$   \\
-% 4.90451472909 0.0514398889837 0.0509386027456
-% -0.8252952869 0.0130730719222 0.0131097233196
-% 0.0565263079576 0.00279179051697 0.00271277097572
+$\sigma_g$      &    0.060$\pm 0.003$   \\
     \hline
 \end{tabular}
 \end{center}
@@ -578,14 +575,14 @@ fluctuations in the {\it Kepler} light curves of stars (flicker) with both
 stellar density and surface gravity, whilst including parameters to describe
 the intrinsic scatter in these relationships, presented in table
 \ref{tab:results}.
-The additive terms, $\sigma_\rho$ and $ \sigma_g$ are both non-zero,
-suggesting that there {\it is} an additional source of scatter in the
-relations, not accounted for by the observational uncertainties alone.
+The terms $\sigma_\rho$ and $ \sigma_g$ are both non-zero, suggesting that
+there {\it is} an additional source of scatter in the relations, not accounted
+for by the observational uncertainties alone.
 This is either caused by intrinsic scatter in the physical relationship
 between flicker and density and \logg, produced by some physical process that
 is not accounted for in the model, or by an underestimation of the
 observational uncertainties.
-We also tested a model with both an additive variance term {\it and} a term
+We also tested a model with both an additional variance term {\it and} a term
 that included flicker-dependent variance.
 We found that the need for additional flicker-dependent variance was not
 supported by the data, indicating that the intrinsic scatter in the relations
@@ -616,9 +613,8 @@ than a point estimate, and because posterior PDF samples can be used in
 subsequent studies (provided the prior used during the fitting process is
 described).
 
-We provide posterior PDF samples and the code used in this project at
-\url{https://zenodo.org/deposit/95681/}.
-% https://github.com/RuthAngus/flicker
+We provide posterior PDF samples at \url{https://zenodo.org/deposit/105051/}.
+% https://zenodo.org/deposit/95681/}.
 Whenever a prediction for the surface gravity or density of a star is required,
 for a given estimate of flicker, we recommend using these posterior samples
 within the calculation of \rhostar or \logg\ and its (Monte Carlo)
@@ -642,9 +638,10 @@ the intrinsic scatter in the flicker-\rhostar-\logg\ relations.
 RA would like to thank Dan Foreman-Mackey for his extremely helpful suggestions
 and comments, Angie Wolfgang for her expert guidance and John Johnson for his
 fantastic advice and support.
-RA would also like to thank the anonymous referee for their excellent
-suggestions, SAMSI institute and the other members of the SAMSI {\it Kepler}
-exoplanet statistics working groups.
+RA would also like to thank the anonymous referee for their patience and
+excellent suggestions which dramatically improved this letter, the SAMSI
+institute and the other members of the SAMSI {\it Kepler} exoplanet statistics
+working groups.
 
 %% EOF Acknowledgements
 
@@ -676,9 +673,9 @@ Fox, J., 1997, Applied Regression Analysis, Linear Models, and Related Methods
 (Thousand Oaks:Sage Publications, Inc.)
 \bibitem[\protect\citeauthoryear{Fuller}{1987}]{fuller:1987}
 Fuller, W.~A., 1987, Wiley Series in Probability and Mathematical Statistics
-\bibitem[\protect\citeauthoryear{Hogg et al.}{2010}]{hogg:2010}
-Hogg, D.~W., Myers, A.~D. \& Bovy, J., 2010, ApJ, 725,
-2166
+% \bibitem[\protect\citeauthoryear{Hogg et al.}{2010}]{hogg:2010}
+% Hogg, D.~W., Myers, A.~D. \& Bovy, J., 2010, ApJ, 725,
+% 2166
 \bibitem[\protect\citeauthoryear{Hogg et al.}{2010b}]{hogg:2010b}
 Hogg, D.~W., Bovy, J. \& Lang, D., 2010
 \bibitem[\protect\citeauthoryear{Huber et al.}{2013}]{huber:2013}
